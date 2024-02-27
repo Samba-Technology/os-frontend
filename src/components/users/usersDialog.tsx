@@ -55,11 +55,11 @@ export default function UsersDialog({ isOpen, onClose}: Props) {
     return (
         <Dialog open={isOpen} onClose={onClose} component="form" onSubmit={handleSubmit(onSubmit)} >
             <DialogTitle>Criação de usuário</DialogTitle>
-            <DialogContent className="flex flex-col w-full gap-2">
+            <DialogContent className="flex flex-col w-full gap-4">
                 <DialogContentText>Insira algumas informações do usuário que será criado.</DialogContentText>
-                <TextField label="Nome Completo" margin="dense" variant="filled" error={!!errors.name} helperText={errors.name?.message} {...register("name")} />
-                <TextField label="Email" margin="dense" variant="filled" error={!!errors.email} helperText={errors.email?.message} {...register("email")} />
-                <TextField label="Senha" type="password" margin="dense" variant="filled" error={!!errors.password} helperText={errors.password?.message} {...register("password")} />
+                <TextField label="Nome Completo" variant="filled" error={!!errors.name} helperText={errors.name?.message} {...register("name")} />
+                <TextField label="Email" variant="filled" error={!!errors.email} helperText={errors.email?.message} {...register("email")} />
+                <TextField label="Senha" type="password" variant="filled" error={!!errors.password} helperText={errors.password?.message} {...register("password")} />
             </DialogContent>
             <DialogActions>
                 <Button onClick={onClose}>Cancel</Button>
