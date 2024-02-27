@@ -13,11 +13,13 @@ interface Props {
 }
 
 type Data = {
+    name: string,
     email: string,
     password: string
 }
 
 const schema = yup.object({
+    name: yup.string().required(),
     email: yup.string().email().required(),
     password: yup.string().min(8).required()
 })
@@ -28,6 +30,7 @@ export default function UsersDialog({ isOpen, onClose}: Props) {
     const { handleSubmit, register, formState: { errors }} = useForm<Data>({
         resolver: yupResolver(schema),
         defaultValues: {
+            name: "",
             email: "",
             password: ""
         }
@@ -36,7 +39,7 @@ export default function UsersDialog({ isOpen, onClose}: Props) {
     const onSubmit = async (data: Data) => {
         try {
             setLoading(true)
-            await UsersService.create(data.email, data.password)
+            await UsersService.create(data.name, data.email, data.password)
             toast.success('Conta criada com sucesso.')
         } catch (e: any) {
             if(e?.response?.data?.message) {
@@ -54,6 +57,7 @@ export default function UsersDialog({ isOpen, onClose}: Props) {
             <DialogTitle>Criação de usuário</DialogTitle>
             <DialogContent className="flex flex-col w-full gap-2">
                 <DialogContentText>Insira algumas informações do usuário que será criado.</DialogContentText>
+                <TextField label="Nome Completo" margin="dense" variant="filled" error={!!errors.name} helperText={errors.name?.message} {...register("name")} />
                 <TextField label="Email" margin="dense" variant="filled" error={!!errors.email} helperText={errors.email?.message} {...register("email")} />
                 <TextField label="Senha" type="password" margin="dense" variant="filled" error={!!errors.password} helperText={errors.password?.message} {...register("password")} />
             </DialogContent>
