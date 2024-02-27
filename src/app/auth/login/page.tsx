@@ -3,10 +3,10 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { Box, Button, CircularProgress, Container, CssBaseline, Paper, TextField, Typography } from "@mui/material";
 import { useForm } from "react-hook-form";
 import yup from "@/helpers/validation"
-import { AuthService } from "@/services/api/auth.service";
-import { useState } from "react";
-import api from "@/helpers/api";
+import { useContext, useState } from "react";
 import { toast } from "react-toastify";
+import AuthContext from "@/contexts/auth";
+import { useRouter } from "next/navigation";
 
 type Data = {
     email: string,
@@ -21,6 +21,8 @@ const schema = yup.object({
 export default function Login() {
     const [loading, setLoading] = useState(false)
 
+    const { login } = useContext(AuthContext)
+    const router = useRouter()
     const { handleSubmit, register, formState: { errors } } = useForm<Data>({
         resolver: yupResolver(schema),
         defaultValues: {
@@ -32,9 +34,9 @@ export default function Login() {
     const onSubmit = async (data: Data) => {
         try {
             setLoading(true)
-            const response = await AuthService.login(data.email, data.password)
-            localStorage.setItem("access-token", response.accessToken)
-            api.defaults.headers.common["Authorization"] = 'Bearer ' + response.accessToken
+
+            await login({ email: data.email, password: data.password })
+            router.push('/app/ocurrences')
             toast.success('Logado com sucesso!')
         } catch (e: any) {
             if (e?.response?.data?.message) {

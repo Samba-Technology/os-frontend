@@ -1,10 +1,22 @@
 "use client"
 import UsersDialog from "@/components/users/usersDialog";
+import AuthContext from "@/contexts/auth";
+import { isAdmin } from "@/helpers/authorization";
 import { Box, Button, Container, CssBaseline } from "@mui/material";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useContext, useEffect, useState } from "react";
 
 export default function Login() {
     const [open, setOpen] = useState(false)
+
+    const { user } = useContext(AuthContext)
+    const router = useRouter()
+
+    useEffect(() => {
+        if (user && !isAdmin(user.role)) {
+            router.push('/app/ocurrences')
+        }
+    }, [])
 
     const handleClose = () => {
         setOpen(false)

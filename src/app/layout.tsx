@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Mui from "@/components/mui/mui";
 import Toastify from "@/components/toastify";
+import { AuthProvider } from "@/contexts/auth";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,7 +21,9 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <Mui>
-          {children}
+          <AuthProvider>
+            {children}
+          </AuthProvider>
           <Toastify />
         </Mui>
       </body>

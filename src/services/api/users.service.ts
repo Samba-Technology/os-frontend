@@ -8,4 +8,8 @@ export class UsersService {
             password: password
         })
     }
+
+    public static findMe() {
+        return api.get('/users/me').then(response => response.data)
+    }
 }
