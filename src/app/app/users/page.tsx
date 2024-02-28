@@ -1,4 +1,5 @@
 "use client"
+import StudentsDialog from "@/components/users/studentsDialog";
 import UsersDialog from "@/components/users/usersDialog";
 import AuthContext from "@/contexts/auth";
 import { isAdmin } from "@/helpers/authorization";
@@ -8,6 +9,7 @@ import { useContext, useEffect, useState } from "react";
 
 export default function Login() {
     const [open, setOpen] = useState(false)
+    const [openStudent, setOpenStudent] = useState(false)
 
     const { user } = useContext(AuthContext)
     const router = useRouter()
@@ -20,6 +22,7 @@ export default function Login() {
 
     const handleClose = () => {
         setOpen(false)
+        setOpenStudent(false)
     }
 
     return (
@@ -27,7 +30,9 @@ export default function Login() {
             <Container component="main" maxWidth="xs">
                 <CssBaseline />
                 <Button onClick={() => setOpen(true)}>Abrir</Button>
+                <Button onClick={() => setOpenStudent(true)}>Abrir Students</Button>
                 <UsersDialog isOpen={open} onClose={handleClose} />
+                <StudentsDialog isOpen={openStudent} onClose={handleClose} />
             </Container>
         </Box>
     )
