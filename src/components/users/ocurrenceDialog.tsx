@@ -1,11 +1,13 @@
 "use client"
 import yup from "@/helpers/validation";
 import { Student } from "@/models/student.model";
+import { OcurrenceService } from "@/services/api/ocurrence.service";
 import { StudentsService } from "@/services/api/students.service";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Autocomplete, Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from "@mui/material";
-import { use, useEffect, useState } from "react";
+import { Autocomplete, Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from "@mui/material";
+import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 
 interface Props {
     isOpen: boolean;
@@ -24,8 +26,9 @@ const schema = yup.object({
     students: yup.array().min(1).required()
 })
 
-export default function StudentsDialog({ isOpen, onClose }: Props) {
+export default function OcurrenceDialog({ isOpen, onClose }: Props) {
     const [students, setStudents] = useState<Student[]>([])
+    const [loading, setLoading] = useState(false)
 
     useEffect(() => {
         const fetchStudents = async () => {
@@ -50,8 +53,20 @@ export default function StudentsDialog({ isOpen, onClose }: Props) {
         }
     })
 
-    const onSubmit = (data: Data) => {
-        console.log(data)
+    const onSubmit = async (data: Data) => {
+        try {
+            setLoading(true)
+            await OcurrenceService.create(data.description, data.level, data.students)
+            toast.success('Ocorrencia criada com sucesso!')
+        } catch (e: any) {
+            if (e?.response?.data?.message) {
+                toast.error(e.response.data.message)
+            } else {
+                toast.error('Algo deu errado.')
+            }
+        } finally {
+            setLoading(false)
+        }
     }
 
     return (
@@ -89,18 +104,18 @@ export default function StudentsDialog({ isOpen, onClose }: Props) {
                     />
                     <FormControl className="w-1/3">
                         <InputLabel>Nível</InputLabel>
-                        <Select label="Nível" {...register("level")}>
+                        <Select label="Nível" error={!!errors.level} {...register("level")}>
                             <MenuItem value="LOW">Baixo</MenuItem>
                             <MenuItem value="MEDIUM">Médio</MenuItem>
                             <MenuItem value="HIGH">Alto</MenuItem>
                         </Select>
                     </FormControl>
                 </Box>
-                <TextField label="Descrição" fullWidth multiline rows="7" {...register("description")} />
+                <TextField label="Descrição" fullWidth multiline rows="7" error={!!errors.description} helperText={errors.description?.message} {...register("description")} />
             </DialogContent>
             <DialogActions>
                 <Button onClick={onClose}>Cancel</Button>
-                <Button type="submit">Criar</Button>
+                <Button type="submit" disabled={loading}>{loading ? <CircularProgress size={20} /> : "Criar"}</Button>
             </DialogActions>
         </Dialog>
     )
