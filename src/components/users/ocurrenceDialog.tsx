@@ -113,9 +113,9 @@ export default function OcurrenceDialog({ isOpen, onClose }: Props) {
                 </Box>
                 <TextField label="Descrição" fullWidth multiline rows="7" error={!!errors.description} helperText={errors.description?.message} {...register("description")} />
             </DialogContent>
-            <DialogActions>
-                <Button onClick={onClose}>Cancel</Button>
-                <Button type="submit" disabled={loading}>{loading ? <CircularProgress size={20} /> : "Criar"}</Button>
+            <DialogActions className="flex gap-1">
+                <Button variant="contained" onClick={onClose}>Cancel</Button>
+                <Button variant="contained" type="submit" disabled={loading}>{loading ? <CircularProgress size={20} /> : "Criar"}</Button>
             </DialogActions>
         </Dialog>
     )

@@ -9,7 +9,6 @@ import { useContext, useEffect, useState } from "react";
 
 export default function Login() {
     const [open, setOpen] = useState(false)
-    const [openOcurrence, setOpenOcurrence] = useState(false)
 
     const { user } = useContext(AuthContext)
     const router = useRouter()
@@ -22,17 +21,14 @@ export default function Login() {
 
     const handleClose = () => {
         setOpen(false)
-        setOpenOcurrence(false)
     }
 
     return (
         <Box className="flex justify-center items-center min-h-screen flex-col">
             <Container component="main" maxWidth="xs">
                 <CssBaseline />
-                <Button onClick={() => setOpen(true)}>Abrir</Button>
-                <Button onClick={() => setOpenOcurrence(true)}>Abrir Ocurrence</Button>
+                <Button variant="contained" onClick={() => setOpen(true)}>Abrir</Button>
                 <UsersDialog isOpen={open} onClose={handleClose} />
-                <StudentsDialog isOpen={openOcurrence} onClose={handleClose} />
             </Container>
         </Box>
     )
