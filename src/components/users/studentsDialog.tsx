@@ -1,8 +1,8 @@
 "use client"
 import yup from "@/helpers/validation";
-import { UsersService } from "@/services/api/users.service";
+import { StudentsService } from "@/services/api/students.service";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from "@mui/material";
+import { Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
@@ -12,21 +12,83 @@ interface Props {
     onClose: () => void;
 }
 
+type Data = {
+    name: string,
+    series: string,
+    class: string,
+    ra: string
+}
+
+const schema = yup.object({
+    name: yup.string().required(),
+    series: yup.string().required(),
+    class: yup.string().required(),
+    ra: yup.string().required().min(10).max(10)
+})
+
 export default function StudentsDialog({ isOpen, onClose }: Props) {
+    const [loading, setLoading] = useState(false)
+
+    const { handleSubmit, register, formState: { errors } } = useForm<Data>({
+        resolver: yupResolver(schema),
+        defaultValues: {
+            name: "",
+            series: "",
+            class: "",
+            ra: ""
+        }
+    })
+
+    const onSubmit = async (data: Data) => {
+        try {
+            setLoading(true)
+            console.log(data)
+            await StudentsService.create(data.ra, data.name, data.series, data.class)
+            toast.success('Estudante criado com sucesso!')
+        } catch (e: any) {
+            if (e?.response?.data?.message) {
+                toast.error(e.response.data.message)
+            } else {
+                toast.error('Algo deu errado.')
+            }
+        } finally {
+            setLoading(false)
+        }
+    }
+
     return (
-        <Dialog open={isOpen} onClose={onClose} component="form" >
+        <Dialog open={isOpen} onClose={onClose} component="form" onSubmit={handleSubmit(onSubmit)}>
             <DialogTitle>Criação de estudante</DialogTitle>
             <DialogContent className="flex flex-col w-full gap-2">
                 <DialogContentText>Insira algumas informações do estudante que será criado.</DialogContentText>
+                <TextField className="w-full" label="Nome Completo" variant="filled" error={!!errors.name} helperText={errors.name?.message} {...register("name")} />
                 <Box className="flex gap-1">
-                    <TextField className="w-full" label="Nome Completo" variant="filled" />
-                    <TextField className="w-1/3" label="Série" variant="filled" />
+                    <FormControl variant="filled" className="w-1/2">
+                        <InputLabel>Série</InputLabel>
+                        <Select variant="filled" label="Série" error={!!errors.series} {...register("series")}>
+                            <MenuItem value="6º">6º</MenuItem>
+                            <MenuItem value="7º">7º</MenuItem>
+                            <MenuItem value="8º">8º</MenuItem>
+                            <MenuItem value="1ª">1ª</MenuItem>
+                            <MenuItem value="2ª">2ª</MenuItem>
+                            <MenuItem value="3ª">3ª</MenuItem>
+                        </Select>
+                    </FormControl>
+                    <FormControl variant="filled" className="w-1/2">
+                        <InputLabel>Turma</InputLabel>
+                        <Select variant="filled" label="Turma" error={!!errors.class} {...register("class")}>
+                            <MenuItem value="A">A</MenuItem>
+                            <MenuItem value="B">B</MenuItem>
+                            <MenuItem value="C">C</MenuItem>
+                            <MenuItem value="D">D</MenuItem>
+                        </Select>
+                    </FormControl>
                 </Box>
-                <TextField label="RA (Opicional)" variant="filled" />
+                <TextField label="RA" variant="filled" error={!!errors.ra} helperText={errors.ra?.message} {...register("ra")} />
             </DialogContent>
             <DialogActions className="flex gap-1">
                 <Button variant="contained" onClick={onClose}>Cancel</Button>
-                <Button variant="contained" type="submit">Criar</Button>
+                <Button variant="contained" type="submit" disabled={loading}>{loading ? <CircularProgress size={20} /> : "Criar"}</Button>
             </DialogActions>
         </Dialog>
     )

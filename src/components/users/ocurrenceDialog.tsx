@@ -94,6 +94,7 @@ export default function OcurrenceDialog({ isOpen, onClose }: Props) {
                                 renderInput={(params) => (
                                     <TextField
                                         {...params}
+                                        variant="filled"
                                         helperText={errors.students?.message}
                                         label="Alunos(as)"
                                     />
@@ -102,16 +103,16 @@ export default function OcurrenceDialog({ isOpen, onClose }: Props) {
                             />
                         )}
                     />
-                    <FormControl className="w-1/3">
+                    <FormControl variant="filled" className="w-1/3">
                         <InputLabel>Nível</InputLabel>
-                        <Select label="Nível" error={!!errors.level} {...register("level")}>
+                        <Select label="Nível" variant="filled" error={!!errors.level} {...register("level")}>
                             <MenuItem value="LOW">Baixo</MenuItem>
                             <MenuItem value="MEDIUM">Médio</MenuItem>
                             <MenuItem value="HIGH">Alto</MenuItem>
                         </Select>
                     </FormControl>
                 </Box>
-                <TextField label="Descrição" fullWidth multiline rows="7" error={!!errors.description} helperText={errors.description?.message} {...register("description")} />
+                <TextField label="Descrição" variant="filled" fullWidth multiline rows="7" error={!!errors.description} helperText={errors.description?.message} {...register("description")} />
             </DialogContent>
             <DialogActions className="flex gap-1">
                 <Button variant="contained" onClick={onClose}>Cancel</Button>
