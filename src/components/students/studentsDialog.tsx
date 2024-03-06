@@ -42,9 +42,9 @@ export default function StudentsDialog({ isOpen, onClose }: Props) {
     const onSubmit = async (data: Data) => {
         try {
             setLoading(true)
-            console.log(data)
             await StudentsService.create(data.ra, data.name, data.series, data.class)
             toast.success('Estudante criado com sucesso!')
+            onClose()
             reset()
         } catch (e: any) {
             if (e?.response?.data?.message) {
@@ -88,7 +88,7 @@ export default function StudentsDialog({ isOpen, onClose }: Props) {
                 <TextField label="RA" variant="filled" error={!!errors.ra} helperText={errors.ra?.message} {...register("ra")} />
             </DialogContent>
             <DialogActions className="flex gap-1">
-                <Button variant="contained" onClick={onClose}>Cancel</Button>
+                <Button variant="contained" onClick={onClose}>Fechar</Button>
                 <Button variant="contained" type="submit" disabled={loading}>{loading ? <CircularProgress size={20} /> : "Criar"}</Button>
             </DialogActions>
         </Dialog>

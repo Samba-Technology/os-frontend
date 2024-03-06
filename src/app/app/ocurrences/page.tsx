@@ -1,5 +1,4 @@
 "use client"
-import OcurrenceDialog from "@/components/users/ocurrenceDialog";
 import { Box, Container, CssBaseline, IconButton, Paper, TextField, Typography } from "@mui/material";
 import { DataGrid, GridActionsCellItem, GridColDef } from "@mui/x-data-grid";
 import { useContext, useEffect, useState } from "react";
@@ -15,7 +14,8 @@ import { OcurrenceService } from "@/services/api/ocurrence.service";
 import WorkIcon from '@mui/icons-material/Work';
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
-import StudentsDialog from "@/components/users/studentsDialog";
+import StudentsDialog from "@/components/students/studentsDialog";
+import OcurrenceDialog from "@/components/ocurrence/ocurrenceDialog";
 
 export default function AppOcurrences() {
     const [open, setOpen] = useState(false)
@@ -27,6 +27,8 @@ export default function AppOcurrences() {
         pageSize: 10
     })
     const [total, setTotal] = useState(0)
+    const [view, setView] = useState(false)
+    const [ocurrence, setOcurrence] = useState({})
 
     const { user } = useContext(AuthContext)
 
@@ -126,7 +128,7 @@ export default function AppOcurrences() {
             sortable: false,
             width: 120,
             getActions: (params) => {
-                let actions = [<GridActionsCellItem icon={<PageviewIcon />} onClick={() => console.log(params)} label="Visualizar Ocorrencia" />]
+                let actions = [<GridActionsCellItem icon={<PageviewIcon />} onClick={() => viewOcurrence(params.row)} label="Visualizar Ocorrencia" />]
 
                 if (user && isAdmin(user.role)) {
                     actions = [
@@ -145,9 +147,9 @@ export default function AppOcurrences() {
         const fetchOcurrences = async () => {
             try {
                 setLoading(true)
-                const users = await OcurrenceService.findOcurrences(pagination.page + 1, pagination.pageSize)
-                setOcurrences(users.data)
-                setTotal(users.data.total)
+                const ocurrences = await OcurrenceService.findOcurrences(pagination.page + 1, pagination.pageSize)
+                setOcurrences(ocurrences.data)
+                setTotal(ocurrences.data.total)
             } catch (e) {
                 console.error(e)
             } finally {
@@ -158,9 +160,21 @@ export default function AppOcurrences() {
         fetchOcurrences()
     }, [pagination])
 
+    //Ações
+
+    const viewOcurrence = (ocurrence: any) => {
+        setView(true)
+        setOcurrence(ocurrence)
+        setOpen(true)
+    }
+
+    //----
+
     const handleClose = () => {
         setOpen(false)
         setOpenStudents(false)
+        setView(false)
+        setOcurrence({})
     }
 
     return (
@@ -168,27 +182,27 @@ export default function AppOcurrences() {
             <Container component="main" maxWidth="lg">
                 <CssBaseline />
                 <Paper elevation={3} className="flex flex-col gap-2 p-6">
-                    <Typography variant="h4">Usuários</Typography>
+                    <Typography variant="h4">Ocorrências</Typography>
                     <Box component="div" className="flex flex-col gap-4 mt-2">
                         <Box component="div" className="flex gap-2 items-center">
                             <TextField type="search" placeholder="Procurar" fullWidth />
                             <IconButton onClick={() => setOpen(true)} size="large"><NoteAddIcon /></IconButton>
                             <IconButton onClick={() => setOpenStudents(true)} size="large"><GroupAddIcon /></IconButton>
                         </Box>
-                        <DataGrid
-                            rows={ocurrences}
-                            loading={loading}
-                            columns={columns}
-                            paginationMode="server"
-                            pageSizeOptions={[10, 20, 30, 40]}
-                            paginationModel={pagination}
-                            onPaginationModelChange={setPagination}
-                            rowCount={total}
-                        />
+                            <DataGrid
+                                rows={ocurrences}
+                                loading={loading}
+                                columns={columns}
+                                paginationMode="server"
+                                pageSizeOptions={[10, 20, 30, 40]}
+                                paginationModel={pagination}
+                                onPaginationModelChange={setPagination}
+                                rowCount={total}
+                            />
                     </Box>
                 </Paper>
             </Container>
-            <OcurrenceDialog isOpen={open} onClose={handleClose} />
+            <OcurrenceDialog isOpen={open} onClose={handleClose} isView={view} ocurrence={ocurrence}/>
             <StudentsDialog isOpen={openStudents} onClose={handleClose} />
         </Box>
     )

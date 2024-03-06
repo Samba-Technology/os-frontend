@@ -41,6 +41,7 @@ export default function UsersDialog({ isOpen, onClose }: Props) {
             setLoading(true)
             await UsersService.create(data.name, data.email, data.password)
             toast.success('Conta criada com sucesso.')
+            onClose()
             reset()
         } catch (e: any) {
             if (e?.response?.data?.message) {
@@ -63,7 +64,7 @@ export default function UsersDialog({ isOpen, onClose }: Props) {
                 <TextField label="Senha" type="password" variant="filled" error={!!errors.password} helperText={errors.password?.message} {...register("password")} />
             </DialogContent>
             <DialogActions className="flex gap-1">
-                <Button variant="contained" onClick={onClose}>Cancel</Button>
+                <Button variant="contained" onClick={onClose}>Fechar</Button>
                 <Button variant="contained" type="submit" disabled={loading}>{loading ? <CircularProgress size={20} /> : "Criar"}</Button>
             </DialogActions>
         </Dialog>
