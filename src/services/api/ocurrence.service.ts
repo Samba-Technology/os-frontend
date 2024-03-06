@@ -9,4 +9,13 @@ export class OcurrenceService {
             students: students
         }).then(response => response.data)
     }
+
+    public static findOcurrences(page: number, limit: number) {
+        return api.get('/ocurrences', {
+            params: {
+                page: page,
+                limit: limit
+            }
+        }).then(response => response.data)
+    }
 }

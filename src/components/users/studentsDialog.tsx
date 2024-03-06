@@ -29,7 +29,7 @@ const schema = yup.object({
 export default function StudentsDialog({ isOpen, onClose }: Props) {
     const [loading, setLoading] = useState(false)
 
-    const { handleSubmit, register, formState: { errors } } = useForm<Data>({
+    const { handleSubmit, register, formState: { errors }, reset } = useForm<Data>({
         resolver: yupResolver(schema),
         defaultValues: {
             name: "",
@@ -45,6 +45,7 @@ export default function StudentsDialog({ isOpen, onClose }: Props) {
             console.log(data)
             await StudentsService.create(data.ra, data.name, data.series, data.class)
             toast.success('Estudante criado com sucesso!')
+            reset()
         } catch (e: any) {
             if (e?.response?.data?.message) {
                 toast.error(e.response.data.message)

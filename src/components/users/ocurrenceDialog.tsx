@@ -44,7 +44,7 @@ export default function OcurrenceDialog({ isOpen, onClose }: Props) {
         fetchStudents()
     }, [])
 
-    const { control, handleSubmit, register, formState: { errors } } = useForm<Data>({
+    const { control, handleSubmit, register, formState: { errors }, reset } = useForm<Data>({
         resolver: yupResolver(schema),
         defaultValues: {
             description: "",
@@ -58,6 +58,7 @@ export default function OcurrenceDialog({ isOpen, onClose }: Props) {
             setLoading(true)
             await OcurrenceService.create(data.description, data.level, data.students)
             toast.success('Ocorrencia criada com sucesso!')
+            reset()
         } catch (e: any) {
             if (e?.response?.data?.message) {
                 toast.error(e.response.data.message)
@@ -86,11 +87,13 @@ export default function OcurrenceDialog({ isOpen, onClose }: Props) {
                                 getOptionLabel={(option) => option.name}
                                 onChange={(event, students) => { onChange(students) }}
                                 value={value}
-                                renderOption={(props, user) => (
-                                    <li {...props} key={user.name} >
-                                        {user.name}
-                                    </li>
-                                )}
+                                renderOption={(params, student) => {
+                                    return (
+                                        <li {...params} key={student.name}>
+                                            {student.name}
+                                        </li>
+                                    )
+                                }}
                                 renderInput={(params) => (
                                     <TextField
                                         {...params}
@@ -99,9 +102,7 @@ export default function OcurrenceDialog({ isOpen, onClose }: Props) {
                                         label="Alunos(as)"
                                     />
                                 )}
-                                isOptionEqualToValue={(option, value) => option.id === value.id}
-                            />
-                        )}
+                            />)}
                     />
                     <FormControl variant="filled" className="w-1/3">
                         <InputLabel>Nível</InputLabel>

@@ -24,10 +24,10 @@ const schema = yup.object({
     password: yup.string().min(8).required()
 })
 
-export default function UsersDialog({ isOpen, onClose}: Props) {
+export default function UsersDialog({ isOpen, onClose }: Props) {
     const [loading, setLoading] = useState(false)
 
-    const { handleSubmit, register, formState: { errors }} = useForm<Data>({
+    const { handleSubmit, register, formState: { errors }, reset } = useForm<Data>({
         resolver: yupResolver(schema),
         defaultValues: {
             name: "",
@@ -41,8 +41,9 @@ export default function UsersDialog({ isOpen, onClose}: Props) {
             setLoading(true)
             await UsersService.create(data.name, data.email, data.password)
             toast.success('Conta criada com sucesso.')
+            reset()
         } catch (e: any) {
-            if(e?.response?.data?.message) {
+            if (e?.response?.data?.message) {
                 toast.error(e.response.data.message)
             } else {
                 toast.error('Algo deu errado.')

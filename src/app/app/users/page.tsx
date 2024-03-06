@@ -4,7 +4,7 @@ import UsersDialog from "@/components/users/usersDialog";
 import AuthContext from "@/contexts/auth";
 import { isAdmin } from "@/helpers/authorization";
 import { User } from "@/models/user.model";
-import { Box, Button, Container, CssBaseline, IconButton, Paper, TextField, Typography } from "@mui/material";
+import { Box, Container, CssBaseline, IconButton, Paper, TextField, Typography } from "@mui/material";
 import { DataGrid, GridActionsCellItem, GridColDef } from "@mui/x-data-grid";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
@@ -35,7 +35,7 @@ const columns: GridColDef[] = [
     }
 ]
 
-export default function Login() {
+export default function AppUsers() {
     const [open, setOpen] = useState(false)
     const [openStudents, setOpenStudents] = useState(false)
     const [loading, setLoading] = useState(false)
