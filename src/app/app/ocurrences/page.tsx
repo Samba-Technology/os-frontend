@@ -16,6 +16,7 @@ import NoteAddIcon from '@mui/icons-material/NoteAdd';
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
 import StudentsDialog from "@/components/students/studentsDialog";
 import OcurrenceDialog from "@/components/ocurrence/ocurrenceDialog";
+import { toast } from "react-toastify";
 
 export default function AppOcurrences() {
     const [open, setOpen] = useState(false)
@@ -50,7 +51,7 @@ export default function AppOcurrences() {
             },
         },
         {
-            field: 'responnsible',
+            field: 'responsible',
             headerName: 'Responsável',
             width: 150,
             valueFormatter(params) {
@@ -133,7 +134,7 @@ export default function AppOcurrences() {
                 if (user && isAdmin(user.role)) {
                     actions = [
                         ...actions,
-                        <GridActionsCellItem icon={<WorkIcon />} onClick={() => console.log(params)} label="Assumir Ocorrencia" />,
+                        <GridActionsCellItem icon={<WorkIcon />} onClick={() => assumeOcurrence(params.row.id)} label="Assumir Ocorrencia" />,
                         <GridActionsCellItem icon={<DeleteIcon />} onClick={() => console.log(params)} label="Deletar Ocorrência" />
                     ]
                 }
@@ -168,6 +169,31 @@ export default function AppOcurrences() {
         setOpen(true)
     }
 
+    const assumeOcurrence = async (ocurrenceId: number) => {
+        try {
+            const ocurrence = await OcurrenceService.assumeOcurrence(ocurrenceId)
+            refreshData(ocurrence)
+        } catch (e: any) {
+            toast.error(e.response.data.message)
+        }
+    }
+
+    const refreshData = (ocurrence: any) => {
+        setOcurrences((values) => {
+            const ocurrences = [...values]
+            const index = ocurrences.findIndex((value) => value.id === ocurrence.id)
+
+            if (index !== -1) {
+                if (ocurrence.deleted) {
+                    ocurrences.splice(index, 1)
+                } else {
+                    ocurrences[index] = ocurrence
+                }
+            }
+            return ocurrences
+        })
+    }
+
     //----
 
     const handleClose = () => {
@@ -189,20 +215,20 @@ export default function AppOcurrences() {
                             <IconButton onClick={() => setOpen(true)} size="large"><NoteAddIcon /></IconButton>
                             <IconButton onClick={() => setOpenStudents(true)} size="large"><GroupAddIcon /></IconButton>
                         </Box>
-                            <DataGrid
-                                rows={ocurrences}
-                                loading={loading}
-                                columns={columns}
-                                paginationMode="server"
-                                pageSizeOptions={[10, 20, 30, 40]}
-                                paginationModel={pagination}
-                                onPaginationModelChange={setPagination}
-                                rowCount={total}
-                            />
+                        <DataGrid
+                            rows={ocurrences}
+                            loading={loading}
+                            columns={columns}
+                            paginationMode="server"
+                            pageSizeOptions={[10, 20, 30, 40]}
+                            paginationModel={pagination}
+                            onPaginationModelChange={setPagination}
+                            rowCount={total}
+                        />
                     </Box>
                 </Paper>
             </Container>
-            <OcurrenceDialog isOpen={open} onClose={handleClose} isView={view} ocurrence={ocurrence}/>
+            <OcurrenceDialog isOpen={open} onClose={handleClose} isView={view} ocurrence={ocurrence} />
             <StudentsDialog isOpen={openStudents} onClose={handleClose} />
         </Box>
     )

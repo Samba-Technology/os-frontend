@@ -18,4 +18,8 @@ export class OcurrenceService {
             }
         }).then(response => response.data)
     }
+
+    public static assumeOcurrence(id: number) {
+        return api.put(`/ocurrences/${id}`).then(response => response.data)
+    }
 }
