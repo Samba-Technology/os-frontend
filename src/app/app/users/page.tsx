@@ -79,7 +79,7 @@ export default function AppUsers() {
     }
 
     return (
-        <Box className="flex justify-center items-center min-h-screen flex-col">
+        <Box className="flex justify-center items-center h-3/4 flex-col">
             <Container component="main" maxWidth="md">
                 <CssBaseline />
                 <Paper elevation={3} className="flex flex-col gap-2 p-6">

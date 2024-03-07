@@ -17,6 +17,7 @@ import GroupAddIcon from '@mui/icons-material/GroupAdd';
 import StudentsDialog from "@/components/students/studentsDialog";
 import OcurrenceDialog from "@/components/ocurrence/ocurrenceDialog";
 import { toast } from "react-toastify";
+import Header from "@/components/header/header";
 
 export default function AppOcurrences() {
     const [open, setOpen] = useState(false)
@@ -204,11 +205,10 @@ export default function AppOcurrences() {
     }
 
     return (
-        <Box className="flex justify-center items-center min-h-screen flex-col">
+        <Box className="flex justify-center items-center h-3/4 flex-col">
+            <CssBaseline />
             <Container component="main" maxWidth="lg">
-                <CssBaseline />
                 <Paper elevation={3} className="flex flex-col gap-2 p-6">
-                    <Typography variant="h4">Ocorrências</Typography>
                     <Box component="div" className="flex flex-col gap-4 mt-2">
                         <Box component="div" className="flex gap-2 items-center">
                             <TextField type="search" placeholder="Procurar" fullWidth />

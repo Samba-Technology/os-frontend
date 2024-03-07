@@ -2,6 +2,7 @@
 import AuthContext from '@/contexts/auth';
 import { useContext, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Header from '@/components/header/header';
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
     const { signed } = useContext(AuthContext)
@@ -13,5 +14,10 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         }
     }, [signed])
 
-    return children
+    return (
+        <div className='h-screen'>
+            <Header />
+            {children}
+        </div>
+    )
 }
