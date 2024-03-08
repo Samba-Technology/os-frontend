@@ -1,8 +1,8 @@
 "use client"
-import { Box, Container, CssBaseline, IconButton, Paper, TextField, Typography } from "@mui/material";
+import { Box, Container, CssBaseline, IconButton, Paper, TextField, Typography, fabClasses } from "@mui/material";
 import { DataGrid, GridActionsCellItem, GridColDef } from "@mui/x-data-grid";
 import { useContext, useEffect, useState } from "react";
-import DeleteIcon from '@mui/icons-material/Delete';
+import CommentIcon from '@mui/icons-material/Comment';
 import PageviewIcon from '@mui/icons-material/Pageview';
 import AuthContext from "@/contexts/auth";
 import { isAdmin } from "@/helpers/authorization";
@@ -14,10 +14,10 @@ import { OcurrenceService } from "@/services/api/ocurrence.service";
 import WorkIcon from '@mui/icons-material/Work';
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
+import AvTimerIcon from '@mui/icons-material/AvTimer';
 import StudentsDialog from "@/components/students/studentsDialog";
 import OcurrenceDialog from "@/components/ocurrence/ocurrenceDialog";
 import { toast } from "react-toastify";
-import Header from "@/components/header/header";
 
 export default function AppOcurrences() {
     const [open, setOpen] = useState(false)
@@ -30,6 +30,7 @@ export default function AppOcurrences() {
     })
     const [total, setTotal] = useState(0)
     const [view, setView] = useState(false)
+    const [dispatch, setDispatch] = useState(false)
     const [ocurrence, setOcurrence] = useState({})
 
     const { user } = useContext(AuthContext)
@@ -86,7 +87,7 @@ export default function AppOcurrences() {
         {
             field: 'status',
             headerName: 'Situação',
-            width: 120,
+            width: 140,
             renderCell(params) {
                 const status = params.value
                 let icon, text;
@@ -99,6 +100,10 @@ export default function AppOcurrences() {
                     case 'ASSUMED':
                         icon = <WorkHistoryIcon />
                         text = 'Assumida'
+                        break
+                    case 'WAITING':
+                        icon = <AvTimerIcon />
+                        text = 'Aguardando'
                         break
                     case 'RESOLVED':
                         icon = <CheckCircleIcon />
@@ -135,8 +140,9 @@ export default function AppOcurrences() {
                 if (user && isAdmin(user.role)) {
                     actions = [
                         ...actions,
-                        <GridActionsCellItem icon={<WorkIcon />} onClick={() => assumeOcurrence(params.row.id)} label="Assumir Ocorrencia" />,
-                        <GridActionsCellItem icon={<DeleteIcon />} onClick={() => console.log(params)} label="Deletar Ocorrência" />
+                        <GridActionsCellItem icon={<WorkIcon />} onClick={() => assumeOcurrence(params.row.id)} disabled={params.row.status === "OPENED" ? false : true} label="Assumir Ocorrencia" showInMenu />,
+                        <GridActionsCellItem icon={<CommentIcon />} onClick={() => dispatchOcurrence(params.row)} disabled={params.row.status === "ASSUMED" ? false : true} label="Adicionar despacho" showInMenu />,
+                        <GridActionsCellItem icon={<CheckCircleIcon />} onClick={() => console.log(params)} disabled={params.row.status === "WAITING" ? false : true} label="Concluir Ocorrência" showInMenu />
                     ]
                 }
 
@@ -165,6 +171,7 @@ export default function AppOcurrences() {
     //Ações
 
     const viewOcurrence = (ocurrence: any) => {
+        console.log(ocurrence)
         setView(true)
         setOcurrence(ocurrence)
         setOpen(true)
@@ -172,11 +179,17 @@ export default function AppOcurrences() {
 
     const assumeOcurrence = async (ocurrenceId: number) => {
         try {
-            const ocurrence = await OcurrenceService.assumeOcurrence(ocurrenceId)
+            const ocurrence = await OcurrenceService.assume(ocurrenceId)
+            viewOcurrence(ocurrence)
             refreshData(ocurrence)
         } catch (e: any) {
             toast.error(e.response.data.message)
         }
+    }
+
+    const dispatchOcurrence = async (ocurrence: any) => {
+        setDispatch(true)
+        viewOcurrence(ocurrence)
     }
 
     const refreshData = (ocurrence: any) => {
@@ -202,6 +215,7 @@ export default function AppOcurrences() {
         setOpenStudents(false)
         setView(false)
         setOcurrence({})
+        setDispatch(false)
     }
 
     return (
@@ -228,7 +242,7 @@ export default function AppOcurrences() {
                     </Box>
                 </Paper>
             </Container>
-            <OcurrenceDialog isOpen={open} onClose={handleClose} isView={view} ocurrence={ocurrence} />
+            <OcurrenceDialog isOpen={open} onClose={handleClose} isView={view} ocurrence={ocurrence} dispatch={dispatch} />
             <StudentsDialog isOpen={openStudents} onClose={handleClose} />
         </Box>
     )

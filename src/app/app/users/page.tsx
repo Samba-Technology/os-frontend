@@ -37,7 +37,6 @@ const columns: GridColDef[] = [
 
 export default function AppUsers() {
     const [open, setOpen] = useState(false)
-    const [openStudents, setOpenStudents] = useState(false)
     const [loading, setLoading] = useState(false)
     const [users, setUsers] = useState<User[]>([])
     const [pagination, setPagination] = useState({
@@ -75,7 +74,6 @@ export default function AppUsers() {
 
     const handleClose = () => {
         setOpen(false)
-        setOpenStudents(false)
     }
 
     return (

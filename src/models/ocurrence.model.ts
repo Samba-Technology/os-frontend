@@ -4,6 +4,7 @@ import { User } from "./user.model"
 export type Ocurrence = {
     id: number,
     description: string,
+    dispatch: string,
     level: string,
     status: string,
     createdAt: string,

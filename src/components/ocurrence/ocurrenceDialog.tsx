@@ -1,11 +1,11 @@
 "use client"
 import yup from "@/helpers/validation";
-import { Ocurrence } from "@/models/ocurrence.model";
 import { Student } from "@/models/student.model";
 import { OcurrenceService } from "@/services/api/ocurrence.service";
 import { StudentsService } from "@/services/api/students.service";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Autocomplete, Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from "@mui/material";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
@@ -15,23 +15,28 @@ interface Props {
     onClose: () => void;
     isView: boolean;
     ocurrence?: any;
+    dispatch: boolean;
 }
 
 type Data = {
     description: string,
     level: string,
-    students: Student[]
+    students: Student[],
+    dispatch?: string
 }
 
 const schema = yup.object({
     description: yup.string().required(),
     level: yup.string().required(),
-    students: yup.array().min(1).required()
+    students: yup.array().min(1).required(),
+    dispatch: yup.string()
 })
 
-export default function OcurrenceDialog({ isOpen, onClose, isView, ocurrence }: Props) {
+export default function OcurrenceDialog({ isOpen, onClose, isView, ocurrence, dispatch }: Props) {
     const [students, setStudents] = useState<Student[]>([])
     const [loading, setLoading] = useState(false)
+
+    const router = useRouter()
 
     useEffect(() => {
         const fetchStudents = async () => {
@@ -51,7 +56,8 @@ export default function OcurrenceDialog({ isOpen, onClose, isView, ocurrence }: 
         defaultValues: {
             description: "",
             level: "",
-            students: []
+            students: [],
+            dispatch: ""
         }
     })
 
@@ -60,6 +66,7 @@ export default function OcurrenceDialog({ isOpen, onClose, isView, ocurrence }: 
             setValue("students", ocurrence.students)
             setValue("level", ocurrence.level, { shouldValidate: true })
             setValue("description", ocurrence.description)
+            setValue("dispatch", ocurrence.dispatch)
         } else {
             reset()
         }
@@ -68,8 +75,13 @@ export default function OcurrenceDialog({ isOpen, onClose, isView, ocurrence }: 
     const onSubmit = async (data: Data) => {
         try {
             setLoading(true)
-            await OcurrenceService.create(data.description, data.level, data.students)
-            toast.success('Ocorrencia criada com sucesso!')
+            if (!dispatch) {
+                await OcurrenceService.create(data.description, data.level, data.students)
+                toast.success('Ocorrencia criada com sucesso!')
+            } else {
+                data.dispatch && await OcurrenceService.dispatch(ocurrence.id, data.dispatch)
+                toast.success('Despacho adicionado com sucesso.')
+            }
             onClose()
             reset()
         } catch (e: any) {
@@ -80,6 +92,7 @@ export default function OcurrenceDialog({ isOpen, onClose, isView, ocurrence }: 
             }
         } finally {
             setLoading(false)
+            window.location.reload()
         }
     }
 
@@ -135,6 +148,7 @@ export default function OcurrenceDialog({ isOpen, onClose, isView, ocurrence }: 
                         )}
                     />
                 </FormControl>
+                {isView ? <TextField disabled={!dispatch} variant="filled" fullWidth multiline rows="4" label="Despacho" {...register('dispatch')} /> : null}
             </DialogContent>
             <DialogActions className="flex gap-1">
                 <Button variant="contained" onClick={() => {
@@ -142,6 +156,7 @@ export default function OcurrenceDialog({ isOpen, onClose, isView, ocurrence }: 
                     reset()
                 }}>Fechar</Button>
                 {!isView && <Button variant="contained" type="submit" disabled={loading}>{loading ? <CircularProgress size={20} /> : "Criar"}</Button>}
+                {dispatch && <Button variant="contained" type="submit" disabled={loading}>{loading ? <CircularProgress size={20} /> : "Adicionar despacho"}</Button>}
             </DialogActions>
         </Dialog>
     )
