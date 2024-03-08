@@ -1,27 +1,20 @@
 "use client"
-import { Box, Container, CssBaseline, IconButton, Paper, TextField, Typography, fabClasses } from "@mui/material";
+import { Box, Container, CssBaseline, IconButton, Paper, TextField, Typography } from "@mui/material";
 import { DataGrid, GridActionsCellItem, GridColDef } from "@mui/x-data-grid";
-import { useContext, useEffect, useState } from "react";
-import CommentIcon from '@mui/icons-material/Comment';
+import { useEffect, useState } from "react";
 import PageviewIcon from '@mui/icons-material/Pageview';
-import AuthContext from "@/contexts/auth";
-import { isAdmin } from "@/helpers/authorization";
 import { Ocurrence } from "@/models/ocurrence.model";
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
 import WorkHistoryIcon from '@mui/icons-material/WorkHistory';
 import { OcurrenceService } from "@/services/api/ocurrence.service";
-import WorkIcon from '@mui/icons-material/Work';
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
 import AvTimerIcon from '@mui/icons-material/AvTimer';
-import StudentsDialog from "@/components/students/studentsDialog";
 import OcurrenceDialog from "@/components/ocurrence/ocurrenceDialog";
-import { toast } from "react-toastify";
 
-export default function AppOcurrences() {
+export default function AppArchiveOcurrences() {
     const [open, setOpen] = useState(false)
-    const [openStudents, setOpenStudents] = useState(false)
     const [loading, setLoading] = useState(false)
     const [ocurrences, setOcurrences] = useState<Ocurrence[]>([])
     const [pagination, setPagination] = useState({
@@ -29,11 +22,8 @@ export default function AppOcurrences() {
         pageSize: 10
     })
     const [total, setTotal] = useState(0)
-    const [view, setView] = useState(false)
-    const [dispatch, setDispatch] = useState(false)
     const [ocurrence, setOcurrence] = useState({})
-
-    const { user } = useContext(AuthContext)
+    const [view, setView] = useState(false)
 
     const columns: GridColDef[] = [
         {
@@ -133,21 +123,10 @@ export default function AppOcurrences() {
             field: 'actions',
             type: 'actions',
             sortable: false,
-            width: 120,
-            getActions: (params) => {
-                let actions = [<GridActionsCellItem icon={<PageviewIcon />} onClick={() => viewOcurrence(params.row)} label="Visualizar Ocorrencia" />]
-
-                if (user && isAdmin(user.role)) {
-                    actions = [
-                        ...actions,
-                        <GridActionsCellItem icon={<WorkIcon />} onClick={() => assumeOcurrence(params.row.id)} disabled={params.row.status === "OPENED" ? false : true} label="Assumir Ocorrencia" showInMenu />,
-                        <GridActionsCellItem icon={<CommentIcon />} onClick={() => dispatchOcurrence(params.row)} disabled={params.row.status === "ASSUMED" ? false : true} label="Adicionar despacho" showInMenu />,
-                        <GridActionsCellItem icon={<CheckCircleIcon />} onClick={() => conclueOcurrence(params.row.id)} disabled={params.row.status === "WAITING" ? false : true} label="Concluir Ocorrência" showInMenu />
-                    ]
-                }
-
-                return actions
-            }
+            width: 50,
+            getActions: (params) => [
+                <GridActionsCellItem icon={<PageviewIcon />} onClick={() => viewOcurrence(params.row)} label="Visualizar Ocorrencia" />
+            ]
         }
     ]
 
@@ -155,7 +134,7 @@ export default function AppOcurrences() {
         const fetchOcurrences = async () => {
             try {
                 setLoading(true)
-                const ocurrences = await OcurrenceService.findOcurrences(pagination.page + 1, pagination.pageSize, false)
+                const ocurrences = await OcurrenceService.findOcurrences(pagination.page + 1, pagination.pageSize, true)
                 setOcurrences(ocurrences.data)
                 setTotal(ocurrences.data.total)
             } catch (e) {
@@ -168,65 +147,16 @@ export default function AppOcurrences() {
         fetchOcurrences()
     }, [pagination])
 
-    //Ações
-
     const viewOcurrence = (ocurrence: any) => {
-        console.log(ocurrence)
         setView(true)
         setOcurrence(ocurrence)
         setOpen(true)
     }
 
-    const assumeOcurrence = async (ocurrenceId: number) => {
-        try {
-            const ocurrence = await OcurrenceService.assume(ocurrenceId)
-            viewOcurrence(ocurrence)
-            refreshData(ocurrence)
-            toast.success('Ocorrencia assumida com sucesso.')
-        } catch (e: any) {
-            toast.error(e.response.data.message)
-        }
-    }
-
-    const dispatchOcurrence = async (ocurrence: any) => {
-        setDispatch(true)
-        viewOcurrence(ocurrence)
-    }
-
-    const conclueOcurrence = async (ocurrenceId: number) => {
-        try {
-            const ocurrence = await OcurrenceService.conclue(ocurrenceId)
-            refreshData(ocurrence)
-            toast.success('Ocorrencia concluida com sucesso.')
-        } catch (e: any) {
-            toast.error(e.response.data.message)
-        }
-    }
-
-    const refreshData = (ocurrence: any) => {
-        setOcurrences((values) => {
-            const ocurrences = [...values]
-            const index = ocurrences.findIndex((value) => value.id === ocurrence.id)
-
-            if (index !== -1) {
-                if (ocurrence.deleted) {
-                    ocurrences.splice(index, 1)
-                } else {
-                    ocurrences[index] = ocurrence
-                }
-            }
-            return ocurrences
-        })
-    }
-
-    //----
-
     const handleClose = () => {
-        setOpen(false)
-        setOpenStudents(false)
         setView(false)
+        setOpen(false)
         setOcurrence({})
-        setDispatch(false)
     }
 
     return (
@@ -237,8 +167,6 @@ export default function AppOcurrences() {
                     <Box component="div" className="flex flex-col gap-4 mt-2">
                         <Box component="div" className="flex gap-2 items-center">
                             <TextField type="search" placeholder="Procurar" fullWidth />
-                            <IconButton onClick={() => setOpen(true)} size="large"><NoteAddIcon /></IconButton>
-                            <IconButton onClick={() => setOpenStudents(true)} size="large"><GroupAddIcon /></IconButton>
                         </Box>
                         <DataGrid
                             rows={ocurrences}
@@ -253,8 +181,7 @@ export default function AppOcurrences() {
                     </Box>
                 </Paper>
             </Container>
-            <OcurrenceDialog isOpen={open} onClose={handleClose} isView={view} ocurrence={ocurrence} dispatch={dispatch} />
-            <StudentsDialog isOpen={openStudents} onClose={handleClose} />
+            <OcurrenceDialog isOpen={open} onClose={handleClose} isView={view} ocurrence={ocurrence} dispatch={false} />
         </Box>
     )
 

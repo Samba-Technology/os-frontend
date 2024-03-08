@@ -1,10 +1,11 @@
-import { Box, IconButton, Typography } from "@mui/material";
+import { Box, IconButton } from "@mui/material";
 import DescriptionIcon from '@mui/icons-material/Description';
 import GroupIcon from '@mui/icons-material/Group';
 import { useRouter } from "next/navigation";
 import { useContext } from "react";
 import AuthContext from "@/contexts/auth";
 import { isAdmin } from "@/helpers/authorization";
+import ArchiveIcon from '@mui/icons-material/Archive';
 
 export default function Header() {
     const router = useRouter()
@@ -17,9 +18,14 @@ export default function Header() {
                 <DescriptionIcon />
             </IconButton>
             {!!user && isAdmin(user.role) ? (
-                <IconButton color="primary" size="large" onClick={() => router.push('/app/users')}>
-                    <GroupIcon />
-                </IconButton>
+                <>
+                    <IconButton color="primary" size="large" onClick={() => router.push('/app/ocurrences/archive')}>
+                        <ArchiveIcon />
+                    </IconButton>
+                    <IconButton color="primary" size="large" onClick={() => router.push('/app/users')}>
+                        <GroupIcon />
+                    </IconButton>
+                </>
             ) : null}
         </Box>
     )

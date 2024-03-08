@@ -36,8 +36,6 @@ export default function OcurrenceDialog({ isOpen, onClose, isView, ocurrence, di
     const [students, setStudents] = useState<Student[]>([])
     const [loading, setLoading] = useState(false)
 
-    const router = useRouter()
-
     useEffect(() => {
         const fetchStudents = async () => {
             try {

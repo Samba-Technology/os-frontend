@@ -10,12 +10,13 @@ export class OcurrenceService {
         }).then(response => response.data)
     }
 
-    public static findOcurrences(page: number, limit: number) {
+    public static findOcurrences(page: number, limit: number, isArchive: boolean) {
         return api.get('/ocurrences', {
             params: {
                 page: page,
-                limit: limit
-            }
+                limit: limit,
+                isArchive: isArchive.toString()
+            },
         }).then(response => response.data)
     }
 
