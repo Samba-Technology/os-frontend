@@ -28,4 +28,8 @@ export class OcurrenceService {
             dispatch: dispatch
         })
     }
+
+    public static conclue(id: number) {
+        return api.delete(`/ocurrences/${id}`).then(response => response.data)
+    }
 }

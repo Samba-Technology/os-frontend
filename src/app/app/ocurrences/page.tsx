@@ -142,7 +142,7 @@ export default function AppOcurrences() {
                         ...actions,
                         <GridActionsCellItem icon={<WorkIcon />} onClick={() => assumeOcurrence(params.row.id)} disabled={params.row.status === "OPENED" ? false : true} label="Assumir Ocorrencia" showInMenu />,
                         <GridActionsCellItem icon={<CommentIcon />} onClick={() => dispatchOcurrence(params.row)} disabled={params.row.status === "ASSUMED" ? false : true} label="Adicionar despacho" showInMenu />,
-                        <GridActionsCellItem icon={<CheckCircleIcon />} onClick={() => console.log(params)} disabled={params.row.status === "WAITING" ? false : true} label="Concluir Ocorrência" showInMenu />
+                        <GridActionsCellItem icon={<CheckCircleIcon />} onClick={() => conclueOcurrence(params.row.id)} disabled={params.row.status === "WAITING" ? false : true} label="Concluir Ocorrência" showInMenu />
                     ]
                 }
 
@@ -190,6 +190,15 @@ export default function AppOcurrences() {
     const dispatchOcurrence = async (ocurrence: any) => {
         setDispatch(true)
         viewOcurrence(ocurrence)
+    }
+
+    const conclueOcurrence = async (ocurrenceId: number) => {
+        try {
+            const ocurrence = await OcurrenceService.conclue(ocurrenceId)
+            refreshData(ocurrence)
+        } catch (e: any) {
+            toast.error(e.response.data.message)
+        }
     }
 
     const refreshData = (ocurrence: any) => {
