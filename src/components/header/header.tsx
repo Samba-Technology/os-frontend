@@ -14,14 +14,14 @@ export default function Header() {
 
     return (
         <Box component="div" className="flex h-[80px] w-full justify-center items-center gap-10 px-16">
+            <IconButton color="primary" size="large" onClick={() => router.push('/app/ocurrences/archive')}>
+                <ArchiveIcon />
+            </IconButton>
             <IconButton color="primary" size="large" onClick={() => router.push('/app/ocurrences')}>
                 <DescriptionIcon />
             </IconButton>
             {!!user && isAdmin(user.role) ? (
                 <>
-                    <IconButton color="primary" size="large" onClick={() => router.push('/app/ocurrences/archive')}>
-                        <ArchiveIcon />
-                    </IconButton>
                     <IconButton color="primary" size="large" onClick={() => router.push('/app/users')}>
                         <GroupIcon />
                     </IconButton>
