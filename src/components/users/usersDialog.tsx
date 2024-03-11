@@ -64,7 +64,10 @@ export default function UsersDialog({ isOpen, onClose }: Props) {
                 <TextField label="Senha" type="password" variant="filled" error={!!errors.password} helperText={errors.password?.message} {...register("password")} />
             </DialogContent>
             <DialogActions className="flex gap-1">
-                <Button variant="contained" onClick={onClose}>Fechar</Button>
+                <Button variant="contained" onClick={() => {
+                    onClose();
+                    reset()
+                }}>Fechar</Button>
                 <Button variant="contained" type="submit" disabled={loading}>{loading ? <CircularProgress size={20} /> : "Criar"}</Button>
             </DialogActions>
         </Dialog>

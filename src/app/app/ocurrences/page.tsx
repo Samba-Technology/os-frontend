@@ -18,6 +18,7 @@ import AvTimerIcon from '@mui/icons-material/AvTimer';
 import StudentsDialog from "@/components/students/studentsDialog";
 import OcurrenceDialog from "@/components/ocurrence/ocurrenceDialog";
 import { toast } from "react-toastify";
+import DebounceInput from "@/components/input/debounceInput";
 
 export default function AppOcurrences() {
     const [open, setOpen] = useState(false)
@@ -157,7 +158,7 @@ export default function AppOcurrences() {
                 setLoading(true)
                 const ocurrences = await OcurrenceService.findOcurrences(pagination.page + 1, pagination.pageSize, false)
                 setOcurrences(ocurrences.data)
-                setTotal(ocurrences.data.total)
+                setTotal(ocurrences.meta.total)
             } catch (e) {
                 console.error(e)
             } finally {
@@ -171,7 +172,6 @@ export default function AppOcurrences() {
     //Ações
 
     const viewOcurrence = (ocurrence: any) => {
-        console.log(ocurrence)
         setView(true)
         setOcurrence(ocurrence)
         setOpen(true)
@@ -236,7 +236,6 @@ export default function AppOcurrences() {
                 <Paper elevation={3} className="flex flex-col gap-2 p-6">
                     <Box component="div" className="flex flex-col gap-4 mt-2">
                         <Box component="div" className="flex gap-2 items-center">
-                            <TextField type="search" placeholder="Procurar" fullWidth />
                             <IconButton onClick={() => setOpen(true)} size="large"><NoteAddIcon /></IconButton>
                             <IconButton onClick={() => setOpenStudents(true)} size="large"><GroupAddIcon /></IconButton>
                         </Box>
@@ -244,11 +243,11 @@ export default function AppOcurrences() {
                             rows={ocurrences}
                             loading={loading}
                             columns={columns}
+                            rowCount={total}
                             paginationMode="server"
                             pageSizeOptions={[10, 20, 30, 40]}
                             paginationModel={pagination}
                             onPaginationModelChange={setPagination}
-                            rowCount={total}
                         />
                     </Box>
                 </Paper>

@@ -4,8 +4,7 @@ import { Student } from "@/models/student.model";
 import { OcurrenceService } from "@/services/api/ocurrence.service";
 import { StudentsService } from "@/services/api/students.service";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Autocomplete, Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from "@mui/material";
-import { useRouter } from "next/navigation";
+import { Autocomplete, Box, Button, Chip, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
@@ -21,7 +20,7 @@ interface Props {
 type Data = {
     description: string,
     level: string,
-    students: Student[],
+    students: string[],
     dispatch?: string
 }
 
@@ -111,11 +110,11 @@ export default function OcurrenceDialog({ isOpen, onClose, isView, ocurrence, di
                             disabled={isView}
                             options={students}
                             getOptionLabel={(option) => option.name}
-                            onChange={(event, students) => { onChange(students) }}
-                            value={value}
+                            onChange={(event, students) => { onChange(students.map(student => student.ra)) }}
+                            value={students.filter(student => value.includes(student.ra))}
                             renderOption={(params, student) => {
                                 return (
-                                    <li {...params} key={student.name}>
+                                    <li {...params} key={student.ra}>
                                         {student.name}
                                     </li>
                                 )
@@ -128,6 +127,11 @@ export default function OcurrenceDialog({ isOpen, onClose, isView, ocurrence, di
                                     label="Alunos(as)"
                                 />
                             )}
+                            renderTags={(value, getTagProps) => {
+                                return value.map((option, index) => (
+                                    <Chip {...getTagProps({ index })} key={option.ra} label={option.name} />
+                                ))
+                            }}
                         />)}
                 />
                 <TextField disabled={isView} label="Descrição" variant="filled" fullWidth multiline rows="7" error={!!errors.description} helperText={errors.description?.message} {...register("description")} />

@@ -136,7 +136,7 @@ export default function AppArchiveOcurrences() {
                 setLoading(true)
                 const ocurrences = await OcurrenceService.findOcurrences(pagination.page + 1, pagination.pageSize, true)
                 setOcurrences(ocurrences.data)
-                setTotal(ocurrences.data.total)
+                setTotal(ocurrences.meta.total)
             } catch (e) {
                 console.error(e)
             } finally {
