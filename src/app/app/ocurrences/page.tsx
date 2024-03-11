@@ -1,5 +1,5 @@
 "use client"
-import { Box, Container, CssBaseline, IconButton, Paper, TextField, Typography, fabClasses } from "@mui/material";
+import { Autocomplete, Box, Chip, Container, CssBaseline, IconButton, Paper, TextField, Typography, fabClasses } from "@mui/material";
 import { DataGrid, GridActionsCellItem, GridColDef } from "@mui/x-data-grid";
 import { useContext, useEffect, useState } from "react";
 import CommentIcon from '@mui/icons-material/Comment';
@@ -18,7 +18,12 @@ import AvTimerIcon from '@mui/icons-material/AvTimer';
 import StudentsDialog from "@/components/students/studentsDialog";
 import OcurrenceDialog from "@/components/ocurrence/ocurrenceDialog";
 import { toast } from "react-toastify";
-import DebounceInput from "@/components/input/debounceInput";
+import { StudentsService } from "@/services/api/students.service";
+import { Student } from "@/models/student.model";
+import { Controller } from "react-hook-form";
+import { Label } from "@mui/icons-material";
+import { User } from "@/models/user.model";
+import { UsersService } from "@/services/api/users.service";
 
 export default function AppOcurrences() {
     const [open, setOpen] = useState(false)
@@ -33,6 +38,8 @@ export default function AppOcurrences() {
     const [view, setView] = useState(false)
     const [dispatch, setDispatch] = useState(false)
     const [ocurrence, setOcurrence] = useState({})
+    const [students, setStudents] = useState<Student[]>([])
+    const [queryStudent, setQueryStudent] = useState<Student>()
 
     const { user } = useContext(AuthContext)
 
@@ -156,7 +163,7 @@ export default function AppOcurrences() {
         const fetchOcurrences = async () => {
             try {
                 setLoading(true)
-                const ocurrences = await OcurrenceService.findOcurrences(pagination.page + 1, pagination.pageSize, false)
+                const ocurrences = await OcurrenceService.findOcurrences(pagination.page + 1, pagination.pageSize, false, queryStudent?.ra)
                 setOcurrences(ocurrences.data)
                 setTotal(ocurrences.meta.total)
             } catch (e) {
@@ -167,7 +174,20 @@ export default function AppOcurrences() {
         }
 
         fetchOcurrences()
-    }, [pagination])
+    }, [pagination, queryStudent])
+
+    useEffect(() => {
+        const fetchStudents = async () => {
+            try {
+                const response = await StudentsService.findStudents()
+                setStudents(response)
+            } catch (e) {
+                console.error(e)
+            }
+        }
+
+        fetchStudents()
+    }, [openStudents])
 
     //Ações
 
@@ -236,8 +256,23 @@ export default function AppOcurrences() {
                 <Paper elevation={3} className="flex flex-col gap-2 p-6">
                     <Box component="div" className="flex flex-col gap-4 mt-2">
                         <Box component="div" className="flex gap-2 items-center">
-                            <IconButton onClick={() => setOpen(true)} size="large"><NoteAddIcon /></IconButton>
-                            <IconButton onClick={() => setOpenStudents(true)} size="large"><GroupAddIcon /></IconButton>
+                            <Autocomplete
+                                fullWidth
+                                disablePortal
+                                options={students}
+                                getOptionLabel={(student) => student.name}
+                                onChange={(event, student, reason) => {
+                                    student && setQueryStudent(student);
+                                    reason === "clear" && setQueryStudent(undefined)
+                                }}
+                                renderInput={(params) => <TextField {...params} label="Pesquisa por aluno" />}
+                            />
+                            <IconButton onClick={() => setOpen(true)} size="large">
+                                <NoteAddIcon />
+                            </IconButton>
+                            <IconButton onClick={() => setOpenStudents(true)} size="large">
+                                <GroupAddIcon />
+                            </IconButton>
                         </Box>
                         <DataGrid
                             rows={ocurrences}
