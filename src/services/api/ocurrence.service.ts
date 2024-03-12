@@ -1,8 +1,7 @@
 import api from "@/helpers/api"
-import { Student } from "@/models/student.model"
 
 export class OcurrenceService {
-    public static create(description: string, level: string, students: Student[]) {
+    public static create(description: string, level: string, students: string[]) {
         return api.post('/ocurrences', {
             description: description,
             level: level,
@@ -10,12 +9,14 @@ export class OcurrenceService {
         }).then(response => response.data)
     }
 
-    public static findOcurrences(page: number, limit: number, isArchive: boolean) {
+    public static findOcurrences(page: number, limit: number, isArchive: boolean, queryStudent?: string, queryUser?: number) {
         return api.get('/ocurrences', {
             params: {
                 page: page,
                 limit: limit,
-                isArchive: isArchive.toString()
+                isArchive: isArchive.toString(),
+                queryStudent: queryStudent,
+                queryUser: queryUser
             },
         }).then(response => response.data)
     }

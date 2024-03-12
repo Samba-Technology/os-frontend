@@ -4,7 +4,7 @@ import { StudentsService } from "@/services/api/students.service";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
 interface Props {
@@ -29,7 +29,7 @@ const schema = yup.object({
 export default function StudentsDialog({ isOpen, onClose }: Props) {
     const [loading, setLoading] = useState(false)
 
-    const { handleSubmit, register, formState: { errors }, reset } = useForm<Data>({
+    const { control, handleSubmit, register, formState: { errors }, reset } = useForm<Data>({
         resolver: yupResolver(schema),
         defaultValues: {
             name: "",
@@ -66,29 +66,46 @@ export default function StudentsDialog({ isOpen, onClose }: Props) {
                 <Box className="flex gap-1">
                     <FormControl variant="filled" className="w-1/2">
                         <InputLabel>Série</InputLabel>
-                        <Select variant="filled" label="Série" error={!!errors.series} {...register("series")}>
-                            <MenuItem value="6º">6º</MenuItem>
-                            <MenuItem value="7º">7º</MenuItem>
-                            <MenuItem value="8º">8º</MenuItem>
-                            <MenuItem value="1ª">1ª</MenuItem>
-                            <MenuItem value="2ª">2ª</MenuItem>
-                            <MenuItem value="3ª">3ª</MenuItem>
-                        </Select>
+                        <Controller
+                            name="series"
+                            control={control}
+                            defaultValue=""
+                            render={({ field: { onChange, value } }) => (
+                                <Select variant="filled" label="Série" error={!!errors.series} value={value} onChange={onChange} >
+                                    <MenuItem value="6º">6º</MenuItem>
+                                    <MenuItem value="7º">7º</MenuItem>
+                                    <MenuItem value="8º">8º</MenuItem>
+                                    <MenuItem value="1ª">1ª</MenuItem>
+                                    <MenuItem value="2ª">2ª</MenuItem>
+                                    <MenuItem value="3ª">3ª</MenuItem>
+                                </Select>
+                            )}
+                        />
                     </FormControl>
                     <FormControl variant="filled" className="w-1/2">
                         <InputLabel>Turma</InputLabel>
-                        <Select variant="filled" label="Turma" error={!!errors.class} {...register("class")}>
-                            <MenuItem value="A">A</MenuItem>
-                            <MenuItem value="B">B</MenuItem>
-                            <MenuItem value="C">C</MenuItem>
-                            <MenuItem value="D">D</MenuItem>
-                        </Select>
+                        <Controller
+                            name="class"
+                            control={control}
+                            defaultValue=""
+                            render={({ field: { onChange, value } }) => (
+                                <Select variant="filled" label="Turma" error={!!errors.class} value={value} onChange={onChange}>
+                                    <MenuItem value="A">A</MenuItem>
+                                    <MenuItem value="B">B</MenuItem>
+                                    <MenuItem value="C">C</MenuItem>
+                                    <MenuItem value="D">D</MenuItem>
+                                </Select>
+                            )}
+                        />
                     </FormControl>
                 </Box>
                 <TextField label="RA" variant="filled" error={!!errors.ra} helperText={errors.ra?.message} {...register("ra")} />
             </DialogContent>
             <DialogActions className="flex gap-1">
-                <Button variant="contained" onClick={onClose}>Fechar</Button>
+                <Button variant="contained" onClick={() => {
+                    onClose();
+                    reset();
+                }}>Fechar</Button>
                 <Button variant="contained" type="submit" disabled={loading}>{loading ? <CircularProgress size={20} /> : "Criar"}</Button>
             </DialogActions>
         </Dialog>

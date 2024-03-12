@@ -1,5 +1,4 @@
 "use client"
-import StudentsDialog from "@/components/students/studentsDialog";
 import UsersDialog from "@/components/users/usersDialog";
 import AuthContext from "@/contexts/auth";
 import { isAdmin } from "@/helpers/authorization";
@@ -60,7 +59,7 @@ export default function AppUsers() {
                 setLoading(true)
                 const users = await UsersService.findUsers(pagination.page + 1, pagination.pageSize)
                 setUsers(users.data)
-                setTotal(users.data.total)
+                setTotal(users.meta.total)
             } catch (e) {
                 console.error(e)
             } finally {
