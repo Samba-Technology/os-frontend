@@ -310,6 +310,11 @@ export default function AppOcurrences() {
                             pageSizeOptions={[10, 20, 30, 40]}
                             paginationModel={pagination}
                             onPaginationModelChange={setPagination}
+                            componentsProps={{
+                                pagination: {
+                                    labelRowsPerPage: "Linhas por página:",
+                                }
+                            }}
                         />
                     </Box>
                 </Paper>

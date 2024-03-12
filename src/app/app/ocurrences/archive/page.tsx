@@ -237,6 +237,11 @@ export default function AppArchiveOcurrences() {
                             paginationModel={pagination}
                             onPaginationModelChange={setPagination}
                             rowCount={total}
+                            componentsProps={{
+                                pagination: {
+                                    labelRowsPerPage: "Linhas por página:",
+                                }
+                            }}
                         />
                     </Box>
                 </Paper>
