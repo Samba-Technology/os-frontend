@@ -60,7 +60,7 @@ export default function OcurrenceDialog({ isOpen, onClose, isView, ocurrence, di
 
     useEffect(() => {
         if (isView) {
-            setValue("students", ocurrence.students)
+            setValue("students", ocurrence.students.map((student: Student) => student.ra))
             setValue("level", ocurrence.level, { shouldValidate: true })
             setValue("description", ocurrence.description)
             setValue("dispatch", ocurrence.dispatch)

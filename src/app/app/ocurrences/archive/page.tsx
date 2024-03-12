@@ -165,6 +165,7 @@ export default function AppArchiveOcurrences() {
             <Container component="main" maxWidth="lg">
                 <Paper elevation={3} className="flex flex-col gap-2 p-6">
                     <Box component="div" className="flex flex-col gap-4 mt-2">
+                        <Typography variant="h4">Ocorrências Arquivadas</Typography>
                         <Box component="div" className="flex gap-2 items-center">
                             <TextField type="search" placeholder="Procurar" fullWidth />
                         </Box>

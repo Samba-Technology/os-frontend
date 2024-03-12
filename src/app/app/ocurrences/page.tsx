@@ -265,18 +265,21 @@ export default function AppOcurrences() {
             <Container component="main" maxWidth="lg">
                 <Paper elevation={3} className="flex flex-col gap-2 p-6">
                     <Box component="div" className="flex flex-col gap-4 mt-2">
+                        <Typography variant="h4">Ocorrências</Typography>
                         <Box component="div" className="flex gap-2 items-center">
-                            <Autocomplete
-                                fullWidth
-                                disablePortal
-                                options={users}
-                                getOptionLabel={(user) => user.name}
-                                onChange={(event, user, reason) => {
-                                    user && setQueryUser(user);
-                                    reason === "clear" && setQueryUser(undefined)
-                                }}
-                                renderInput={(params) => <TextField {...params} label="Pesquisa por Responsável" />}
-                            />
+                            {user && isAdmin(user.role) && (
+                                <Autocomplete
+                                    fullWidth
+                                    disablePortal
+                                    options={users}
+                                    getOptionLabel={(user) => user.name}
+                                    onChange={(event, user, reason) => {
+                                        user && setQueryUser(user);
+                                        reason === "clear" && setQueryUser(undefined)
+                                    }}
+                                    renderInput={(params) => <TextField {...params} label="Pesquisa por Responsável" />}
+                                />
+                            )}
                             <Autocomplete
                                 fullWidth
                                 disablePortal
