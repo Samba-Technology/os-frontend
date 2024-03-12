@@ -1,5 +1,5 @@
 "use client"
-import { Autocomplete, Box, Chip, Container, CssBaseline, IconButton, Paper, TextField, Typography, fabClasses } from "@mui/material";
+import { Autocomplete, Box, Container, CssBaseline, IconButton, Paper, TextField, Typography } from "@mui/material";
 import { DataGrid, GridActionsCellItem, GridColDef } from "@mui/x-data-grid";
 import { useContext, useEffect, useState } from "react";
 import CommentIcon from '@mui/icons-material/Comment';
@@ -20,10 +20,8 @@ import OcurrenceDialog from "@/components/ocurrence/ocurrenceDialog";
 import { toast } from "react-toastify";
 import { StudentsService } from "@/services/api/students.service";
 import { Student } from "@/models/student.model";
-import { Controller } from "react-hook-form";
-import { Label } from "@mui/icons-material";
-import { User } from "@/models/user.model";
 import { UsersService } from "@/services/api/users.service";
+import { User } from "@/models/user.model";
 
 export default function AppOcurrences() {
     const [open, setOpen] = useState(false)
@@ -40,6 +38,8 @@ export default function AppOcurrences() {
     const [ocurrence, setOcurrence] = useState({})
     const [students, setStudents] = useState<Student[]>([])
     const [queryStudent, setQueryStudent] = useState<Student>()
+    const [users, setUsers] = useState<User[]>([])
+    const [queryUser, setQueryUser] = useState<User>()
 
     const { user } = useContext(AuthContext)
 
@@ -163,7 +163,7 @@ export default function AppOcurrences() {
         const fetchOcurrences = async () => {
             try {
                 setLoading(true)
-                const ocurrences = await OcurrenceService.findOcurrences(pagination.page + 1, pagination.pageSize, false, queryStudent?.ra)
+                const ocurrences = await OcurrenceService.findOcurrences(pagination.page + 1, pagination.pageSize, false, queryStudent?.ra, queryUser?.id)
                 setOcurrences(ocurrences.data)
                 setTotal(ocurrences.meta.total)
             } catch (e) {
@@ -174,7 +174,7 @@ export default function AppOcurrences() {
         }
 
         fetchOcurrences()
-    }, [pagination, queryStudent])
+    }, [pagination, queryStudent, queryUser])
 
     useEffect(() => {
         const fetchStudents = async () => {
@@ -186,6 +186,16 @@ export default function AppOcurrences() {
             }
         }
 
+        const fetchUsers = async () => {
+            try {
+                const response = await UsersService.findUsers()
+                setUsers(response.data)
+            } catch (e) {
+                console.error(e)
+            }
+        }
+
+        fetchUsers()
         fetchStudents()
     }, [openStudents])
 
@@ -259,13 +269,24 @@ export default function AppOcurrences() {
                             <Autocomplete
                                 fullWidth
                                 disablePortal
+                                options={users}
+                                getOptionLabel={(user) => user.name}
+                                onChange={(event, user, reason) => {
+                                    user && setQueryUser(user);
+                                    reason === "clear" && setQueryUser(undefined)
+                                }}
+                                renderInput={(params) => <TextField {...params} label="Pesquisa por Responsável" />}
+                            />
+                            <Autocomplete
+                                fullWidth
+                                disablePortal
                                 options={students}
                                 getOptionLabel={(student) => student.name}
                                 onChange={(event, student, reason) => {
                                     student && setQueryStudent(student);
                                     reason === "clear" && setQueryStudent(undefined)
                                 }}
-                                renderInput={(params) => <TextField {...params} label="Pesquisa por aluno" />}
+                                renderInput={(params) => <TextField {...params} label="Pesquisa por Aluno(a)" />}
                             />
                             <IconButton onClick={() => setOpen(true)} size="large">
                                 <NoteAddIcon />

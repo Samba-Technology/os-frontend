@@ -9,13 +9,14 @@ export class OcurrenceService {
         }).then(response => response.data)
     }
 
-    public static findOcurrences(page: number, limit: number, isArchive: boolean, queryStudent?: string) {
+    public static findOcurrences(page: number, limit: number, isArchive: boolean, queryStudent?: string, queryUser?: number) {
         return api.get('/ocurrences', {
             params: {
                 page: page,
                 limit: limit,
                 isArchive: isArchive.toString(),
-                queryStudent: queryStudent
+                queryStudent: queryStudent,
+                queryUser: queryUser
             },
         }).then(response => response.data)
     }

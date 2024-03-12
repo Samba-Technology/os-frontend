@@ -1,5 +1,4 @@
 "use client"
-import StudentsDialog from "@/components/students/studentsDialog";
 import UsersDialog from "@/components/users/usersDialog";
 import AuthContext from "@/contexts/auth";
 import { isAdmin } from "@/helpers/authorization";
