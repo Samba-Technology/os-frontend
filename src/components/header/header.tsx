@@ -14,27 +14,27 @@ export default function Header() {
     const { user } = useContext(AuthContext)
 
     return (
-        <Box component="div" className="flex h-[80px] w-full justify-between items-center gap-10 px-16">
-            <Box component="div" className="flex items-center justify-center gap-3">
+        <Box component="div" className="flex items-center h-[80px] w-full justify-between items-center gap-10 px-16">
+            <Box component="div" className="flex items-center items-center justify-center gap-3">
                 <IconCodeSandbox fontSize="50px" />
                 <Divider orientation="vertical" variant="middle" flexItem />
-                <Typography variant="overline" fontSize="20px" className="text-slate-600">Sistema Samba</Typography>
+                <Typography variant="overline" fontSize="20px" fontWeight="bold">Sistema Samba</Typography>
             </Box>
-            <Box component="div" className="flex gap-5">
-                <Fab variant="extended" className="gap-2" onClick={() => router.push('/app/ocurrences/archive')}>
+            <Box component="div" className="flex items-center gap-5">
+                <Box className="flex items-center gap-2 cursor-pointer" onClick={() => router.push('/app/ocurrences/archive')}>
                     <ArchiveIcon />
-                    <Typography variant="overline" fontWeight="bold">Arquivadas</Typography>
-                </Fab>
-                <Fab variant="extended" className="gap-2" onClick={() => router.push('/app/ocurrences')}>
+                    <Typography variant="overline" fontWeight="bold" >Arquivadas</Typography>
+                </Box>
+                <Box className="flex items-center gap-2 cursor-pointer" onClick={() => router.push('/app/ocurrences')}>
                     <DescriptionIcon />
-                    <Typography variant="overline" fontWeight="bold">Ocorrências</Typography>
-                </Fab>
+                    <Typography variant="overline" fontWeight="bold" >Ocorrências</Typography>
+                </Box>
                 {!!user && isAdmin(user.role) ? (
                     <>
-                        <Fab variant="extended" className="gap-2" onClick={() => router.push('/app/users')}>
+                        <Box className="flex items-center gap-2 cursor-pointer" onClick={() => router.push('/app/users')}>
                             <GroupIcon />
-                            <Typography variant="overline" fontWeight="bold">Usuários</Typography>
-                        </Fab>
+                            <Typography variant="overline" fontWeight="bold" >Usuários</Typography>
+                        </Box>
                     </>
                 ) : null}
             </Box>
