@@ -23,7 +23,7 @@ const schema = yup.object({
     name: yup.string().required(),
     series: yup.string().required(),
     class: yup.string().required(),
-    ra: yup.string().required().min(10).max(10)
+    ra: yup.string().required().matches(/^\d{9}[A-z0-9]$/, 'RA inválido')
 })
 
 export default function StudentsDialog({ isOpen, onClose }: Props) {
