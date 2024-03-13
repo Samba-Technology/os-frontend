@@ -11,9 +11,12 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import { UsersService } from "@/services/api/users.service";
 import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
+import { toast } from "react-toastify";
+import ConfirmDialog from "@/components/users/confirmDialog";
 
 export default function AppUsers() {
     const [open, setOpen] = useState(false)
+    const [confirmOpen, setConfirmOpen] = useState(false)
     const [loading, setLoading] = useState(false)
     const [users, setUsers] = useState<User[]>([])
     const [pagination, setPagination] = useState({
@@ -23,6 +26,7 @@ export default function AppUsers() {
     const [total, setTotal] = useState(0)
     const [view, setView] = useState(false)
     const [userV, setUserV] = useState({})
+    const [userId, setUserId] = useState('')
 
     const { user } = useContext(AuthContext)
     const router = useRouter()
@@ -44,14 +48,14 @@ export default function AppUsers() {
             sortable: false,
             getActions: (params) => [
                 <GridActionsCellItem icon={<ManageAccountsIcon />} onClick={() => viewUser(params.row)} label="Visualizar Usuário" />,
-                <GridActionsCellItem icon={<DeleteIcon />} onClick={() => console.log(params)} label="Deletar Usuário" />
+                <GridActionsCellItem icon={<DeleteIcon />} onClick={() => deleteUser(params.row.id)} label="Deletar Usuário" />
             ]
         }
     ]
 
     useEffect(() => {
         if (user && !isAdmin(user.role)) {
-            router.push('/app/ocurrences')
+            router.push('/app/users')
         }
     }, [])
 
@@ -80,13 +84,48 @@ export default function AppUsers() {
         setOpen(true)
     }
 
-    // --
+    const deleteUser = (id: string) => {
+        setConfirmOpen(true)
+        setUserId(id)
+    }
 
+    // --
 
     const handleClose = () => {
         setOpen(false)
         setView(false)
         setUserV({})
+        setConfirmOpen(false)
+    }
+
+    const handleConfirm = async () => {
+        if (userId) {
+            try {
+                const user = await UsersService.delete(userId)
+                refreshData(user)
+                toast.success('Usuário deletado com sucesso!')
+            } catch (e: any) {
+                toast.error(e.response.data.message)
+            }
+        }
+        setUserId('')
+        setConfirmOpen(false)
+    }
+
+    const refreshData = (user: any) => {
+        setUsers((values) => {
+            const users = [...values]
+            const index = users.findIndex((value) => value.id === user.id)
+
+            if (index !== -1) {
+                if (user.deleted) {
+                    users.splice(index, 1)
+                } else {
+                    users[index] = user
+                }
+            }
+            return users
+        })
     }
 
     return (
@@ -119,6 +158,7 @@ export default function AppUsers() {
                 </Paper>
             </Container>
             <UsersDialog isOpen={open} onClose={handleClose} isView={view} user={userV} />
+            <ConfirmDialog isOpen={confirmOpen} onClose={handleClose} onConfirm={handleConfirm} />
         </Box>
     )
 

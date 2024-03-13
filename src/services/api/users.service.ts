@@ -21,4 +21,8 @@ export class UsersService {
             }
         }).then(response => response.data)
     }
+
+    public static delete(id: string) {
+        return api.delete(`/users/${id}`).then(response => response.data)
+    }
 }
