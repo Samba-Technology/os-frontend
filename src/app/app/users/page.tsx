@@ -3,7 +3,7 @@ import UsersDialog from "@/components/users/usersDialog";
 import AuthContext from "@/contexts/auth";
 import { isAdmin } from "@/helpers/authorization";
 import { User } from "@/models/user.model";
-import { Box, Container, CssBaseline, IconButton, Paper, TextField, Typography } from "@mui/material";
+import { Autocomplete, Box, Container, CssBaseline, IconButton, Paper, TextField, Typography } from "@mui/material";
 import { DataGrid, GridActionsCellItem, GridColDef } from "@mui/x-data-grid";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
@@ -27,6 +27,7 @@ export default function AppUsers() {
     const [view, setView] = useState(false)
     const [userV, setUserV] = useState({})
     const [userId, setUserId] = useState('')
+    const [queryUser, setQueryUser] = useState<User>()
 
     const { user } = useContext(AuthContext)
     const router = useRouter()
@@ -63,7 +64,7 @@ export default function AppUsers() {
         const fetchUsers = async () => {
             try {
                 setLoading(true)
-                const users = await UsersService.findUsers(pagination.page + 1, pagination.pageSize)
+                const users = await UsersService.findUsers(pagination.page + 1, pagination.pageSize, queryUser?.id)
                 setUsers(users.data)
                 setTotal(users.meta.total)
             } catch (e) {
@@ -74,7 +75,7 @@ export default function AppUsers() {
         }
 
         fetchUsers()
-    }, [pagination])
+    }, [pagination, queryUser])
 
     //Ações
 
@@ -136,7 +137,17 @@ export default function AppUsers() {
                     <Typography variant="h4">Usuários</Typography>
                     <Box component="div" className="flex flex-col gap-4 mt-2">
                         <Box component="div" className="flex gap-2 items-center">
-                            <TextField type="search" placeholder="Procurar" fullWidth />
+                            <Autocomplete
+                                fullWidth
+                                disablePortal
+                                options={users}
+                                getOptionLabel={(user) => user.name}
+                                onChange={(event, user, reason) => {
+                                    user && setQueryUser(user);
+                                    reason === "clear" && setQueryUser(undefined)
+                                }}
+                                renderInput={(params) => <TextField {...params} label="Pesquisa por Usuário" />}
+                            />
                             <IconButton onClick={() => setOpen(true)} size="large"><PersonAddAlt1Icon /></IconButton>
                         </Box>
                         <DataGrid
