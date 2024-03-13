@@ -12,28 +12,6 @@ import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import { UsersService } from "@/services/api/users.service";
 import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
 
-const columns: GridColDef[] = [
-    {
-        field: 'name',
-        headerName: 'Nome',
-        flex: 1
-    },
-    {
-        field: 'email',
-        headerName: 'Email',
-        width: 230
-    },
-    {
-        field: 'actions',
-        type: 'actions',
-        sortable: false,
-        getActions: (params) => [
-            <GridActionsCellItem icon={<ManageAccountsIcon />} onClick={() => console.log(params)} label="Editar Usuário" />,
-            <GridActionsCellItem icon={<DeleteIcon />} onClick={() => console.log(params)} label="Deletar Usuário" />
-        ]
-    }
-]
-
 export default function AppUsers() {
     const [open, setOpen] = useState(false)
     const [loading, setLoading] = useState(false)
@@ -43,9 +21,33 @@ export default function AppUsers() {
         pageSize: 10
     })
     const [total, setTotal] = useState(0)
+    const [view, setView] = useState(false)
+    const [userV, setUserV] = useState({})
 
     const { user } = useContext(AuthContext)
     const router = useRouter()
+
+    const columns: GridColDef[] = [
+        {
+            field: 'name',
+            headerName: 'Nome',
+            flex: 1
+        },
+        {
+            field: 'email',
+            headerName: 'Email',
+            width: 230
+        },
+        {
+            field: 'actions',
+            type: 'actions',
+            sortable: false,
+            getActions: (params) => [
+                <GridActionsCellItem icon={<ManageAccountsIcon />} onClick={() => viewUser(params.row)} label="Visualizar Usuário" />,
+                <GridActionsCellItem icon={<DeleteIcon />} onClick={() => console.log(params)} label="Deletar Usuário" />
+            ]
+        }
+    ]
 
     useEffect(() => {
         if (user && !isAdmin(user.role)) {
@@ -70,9 +72,21 @@ export default function AppUsers() {
         fetchUsers()
     }, [pagination])
 
+    //Ações
+
+    const viewUser = (user: any) => {
+        setView(true)
+        setUserV(user)
+        setOpen(true)
+    }
+
+    // --
+
 
     const handleClose = () => {
         setOpen(false)
+        setView(false)
+        setUserV({})
     }
 
     return (
@@ -104,7 +118,7 @@ export default function AppUsers() {
                     </Box>
                 </Paper>
             </Container>
-            <UsersDialog isOpen={open} onClose={handleClose} />
+            <UsersDialog isOpen={open} onClose={handleClose} isView={view} user={userV} />
         </Box>
     )
 

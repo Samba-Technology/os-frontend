@@ -4,7 +4,7 @@ import { Student } from "@/models/student.model";
 import { OcurrenceService } from "@/services/api/ocurrence.service";
 import { StudentsService } from "@/services/api/students.service";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Autocomplete, Box, Button, Chip, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from "@mui/material";
+import { Autocomplete, Button, Chip, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
@@ -99,7 +99,7 @@ export default function OcurrenceDialog({ isOpen, onClose, isView, ocurrence, di
         <Dialog open={isOpen} onClose={onClose} component="form" onSubmit={handleSubmit(onSubmit)} fullWidth>
             <DialogTitle>Registro de Ocorrência</DialogTitle>
             <DialogContent className="flex flex-col gap-3">
-                <DialogContentText>Forneça os dados da ocorrência.</DialogContentText>
+                {!isView && <DialogContentText>Forneça os dados da ocorrência.</DialogContentText>}
                 <Controller
                     name="students"
                     control={control}
