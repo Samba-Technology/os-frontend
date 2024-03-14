@@ -1,17 +1,21 @@
 "use client"
-import { Box, Container, CssBaseline, IconButton, Paper, TextField, Typography } from "@mui/material";
+import { Autocomplete, Box, Container, CssBaseline, IconButton, Paper, TextField, Typography } from "@mui/material";
 import { DataGrid, GridActionsCellItem, GridColDef } from "@mui/x-data-grid";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import PageviewIcon from '@mui/icons-material/Pageview';
 import { Ocurrence } from "@/models/ocurrence.model";
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
 import WorkHistoryIcon from '@mui/icons-material/WorkHistory';
 import { OcurrenceService } from "@/services/api/ocurrence.service";
-import NoteAddIcon from '@mui/icons-material/NoteAdd';
-import GroupAddIcon from '@mui/icons-material/GroupAdd';
 import AvTimerIcon from '@mui/icons-material/AvTimer';
 import OcurrenceDialog from "@/components/ocurrence/ocurrenceDialog";
+import { Student } from "@/models/student.model";
+import { StudentsService } from "@/services/api/students.service";
+import { UsersService } from "@/services/api/users.service";
+import { isAdmin } from "@/helpers/authorization";
+import AuthContext from "@/contexts/auth";
+import { User } from "@/models/user.model";
 
 export default function AppArchiveOcurrences() {
     const [open, setOpen] = useState(false)
@@ -24,6 +28,12 @@ export default function AppArchiveOcurrences() {
     const [total, setTotal] = useState(0)
     const [ocurrence, setOcurrence] = useState({})
     const [view, setView] = useState(false)
+    const [students, setStudents] = useState<Student[]>([])
+    const [queryStudent, setQueryStudent] = useState<Student>()
+    const [users, setUsers] = useState<User[]>([])
+    const [queryUser, setQueryUser] = useState<User>()
+
+    const { user } = useContext(AuthContext)
 
     const columns: GridColDef[] = [
         {
@@ -134,7 +144,7 @@ export default function AppArchiveOcurrences() {
         const fetchOcurrences = async () => {
             try {
                 setLoading(true)
-                const ocurrences = await OcurrenceService.findOcurrences(pagination.page + 1, pagination.pageSize, true)
+                const ocurrences = await OcurrenceService.findOcurrences(pagination.page + 1, pagination.pageSize, true, queryStudent?.ra, queryUser?.id)
                 setOcurrences(ocurrences.data)
                 setTotal(ocurrences.meta.total)
             } catch (e) {
@@ -145,7 +155,33 @@ export default function AppArchiveOcurrences() {
         }
 
         fetchOcurrences()
-    }, [pagination])
+    }, [pagination, queryStudent, queryUser])
+
+    useEffect(() => {
+        const fetchStudents = async () => {
+            try {
+                const response = await StudentsService.findStudents()
+                setStudents(response)
+            } catch (e) {
+                console.error(e)
+            }
+        }
+
+        if (user && isAdmin(user.role)) {
+            const fetchUsers = async () => {
+                try {
+                    const response = await UsersService.findUsers()
+                    setUsers(response.data)
+                } catch (e) {
+                    console.error(e)
+                }
+            }
+
+            fetchUsers()
+        }
+
+        fetchStudents()
+    }, [])
 
     const viewOcurrence = (ocurrence: any) => {
         setView(true)
@@ -167,7 +203,30 @@ export default function AppArchiveOcurrences() {
                     <Box component="div" className="flex flex-col gap-4 mt-2">
                         <Typography variant="h4">Ocorrências Arquivadas</Typography>
                         <Box component="div" className="flex gap-2 items-center">
-                            <TextField type="search" placeholder="Procurar" fullWidth />
+                            {user && isAdmin(user.role) && (
+                                <Autocomplete
+                                    fullWidth
+                                    disablePortal
+                                    options={users}
+                                    getOptionLabel={(user) => user.name}
+                                    onChange={(event, user, reason) => {
+                                        user && setQueryUser(user);
+                                        reason === "clear" && setQueryUser(undefined)
+                                    }}
+                                    renderInput={(params) => <TextField {...params} label="Pesquisa por Responsável" />}
+                                />
+                            )}
+                            <Autocomplete
+                                fullWidth
+                                disablePortal
+                                options={students}
+                                getOptionLabel={(student) => student.name}
+                                onChange={(event, student, reason) => {
+                                    student && setQueryStudent(student);
+                                    reason === "clear" && setQueryStudent(undefined)
+                                }}
+                                renderInput={(params) => <TextField {...params} label="Pesquisa por Aluno(a)" />}
+                            />
                         </Box>
                         <DataGrid
                             rows={ocurrences}
@@ -178,6 +237,11 @@ export default function AppArchiveOcurrences() {
                             paginationModel={pagination}
                             onPaginationModelChange={setPagination}
                             rowCount={total}
+                            componentsProps={{
+                                pagination: {
+                                    labelRowsPerPage: "Linhas por página:",
+                                }
+                            }}
                         />
                     </Box>
                 </Paper>

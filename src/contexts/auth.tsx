@@ -41,7 +41,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const user = await UsersService.findMe()
       setUser(user)
     } catch (error) {
-      console.error(error)
       localStorage.removeItem('access-token')
     }
   }

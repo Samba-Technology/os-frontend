@@ -186,16 +186,19 @@ export default function AppOcurrences() {
             }
         }
 
-        const fetchUsers = async () => {
-            try {
-                const response = await UsersService.findUsers()
-                setUsers(response.data)
-            } catch (e) {
-                console.error(e)
+        if (user && isAdmin(user.role)) {
+            const fetchUsers = async () => {
+                try {
+                    const response = await UsersService.findUsers()
+                    setUsers(response.data)
+                } catch (e) {
+                    console.error(e)
+                }
             }
+
+            fetchUsers()
         }
 
-        fetchUsers()
         fetchStudents()
     }, [openStudents])
 
@@ -307,6 +310,11 @@ export default function AppOcurrences() {
                             pageSizeOptions={[10, 20, 30, 40]}
                             paginationModel={pagination}
                             onPaginationModelChange={setPagination}
+                            componentsProps={{
+                                pagination: {
+                                    labelRowsPerPage: "Linhas por página:",
+                                }
+                            }}
                         />
                     </Box>
                 </Paper>

@@ -13,12 +13,17 @@ export class UsersService {
         return api.get('/users/me').then(response => response.data)
     }
 
-    public static findUsers(page?: number, limit?: number) {
+    public static findUsers(page?: number, limit?: number, queryUser?: any) {
         return api.get('/users', {
             params: {
                 page: page,
-                limit: limit
+                limit: limit,
+                queryUser: queryUser
             }
         }).then(response => response.data)
+    }
+
+    public static delete(id: string) {
+        return api.delete(`/users/${id}`).then(response => response.data)
     }
 }

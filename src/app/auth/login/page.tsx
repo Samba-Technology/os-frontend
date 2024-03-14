@@ -50,7 +50,7 @@ export default function Login() {
     }
 
     return (
-        <Box className="flex justify-center items-center min-h-screen flex-col">
+        <Box className="flex justify-center items-center h-full flex-col">
             <Container component="main" maxWidth="xs">
                 <CssBaseline />
                 <Paper component="form" elevation={3} onSubmit={handleSubmit(onSubmit)} className="flex flex-col justify-center items-center p-4">
