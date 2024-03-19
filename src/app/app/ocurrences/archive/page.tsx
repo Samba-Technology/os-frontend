@@ -16,6 +16,8 @@ import { UsersService } from "@/services/api/users.service";
 import { isAdmin } from "@/helpers/authorization";
 import AuthContext from "@/contexts/auth";
 import { User } from "@/models/user.model";
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
+import ocurrencePDF from "@/reports/ocurrences/ocurrence";
 
 export default function AppArchiveOcurrences() {
     const [open, setOpen] = useState(false)
@@ -133,10 +135,19 @@ export default function AppArchiveOcurrences() {
             field: 'actions',
             type: 'actions',
             sortable: false,
-            width: 50,
-            getActions: (params) => [
-                <GridActionsCellItem icon={<PageviewIcon />} onClick={() => viewOcurrence(params.row)} label="Visualizar Ocorrencia" />
-            ]
+            width: 100,
+            getActions: (params) => {
+                let actions = [<GridActionsCellItem icon={<PageviewIcon />} onClick={() => viewOcurrence(params.row)} label="Visualizar Ocorrencia" />]
+
+                if (user && isAdmin(user.role)) {
+                    actions = [
+                        ...actions,
+                        <GridActionsCellItem icon={<PictureAsPdfIcon />} onClick={() => ocurrencePDF(params.row)} label="Visualização em PDF" />
+                    ]
+                }
+
+                return actions
+            }
         }
     ]
 
