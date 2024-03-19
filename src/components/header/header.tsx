@@ -18,7 +18,7 @@ export default function Header() {
             <Box component="div" className="flex justify-center gap-3">
                 <IconCodeSandbox fontSize="50px" />
                 <Divider orientation="vertical" variant="middle" flexItem />
-                <Typography variant="overline" fontSize="20px" fontWeight="bold">Sistema Samba</Typography>
+                <Typography variant="overline" fontSize="20px" fontWeight="bold">Samba Technology</Typography>
             </Box>
             {signed && (
                 <Box component="div" className="flex items-center gap-5">

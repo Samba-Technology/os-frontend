@@ -8,8 +8,8 @@ import { AuthProvider } from "@/contexts/auth";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Ocurrence System",
-  description: "Ocurrence System",
+  title: "Gestão de Ocorrências",
+  description: "Gestão de Ocorrências, realizada por Samba Technology",
 };
 
 export default function RootLayout({

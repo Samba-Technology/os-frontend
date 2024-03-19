@@ -20,7 +20,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             <Header />
             {children}
             <div className='flex justify-center pb-2'>
-                <Typography variant='overline'>The Samba Inc. | S. SAMBA | V1.0 | 2024 ©</Typography>
+                <Typography variant='overline'>The Samba Inc. | SAMBA TECHNOLOGY | V1.1.2 | 2024 ©</Typography>
             </div>
         </div>
     )
