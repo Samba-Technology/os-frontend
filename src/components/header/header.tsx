@@ -1,4 +1,4 @@
-import { Box, Divider, Fab, IconButton, Typography } from "@mui/material";
+import { Box, Divider, IconButton, Typography } from "@mui/material";
 import DescriptionIcon from '@mui/icons-material/Description';
 import GroupIcon from '@mui/icons-material/Group';
 import { useRouter } from "next/navigation";
@@ -7,6 +7,7 @@ import AuthContext from "@/contexts/auth";
 import { isAdmin } from "@/helpers/authorization";
 import ArchiveIcon from '@mui/icons-material/Archive';
 import IconCodeSandbox from "../icons/logo";
+import LogoutIcon from '@mui/icons-material/Logout';
 
 export default function Header() {
     const router = useRouter()
@@ -20,26 +21,35 @@ export default function Header() {
                 <Divider orientation="vertical" variant="middle" flexItem />
                 <Typography variant="overline" fontSize="20px" fontWeight="bold">Samba Technology</Typography>
             </Box>
-            {signed && (
-                <Box component="div" className="flex items-center gap-5">
-                    <Box className="flex items-center gap-2 cursor-pointer" onClick={() => router.push('/app/ocurrences/archive')}>
-                        <ArchiveIcon />
-                        <Typography variant="overline" fontWeight="bold" >Arquivadas</Typography>
+            <Box component="div" className="flex gap-6 items-center">
+                {signed && (
+                    <Box component="div" className="flex items-center gap-5">
+                        <Box className="flex items-center gap-2 cursor-pointer" onClick={() => router.push('/app/ocurrences/archive')}>
+                            <ArchiveIcon />
+                            <Typography variant="overline" fontWeight="bold" >Arquivadas</Typography>
+                        </Box>
+                        <Box className="flex items-center gap-2 cursor-pointer" onClick={() => router.push('/app/ocurrences')}>
+                            <DescriptionIcon />
+                            <Typography variant="overline" fontWeight="bold" >Ocorrências</Typography>
+                        </Box>
+                        {!!user && isAdmin(user.role) ? (
+                            <>
+                                <Box className="flex items-center gap-2 cursor-pointer" onClick={() => router.push('/app/users')}>
+                                    <GroupIcon />
+                                    <Typography variant="overline" fontWeight="bold" >Usuários</Typography>
+                                </Box>
+                            </>
+                        ) : null}
                     </Box>
-                    <Box className="flex items-center gap-2 cursor-pointer" onClick={() => router.push('/app/ocurrences')}>
-                        <DescriptionIcon />
-                        <Typography variant="overline" fontWeight="bold" >Ocorrências</Typography>
-                    </Box>
-                    {!!user && isAdmin(user.role) ? (
-                        <>
-                            <Box className="flex items-center gap-2 cursor-pointer" onClick={() => router.push('/app/users')}>
-                                <GroupIcon />
-                                <Typography variant="overline" fontWeight="bold" >Usuários</Typography>
-                            </Box>
-                        </>
-                    ) : null}
-                </Box>
-            )}
+                )}
+                <Divider orientation="vertical" flexItem />
+                <IconButton onClick={() => {
+                    localStorage.removeItem("access-token");
+                    window.location.reload()
+                }}>
+                    <LogoutIcon />
+                </IconButton>
+            </Box>
         </Box>
     )
 }
