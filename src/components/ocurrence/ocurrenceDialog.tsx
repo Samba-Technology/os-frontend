@@ -89,7 +89,7 @@ export default function OcurrenceDialog({ isOpen, onClose, isView, ocurrence, di
             }
         } finally {
             setLoading(false)
-            .location.reload()
+            window.location.reload()
         }
     }
 
