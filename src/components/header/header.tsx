@@ -40,15 +40,15 @@ export default function Header() {
                                 </Box>
                             </>
                         ) : null}
+                        <Divider orientation="vertical" flexItem />
+                        <IconButton onClick={() => {
+                            localStorage.removeItem("access-token");
+                            window.location.reload()
+                        }}>
+                            <LogoutIcon />
+                        </IconButton>
                     </Box>
                 )}
-                <Divider orientation="vertical" flexItem />
-                <IconButton onClick={() => {
-                    localStorage.removeItem("access-token");
-                    window.location.reload()
-                }}>
-                    <LogoutIcon />
-                </IconButton>
             </Box>
         </Box>
     )
