@@ -15,14 +15,16 @@ export default function Header() {
     const { user, signed } = useContext(AuthContext)
 
     return (
-        <Box component="div" className="flex items-center h-[80px] w-full justify-between gap-10 px-16">
+        <Box component="div" className="flex items-center h-[80px] w-full justify-center md:justify-between gap-10 md:px-16">
             <Box component="div" className="flex justify-center gap-3">
-                <IconCodeSandbox fontSize="50px" />
-                <Divider orientation="vertical" variant="middle" flexItem />
+                <div className="hidden md:flex gap-3">
+                    <IconCodeSandbox fontSize="50px" />
+                    <Divider orientation="vertical" variant="middle" flexItem />
+                </div>
                 <Typography variant="overline" fontSize="20px" fontWeight="bold">Samba Technology</Typography>
             </Box>
-            <Box component="div" className="flex gap-6 items-center">
-                {signed && (
+            {signed && (
+                <Box component="div" className="flex gap-6 items-center">
                     <Box component="div" className="flex items-center gap-5">
                         <Box className="flex items-center gap-2 cursor-pointer" onClick={() => router.push('/app/ocurrences/archive')}>
                             <ArchiveIcon />
@@ -48,8 +50,8 @@ export default function Header() {
                             <LogoutIcon />
                         </IconButton>
                     </Box>
-                )}
-            </Box>
+                </Box>
+            )}
         </Box>
     )
 }
