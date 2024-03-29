@@ -137,12 +137,12 @@ export default function AppArchiveOcurrences() {
             sortable: false,
             width: 100,
             getActions: (params) => {
-                let actions = [<GridActionsCellItem icon={<PageviewIcon />} onClick={() => viewOcurrence(params.row)} label="Visualizar Ocorrencia" />]
+                let actions = [<GridActionsCellItem key={params.id} icon={<PageviewIcon />} onClick={() => viewOcurrence(params.row)} label="Visualizar Ocorrencia" />]
 
                 if (user && isAdmin(user.role)) {
                     actions = [
                         ...actions,
-                        <GridActionsCellItem icon={<PictureAsPdfIcon />} onClick={() => ocurrencePDF(params.row)} label="Visualização em PDF" />
+                        <GridActionsCellItem key={params.id} icon={<PictureAsPdfIcon />} onClick={() => ocurrencePDF(params.row)} label="Visualização em PDF" />
                     ]
                 }
 

@@ -48,8 +48,8 @@ export default function AppUsers() {
             type: 'actions',
             sortable: false,
             getActions: (params) => [
-                <GridActionsCellItem icon={<ManageAccountsIcon />} onClick={() => viewUser(params.row)} label="Visualizar Usuário" />,
-                <GridActionsCellItem icon={<DeleteIcon />} onClick={() => deleteUser(params.row.id)} label="Deletar Usuário" />
+                <GridActionsCellItem key={params.id} icon={<ManageAccountsIcon />} onClick={() => viewUser(params.row)} label="Visualizar Usuário" />,
+                <GridActionsCellItem key={params.id} icon={<DeleteIcon />} onClick={() => deleteUser(params.row.id)} label="Deletar Usuário" />
             ]
         }
     ]
