@@ -17,13 +17,15 @@ interface Props {
 type Data = {
     name: string,
     email: string,
-    password: string
+    password: string,
+    passwordConfirm: string
 }
 
 const schema = yup.object({
     name: yup.string().required(),
-    email: yup.string().email().required(),
-    password: yup.string().min(8).required()
+    email: yup.string().email().required().matches(/^[a-z0-9](\.?[a-z0-9]){5,}@(?:prof(?:essor)?\.)?educacao\.sp\.gov\.br$/, 'O email deve ser Institucional.'),
+    password: yup.string().min(8).required(),
+    passwordConfirm: yup.string().min(8).required('A confirmação de senha é necessária.').oneOf([yup.ref('password')], "As senhas não coincidem.")
 })
 
 export default function UsersDialog({ isOpen, onClose, isView, user }: Props) {
@@ -71,7 +73,12 @@ export default function UsersDialog({ isOpen, onClose, isView, user }: Props) {
                 {!isView && <DialogContentText>Forneça os dados do usuário.</DialogContentText>}
                 <TextField label="Nome Completo" variant="filled" disabled={isView} error={!!errors.name} helperText={errors.name?.message} {...register("name")} />
                 <TextField label="Email" variant="filled" disabled={isView} error={!!errors.email} helperText={errors.email?.message} {...register("email")} />
-                {!isView && <TextField label="Senha" type="password" disabled={isView} variant="filled" error={!!errors.password} helperText={errors.password?.message} {...register("password")} />}
+                {!isView && (
+                    <>
+                        <TextField label="Senha" type="password" disabled={isView} variant="filled" error={!!errors.password} helperText={errors.password?.message} {...register("password")} />
+                        <TextField label="Confirmar Senha" type="password" disabled={isView} variant="filled" error={!!errors.passwordConfirm} helperText={errors.passwordConfirm?.message} {...register("passwordConfirm")} />
+                    </>
+                )}
             </DialogContent>
             <DialogActions className="flex gap-1">
                 <Button variant="contained" onClick={() => {
