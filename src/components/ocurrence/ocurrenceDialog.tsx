@@ -142,7 +142,7 @@ export default function OcurrenceDialog({ isOpen, onClose, isView, ocurrence, di
                             )}
                             renderTags={(value, getTagProps) => {
                                 return value.map((option, index) => (
-                                    <Chip {...getTagProps({ index })} key={option.ra} label={option.name} />
+                                    <Chip {...getTagProps({ index })} key={option.ra} label={option.class + " - " + option.name} />
                                 ))
                             }}
                         />)}
@@ -172,7 +172,7 @@ export default function OcurrenceDialog({ isOpen, onClose, isView, ocurrence, di
                 }}>Fechar</Button>
                 {!isView && <Button variant="contained" type="submit" disabled={loading}>{loading ? <CircularProgress size={20} /> : "Criar"}</Button>}
                 {dispatch && <Button variant="contained" type="submit" disabled={loading}>{loading ? <CircularProgress size={20} /> : "Editar Despacho"}</Button>}
-                {user && isView && ocurrence.userID == user.id && <Button variant="contained" type="submit" disabled={loading}>{loading ? <CircularProgress size={20} /> : "Editar Ocorrência"}</Button>}
+                {user && isView && ocurrence.userId == user.id && <Button variant="contained" type="submit" disabled={loading}>{loading ? <CircularProgress size={20} /> : "Editar Ocorrência"}</Button>}
             </DialogActions>
         </Dialog>
     )
