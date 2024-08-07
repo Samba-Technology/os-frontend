@@ -14,8 +14,8 @@ interface Props {
     onClose: () => void;
     isView: boolean;
     ocurrence?: any;
-    dispatch: boolean;
-    edit: boolean;
+    dispatch?: boolean;
+    edit?: boolean;
 }
 
 type Data = {
