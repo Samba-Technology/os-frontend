@@ -1,11 +1,12 @@
 "use client"
+import AuthContext from "@/contexts/auth";
 import yup from "@/helpers/validation";
 import { Student } from "@/models/student.model";
 import { OcurrenceService } from "@/services/api/ocurrence.service";
 import { StudentsService } from "@/services/api/students.service";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Autocomplete, Button, Chip, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
@@ -35,6 +36,8 @@ const schema = yup.object({
 export default function OcurrenceDialog({ isOpen, onClose, isView, ocurrence, dispatch, edit }: Props) {
     const [students, setStudents] = useState<Student[]>([])
     const [loading, setLoading] = useState(false)
+
+    const {user} = useContext(AuthContext)
 
     useEffect(() => {
         const fetchStudents = async () => {
@@ -169,7 +172,7 @@ export default function OcurrenceDialog({ isOpen, onClose, isView, ocurrence, di
                 }}>Fechar</Button>
                 {!isView && <Button variant="contained" type="submit" disabled={loading}>{loading ? <CircularProgress size={20} /> : "Criar"}</Button>}
                 {dispatch && <Button variant="contained" type="submit" disabled={loading}>{loading ? <CircularProgress size={20} /> : "Editar Despacho"}</Button>}
-                {isView && <Button variant="contained" type="submit" disabled={loading}>{loading ? <CircularProgress size={20} /> : "Editar Ocorrência"}</Button>}
+                {user && isView && ocurrence.userID == user.id && <Button variant="contained" type="submit" disabled={loading}>{loading ? <CircularProgress size={20} /> : "Editar Ocorrência"}</Button>}
             </DialogActions>
         </Dialog>
     )
