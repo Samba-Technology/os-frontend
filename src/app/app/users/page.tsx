@@ -19,6 +19,7 @@ export default function AppUsers() {
     const [confirmOpen, setConfirmOpen] = useState(false)
     const [loading, setLoading] = useState(false)
     const [users, setUsers] = useState<User[]>([])
+    const [searchUsers, setSearchUsers] = useState<User[]>([])
     const [pagination, setPagination] = useState({
         page: 0,
         pageSize: 5
@@ -64,7 +65,11 @@ export default function AppUsers() {
         const fetchUsers = async () => {
             try {
                 setLoading(true)
+
                 const users = await UsersService.findUsers(pagination.page + 1, pagination.pageSize, queryUser?.id)
+                const sUsers = await UsersService.findUsers()
+
+                setSearchUsers(sUsers.data)
                 setUsers(users.data)
                 setTotal(users.meta.total)
             } catch (e) {
@@ -130,47 +135,44 @@ export default function AppUsers() {
     }
 
     return (
-        <Box className="flex justify-center items-center h-3/4 flex-col mt-16">
-            <Container component="main" maxWidth="md">
-                <CssBaseline />
-                <Paper elevation={3} className="flex flex-col gap-2 p-6">
-                    <Typography variant="h4">Usuários</Typography>
-                    <Box component="div" className="flex flex-col gap-4 mt-2">
-                        <Box component="div" className="flex gap-2 items-center">
-                            <Autocomplete
-                                fullWidth
-                                disablePortal
-                                options={users}
-                                getOptionLabel={(user) => user.name}
-                                onChange={(event, user, reason) => {
-                                    user && setQueryUser(user);
-                                    reason === "clear" && setQueryUser(undefined)
-                                }}
-                                renderInput={(params) => <TextField {...params} label="Pesquisa por Usuário" />}
-                            />
-                            <IconButton onClick={() => setOpen(true)} size="large"><PersonAddAlt1Icon /></IconButton>
-                        </Box>
-                        <DataGrid
-                            rows={users}
-                            loading={loading}
-                            columns={columns}
-                            paginationMode="server"
-                            pageSizeOptions={[5, 6, 7]}
-                            paginationModel={pagination}
-                            onPaginationModelChange={setPagination}
-                            rowCount={total}
-                            componentsProps={{
-                                pagination: {
-                                    labelRowsPerPage: "Linhas por página:",
-                                }
+        <div className="flex h-full w-full justify-center items-center">
+            <Paper elevation={3} className="flex flex-col w-[80%] gap-2 p-6 2xl:w-2/3">
+                <Typography variant="h4">Usuários</Typography>
+                <Box component="div" className="flex flex-col gap-4 mt-2">
+                    <Box component="div" className="flex gap-2 items-center">
+                        <Autocomplete
+                            fullWidth
+                            disablePortal
+                            options={searchUsers}
+                            getOptionLabel={(user) => user.name}
+                            onChange={(event, user, reason) => {
+                                user && setQueryUser(user);
+                                reason === "clear" && setQueryUser(undefined)
                             }}
+                            renderInput={(params) => <TextField {...params} label="Pesquisar Usuário" />}
                         />
+                        <IconButton onClick={() => setOpen(true)} size="large"><PersonAddAlt1Icon /></IconButton>
                     </Box>
-                </Paper>
-            </Container>
+                    <DataGrid
+                        rows={users}
+                        loading={loading}
+                        columns={columns}
+                        paginationMode="server"
+                        pageSizeOptions={[5, 6, 7]}
+                        paginationModel={pagination}
+                        onPaginationModelChange={setPagination}
+                        rowCount={total}
+                        componentsProps={{
+                            pagination: {
+                                labelRowsPerPage: "Linhas por página:",
+                            }
+                        }}
+                    />
+                </Box>
+            </Paper>
             <UsersDialog isOpen={open} onClose={handleClose} isView={view} user={userV} />
             <ConfirmDialog isOpen={confirmOpen} onClose={handleClose} onConfirm={handleConfirm} />
-        </Box>
+        </div>
     )
 
 }

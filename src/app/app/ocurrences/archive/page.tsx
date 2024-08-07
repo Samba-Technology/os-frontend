@@ -207,58 +207,53 @@ export default function AppArchiveOcurrences() {
     }
 
     return (
-        <Box className="flex justify-center items-center h-3/4 flex-col">
-            <CssBaseline />
-            <Container component="main" maxWidth="lg">
-                <Paper elevation={3} className="flex flex-col gap-2 p-6">
-                    <Box component="div" className="flex flex-col gap-4 mt-2">
-                        <Typography variant="h4">Ocorrências Arquivadas</Typography>
-                        <Box component="div" className="flex gap-2 items-center">
-                            {user && isAdmin(user.role) && (
-                                <Autocomplete
-                                    fullWidth
-                                    disablePortal
-                                    options={users}
-                                    getOptionLabel={(user) => user.name}
-                                    onChange={(event, user, reason) => {
-                                        user && setQueryUser(user);
-                                        reason === "clear" && setQueryUser(undefined)
-                                    }}
-                                    renderInput={(params) => <TextField {...params} label="Pesquisa por Responsável" />}
-                                />
-                            )}
-                            <Autocomplete
-                                fullWidth
-                                disablePortal
-                                options={students}
-                                getOptionLabel={(student) => student.name}
-                                onChange={(event, student, reason) => {
-                                    student && setQueryStudent(student);
-                                    reason === "clear" && setQueryStudent(undefined)
-                                }}
-                                renderInput={(params) => <TextField {...params} label="Pesquisa por Aluno(a)" />}
-                            />
-                        </Box>
-                        <DataGrid
-                            rows={ocurrences}
-                            loading={loading}
-                            columns={columns}
-                            paginationMode="server"
-                            pageSizeOptions={[5, 6, 7]}
-                            paginationModel={pagination}
-                            onPaginationModelChange={setPagination}
-                            rowCount={total}
-                            componentsProps={{
-                                pagination: {
-                                    labelRowsPerPage: "Linhas por página:",
-                                }
+        <div className="flex h-full w-full justify-center items-center">
+            <Paper elevation={3} className="flex w-[80%] flex-col gap-2 p-6 2xl:w-2/3">
+                <Typography variant="h4">Ocorrências Arquivadas</Typography>
+                <Box component="div" className="flex gap-2 items-center">
+                    {user && isAdmin(user.role) && (
+                        <Autocomplete
+                            fullWidth
+                            disablePortal
+                            options={users}
+                            getOptionLabel={(user) => user.name}
+                            onChange={(event, user, reason) => {
+                                user && setQueryUser(user);
+                                reason === "clear" && setQueryUser(undefined)
                             }}
+                            renderInput={(params) => <TextField {...params} label="Pesquisa por Responsável" />}
                         />
-                    </Box>
-                </Paper>
-            </Container>
+                    )}
+                    <Autocomplete
+                        fullWidth
+                        disablePortal
+                        options={students}
+                        getOptionLabel={(student) => student.name}
+                        onChange={(event, student, reason) => {
+                            student && setQueryStudent(student);
+                            reason === "clear" && setQueryStudent(undefined)
+                        }}
+                        renderInput={(params) => <TextField {...params} label="Pesquisa por Aluno(a)" />}
+                    />
+                </Box>
+                <DataGrid
+                    rows={ocurrences}
+                    loading={loading}
+                    columns={columns}
+                    paginationMode="server"
+                    pageSizeOptions={[5, 6, 7]}
+                    paginationModel={pagination}
+                    onPaginationModelChange={setPagination}
+                    rowCount={total}
+                    componentsProps={{
+                        pagination: {
+                            labelRowsPerPage: "Linhas por página:",
+                        }
+                    }}
+                />
+            </Paper>
             <OcurrenceDialog isOpen={open} onClose={handleClose} isView={view} ocurrence={ocurrence} dispatch={false} />
-        </Box>
+        </div>
     )
 
 }
