@@ -320,7 +320,7 @@ export default function AppOcurrences() {
                             columns={columns}
                             rowCount={total}
                             paginationMode="server"
-                            pageSizeOptions={[10, 20, 30, 40]}
+                            pageSizeOptions={[5, 6, 7]}
                             paginationModel={pagination}
                             onPaginationModelChange={setPagination}
                             componentsProps={{

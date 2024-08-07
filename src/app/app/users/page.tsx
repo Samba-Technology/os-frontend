@@ -21,7 +21,7 @@ export default function AppUsers() {
     const [users, setUsers] = useState<User[]>([])
     const [pagination, setPagination] = useState({
         page: 0,
-        pageSize: 10
+        pageSize: 5
     })
     const [total, setTotal] = useState(0)
     const [view, setView] = useState(false)
@@ -130,7 +130,7 @@ export default function AppUsers() {
     }
 
     return (
-        <Box className="flex justify-center items-center h-3/4 flex-col">
+        <Box className="flex justify-center items-center h-3/4 flex-col mt-16">
             <Container component="main" maxWidth="md">
                 <CssBaseline />
                 <Paper elevation={3} className="flex flex-col gap-2 p-6">
@@ -155,7 +155,7 @@ export default function AppUsers() {
                             loading={loading}
                             columns={columns}
                             paginationMode="server"
-                            pageSizeOptions={[10, 20, 30, 40]}
+                            pageSizeOptions={[5, 6, 7]}
                             paginationModel={pagination}
                             onPaginationModelChange={setPagination}
                             rowCount={total}
