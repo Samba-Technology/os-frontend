@@ -9,6 +9,14 @@ export class OcurrenceService {
         }).then(response => response.data)
     }
 
+    public static edit(id: number, description: string, level: string, students: string[]) {
+        return api.post(`/ocurrences/edit/${id}`, {
+            description: description,
+            level: level,
+            students: students
+        }).then(response => response.data)
+    }
+
     public static findOcurrences(page: number, limit: number, isArchive: boolean, queryStudent?: string, queryUser?: number) {
         return api.get('/ocurrences', {
             params: {

@@ -37,6 +37,7 @@ export default function AppOcurrences() {
     const [total, setTotal] = useState(0)
     const [view, setView] = useState(false)
     const [dispatch, setDispatch] = useState(false)
+    const [edit, setEdit] = useState(false)
     const [ocurrence, setOcurrence] = useState({})
     const [students, setStudents] = useState<Student[]>([])
     const [queryStudent, setQueryStudent] = useState<Student>()
@@ -145,7 +146,7 @@ export default function AppOcurrences() {
             sortable: false,
             width: 120,
             getActions: (params) => {
-                let actions = [<GridActionsCellItem key={params.id} icon={<PageviewIcon />} onClick={() => viewOcurrence(params.row)} label="Visualizar Ocorrencia" />]
+                let actions = [<GridActionsCellItem key={params.id} icon={<PageviewIcon />} onClick={() => params.row.status === "OPENED" ? editOcurrence(params.row) : viewOcurrence(params.row)} label="Visualizar Ocorrencia" />]
 
                 if (user && isAdmin(user.role)) {
                     actions = [
@@ -229,6 +230,11 @@ export default function AppOcurrences() {
         viewOcurrence(ocurrence)
     }
 
+    const editOcurrence = async (ocurrence: any) => {
+        setEdit(true)
+        viewOcurrence(ocurrence)
+    }
+
     const conclueOcurrence = async (ocurrenceId: number) => {
         try {
             const ocurrence = await OcurrenceService.conclue(ocurrenceId)
@@ -263,6 +269,7 @@ export default function AppOcurrences() {
         setView(false)
         setOcurrence({})
         setDispatch(false)
+        setEdit(false)
     }
 
     return (
@@ -297,7 +304,10 @@ export default function AppOcurrences() {
                                 }}
                                 renderInput={(params) => <TextField {...params} label="Pesquisa por Aluno(a)" />}
                             />
-                            <IconButton onClick={() => setOpen(true)} size="large">
+                            <IconButton onClick={() => {
+                                setEdit(true)
+                                setOpen(true)
+                            }} size="large">
                                 <NoteAddIcon />
                             </IconButton>
                             <IconButton onClick={() => setOpenStudents(true)} size="large">
@@ -310,7 +320,7 @@ export default function AppOcurrences() {
                             columns={columns}
                             rowCount={total}
                             paginationMode="server"
-                            pageSizeOptions={[10, 20, 30, 40]}
+                            pageSizeOptions={[5, 6, 7]}
                             paginationModel={pagination}
                             onPaginationModelChange={setPagination}
                             componentsProps={{
@@ -322,7 +332,7 @@ export default function AppOcurrences() {
                     </Box>
                 </Paper>
             </Container>
-            <OcurrenceDialog isOpen={open} onClose={handleClose} isView={view} ocurrence={ocurrence} dispatch={dispatch} />
+            <OcurrenceDialog isOpen={open} onClose={handleClose} isView={view} ocurrence={ocurrence} dispatch={dispatch} edit={edit} />
             <StudentsDialog isOpen={openStudents} onClose={handleClose} />
         </Box>
     )

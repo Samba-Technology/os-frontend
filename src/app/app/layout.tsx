@@ -16,11 +16,10 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     }, [signed])
 
     return (
-        <div className='flex flex-col justify-between h-screen'>
+        <div className='flex flex-col h-screen w-screen'>
             <Header />
-            {children}
-            <div className='flex justify-center pb-2'>
-                <Typography variant='overline'>Samba Technology | V1.1.2 | 2024 ©</Typography>
+            <div className='flex-grow'>
+                {children}
             </div>
         </div>
     )

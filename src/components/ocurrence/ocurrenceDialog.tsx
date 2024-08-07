@@ -1,11 +1,12 @@
 "use client"
+import AuthContext from "@/contexts/auth";
 import yup from "@/helpers/validation";
 import { Student } from "@/models/student.model";
 import { OcurrenceService } from "@/services/api/ocurrence.service";
 import { StudentsService } from "@/services/api/students.service";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Autocomplete, Button, Chip, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
@@ -14,26 +15,29 @@ interface Props {
     onClose: () => void;
     isView: boolean;
     ocurrence?: any;
-    dispatch: boolean;
+    dispatch?: boolean;
+    edit?: boolean;
 }
 
 type Data = {
     description: string,
     level: string,
     students: string[],
-    dispatch?: string
+    dispatch?: string | null,
 }
 
 const schema = yup.object({
     description: yup.string().required(),
     level: yup.string().required(),
     students: yup.array().min(1).required(),
-    dispatch: yup.string()
+    dispatch: yup.string().nullable()
 })
 
-export default function OcurrenceDialog({ isOpen, onClose, isView, ocurrence, dispatch }: Props) {
+export default function OcurrenceDialog({ isOpen, onClose, isView, ocurrence, dispatch, edit }: Props) {
     const [students, setStudents] = useState<Student[]>([])
     const [loading, setLoading] = useState(false)
+
+    const {user} = useContext(AuthContext)
 
     useEffect(() => {
         const fetchStudents = async () => {
@@ -72,19 +76,24 @@ export default function OcurrenceDialog({ isOpen, onClose, isView, ocurrence, di
     const onSubmit = async (data: Data) => {
         try {
             setLoading(true)
-            if (!dispatch) {
+            if (!dispatch && !isView) {
                 await OcurrenceService.create(data.description, data.level, data.students)
-                toast.success('Ocorrencia criada com sucesso!')
-            } else {
+                toast.success('Ocorrência criada com sucesso!')
+            } else if (dispatch) {
                 data.dispatch && await OcurrenceService.dispatch(ocurrence.id, data.dispatch)
                 toast.success('Despacho adicionado com sucesso.')
+            } else if (edit) {
+                await OcurrenceService.edit(ocurrence.id, data.description, data.level, data.students)
+                toast.success('Ocorrência editada com sucesso!')
             }
+
             onClose()
             reset()
         } catch (e: any) {
             if (e?.response?.data?.message) {
                 toast.error(e.response.data.message)
             } else {
+                console.log(e)
                 toast.error('Algo deu errado.')
             }
         } finally {
@@ -93,10 +102,14 @@ export default function OcurrenceDialog({ isOpen, onClose, isView, ocurrence, di
         }
     }
 
+    const onError = (e: any) => {
+        console.error(e)
+    }
+
 
 
     return (
-        <Dialog open={isOpen} onClose={onClose} component="form" onSubmit={handleSubmit(onSubmit)} fullWidth>
+        <Dialog open={isOpen} onClose={onClose} component="form" onSubmit={handleSubmit(onSubmit, onError)} fullWidth>
             <DialogTitle>Registro de Ocorrência</DialogTitle>
             <DialogContent className="flex flex-col gap-3">
                 {!isView && <DialogContentText>Forneça os dados da ocorrência.</DialogContentText>}
@@ -107,7 +120,7 @@ export default function OcurrenceDialog({ isOpen, onClose, isView, ocurrence, di
                         <Autocomplete
                             fullWidth
                             multiple
-                            disabled={isView}
+                            disabled={!edit}
                             options={students}
                             getOptionLabel={(option) => option.name}
                             onChange={(event, students) => { onChange(students.map(student => student.ra)) }}
@@ -129,13 +142,13 @@ export default function OcurrenceDialog({ isOpen, onClose, isView, ocurrence, di
                             )}
                             renderTags={(value, getTagProps) => {
                                 return value.map((option, index) => (
-                                    <Chip {...getTagProps({ index })} key={option.ra} label={option.name} />
+                                    <Chip {...getTagProps({ index })} key={option.ra} label={option.name + " - " + option.class} />
                                 ))
                             }}
                         />)}
                 />
-                <TextField disabled={isView} label="Descrição" variant="filled" fullWidth multiline rows="7" error={!!errors.description} helperText={errors.description?.message} {...register("description")} />
-                <FormControl variant="filled" disabled={isView}>
+                <TextField disabled={!edit} label="Descrição" variant="filled" fullWidth multiline rows="7" error={!!errors.description} helperText={errors.description?.message} {...register("description")} />
+                <FormControl variant="filled" disabled={!edit}>
                     <InputLabel>Nível</InputLabel>
                     <Controller
                         name="level"
@@ -158,7 +171,8 @@ export default function OcurrenceDialog({ isOpen, onClose, isView, ocurrence, di
                     reset()
                 }}>Fechar</Button>
                 {!isView && <Button variant="contained" type="submit" disabled={loading}>{loading ? <CircularProgress size={20} /> : "Criar"}</Button>}
-                {dispatch && <Button variant="contained" type="submit" disabled={loading}>{loading ? <CircularProgress size={20} /> : "Adicionar despacho"}</Button>}
+                {dispatch && <Button variant="contained" type="submit" disabled={loading}>{loading ? <CircularProgress size={20} /> : "Editar Despacho"}</Button>}
+                {user && isView && ocurrence.userId == user.id && <Button variant="contained" type="submit" disabled={loading}>{loading ? <CircularProgress size={20} /> : "Editar Ocorrência"}</Button>}
             </DialogActions>
         </Dialog>
     )

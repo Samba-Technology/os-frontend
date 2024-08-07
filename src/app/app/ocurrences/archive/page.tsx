@@ -25,7 +25,7 @@ export default function AppArchiveOcurrences() {
     const [ocurrences, setOcurrences] = useState<Ocurrence[]>([])
     const [pagination, setPagination] = useState({
         page: 0,
-        pageSize: 10
+        pageSize: 5
     })
     const [total, setTotal] = useState(0)
     const [ocurrence, setOcurrence] = useState({})
@@ -244,7 +244,7 @@ export default function AppArchiveOcurrences() {
                             loading={loading}
                             columns={columns}
                             paginationMode="server"
-                            pageSizeOptions={[10, 20, 30, 40]}
+                            pageSizeOptions={[5, 6, 7]}
                             paginationModel={pagination}
                             onPaginationModelChange={setPagination}
                             rowCount={total}
