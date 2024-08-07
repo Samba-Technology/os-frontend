@@ -142,7 +142,7 @@ export default function OcurrenceDialog({ isOpen, onClose, isView, ocurrence, di
                             )}
                             renderTags={(value, getTagProps) => {
                                 return value.map((option, index) => (
-                                    <Chip {...getTagProps({ index })} key={option.ra} label={option.class + " - " + option.name} />
+                                    <Chip {...getTagProps({ index })} key={option.ra} label={option.name + " - " + option.class} />
                                 ))
                             }}
                         />)}
