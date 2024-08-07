@@ -20,7 +20,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
             <Header />
             {children}
             <div className='flex justify-center pb-2'>
-                <Typography variant='overline'>Samba Technology | V1.1.3 | 2024 ©</Typography>
+                <Typography variant='overline'>Samba Technology | V1.1.5 | 2024 ©</Typography>
             </div>
         </div>
     )
