@@ -13,7 +13,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         if (signed) {
             router.push('/app/ocurrences')
         }
-    }, [])
+    }, [router, signed])
 
     return (
         <div className='flex flex-col justify-between h-screen'>

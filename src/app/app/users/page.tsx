@@ -3,7 +3,7 @@ import UsersDialog from "@/components/users/usersDialog";
 import AuthContext from "@/contexts/auth";
 import { isAdmin } from "@/helpers/authorization";
 import { User } from "@/models/user.model";
-import { Autocomplete, Box, Container, CssBaseline, IconButton, Paper, TextField, Typography } from "@mui/material";
+import { Autocomplete, Box, IconButton, Paper, TextField, Typography } from "@mui/material";
 import { DataGrid, GridActionsCellItem, GridColDef } from "@mui/x-data-grid";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
@@ -14,7 +14,7 @@ import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
 import { toast } from "react-toastify";
 import ConfirmDialog from "@/components/users/confirmDialog";
 
-export default function AppUsers() {
+export default function Users() {
     const [open, setOpen] = useState(false)
     const [confirmOpen, setConfirmOpen] = useState(false)
     const [loading, setLoading] = useState(false)
@@ -59,7 +59,7 @@ export default function AppUsers() {
         if (user && !isAdmin(user.role)) {
             router.push('/app/users')
         }
-    }, [])
+    }, [user, router])
 
     useEffect(() => {
         const fetchUsers = async () => {

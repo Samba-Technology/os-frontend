@@ -37,7 +37,7 @@ export default function OcurrenceDialog({ isOpen, onClose, isView, ocurrence, di
     const [students, setStudents] = useState<Student[]>([])
     const [loading, setLoading] = useState(false)
 
-    const {user} = useContext(AuthContext)
+    const { user } = useContext(AuthContext)
 
     useEffect(() => {
         const fetchStudents = async () => {
@@ -71,7 +71,7 @@ export default function OcurrenceDialog({ isOpen, onClose, isView, ocurrence, di
         } else {
             reset()
         }
-    }, [isView])
+    }, [isView, ocurrence.description, ocurrence.dispatch, ocurrence.level, ocurrence.students, reset, setValue])
 
     const onSubmit = async (data: Data) => {
         try {
@@ -172,7 +172,7 @@ export default function OcurrenceDialog({ isOpen, onClose, isView, ocurrence, di
                 }}>Fechar</Button>
                 {!isView && <Button variant="contained" type="submit" disabled={loading}>{loading ? <CircularProgress size={20} /> : "Criar"}</Button>}
                 {dispatch && <Button variant="contained" type="submit" disabled={loading}>{loading ? <CircularProgress size={20} /> : "Editar Despacho"}</Button>}
-                {user && isView && ocurrence.userId == user.id && <Button variant="contained" type="submit" disabled={loading}>{loading ? <CircularProgress size={20} /> : "Editar Ocorrência"}</Button>}
+                {user && isView && edit && ocurrence.userId == user.id && <Button variant="contained" type="submit" disabled={loading}>{loading ? <CircularProgress size={20} /> : "Editar Ocorrência"}</Button>}
             </DialogActions>
         </Dialog>
     )

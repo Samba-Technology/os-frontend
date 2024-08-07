@@ -1,5 +1,5 @@
 "use client"
-import { Autocomplete, Box, Container, CssBaseline, IconButton, Paper, TextField, Typography } from "@mui/material";
+import { Autocomplete, Box, IconButton, Paper, TextField, Typography } from "@mui/material";
 import { DataGrid, GridActionsCellItem, GridColDef } from "@mui/x-data-grid";
 import { useContext, useEffect, useState } from "react";
 import CommentIcon from '@mui/icons-material/Comment';
@@ -24,8 +24,9 @@ import { UsersService } from "@/services/api/users.service";
 import { User } from "@/models/user.model";
 import ocurrencePDF from "@/reports/ocurrences/ocurrence";
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
+import CancelIcon from '@mui/icons-material/Cancel';
 
-export default function AppOcurrences() {
+export default function Ocurrences() {
     const [open, setOpen] = useState(false)
     const [openStudents, setOpenStudents] = useState(false)
     const [loading, setLoading] = useState(false)
@@ -120,6 +121,10 @@ export default function AppOcurrences() {
                         icon = <CheckCircleIcon />
                         text = 'Resolvida'
                         break
+                    case 'CANCELED':
+                        icon = <CancelIcon />
+                        text = 'Cancelada'
+                        break
                     default:
                         icon = undefined
                         text = undefined
@@ -155,6 +160,13 @@ export default function AppOcurrences() {
                         <GridActionsCellItem key={params.id} icon={<CommentIcon />} onClick={() => dispatchOcurrence(params.row)} disabled={params.row.status === "OPENED" ? true : params.row.status === "RESOLVED" ? true : false} label={params.row.status === "WAITING" ? "Editar despacho" : "Adicionar despacho"} showInMenu />,
                         <GridActionsCellItem key={params.id} icon={<CheckCircleIcon />} onClick={() => conclueOcurrence(params.row.id)} disabled={params.row.status === "WAITING" ? false : true} label="Concluir Ocorrência" showInMenu />,
                         <GridActionsCellItem key={params.id} icon={<PictureAsPdfIcon />} onClick={() => ocurrencePDF(params.row)} disabled={params.row.status === "WAITING" ? false : true} label="Visualização em PDF" showInMenu />
+                    ]
+                }
+
+                if (user && params.row.status === "OPENED" && params.row.userId === user.id) {
+                    actions = [
+                        ...actions,
+                        <GridActionsCellItem key={params.id} icon={<CancelIcon />} onClick={() => cancelOcurrence(params.row.id)} label="Cancelar Ocorrência" showInMenu />,
                     ]
                 }
 
@@ -204,7 +216,7 @@ export default function AppOcurrences() {
         }
 
         fetchStudents()
-    }, [openStudents])
+    }, [openStudents, user])
 
     //Ações
 
@@ -239,7 +251,17 @@ export default function AppOcurrences() {
         try {
             const ocurrence = await OcurrenceService.conclue(ocurrenceId)
             refreshData(ocurrence)
-            toast.success('Ocorrencia concluida com sucesso.')
+            toast.success('Ocorrência concluida com sucesso.')
+        } catch (e: any) {
+            toast.error(e.response.data.message)
+        }
+    }
+
+    const cancelOcurrence = async (ocurrenceId: number) => {
+        try {
+            const ocurrence = await OcurrenceService.cancel(ocurrenceId)
+            refreshData(ocurrence)
+            toast.success('Ocorrência cancelada com sucesso!')
         } catch (e: any) {
             toast.error(e.response.data.message)
         }

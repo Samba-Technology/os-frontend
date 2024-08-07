@@ -45,7 +45,7 @@ export default function UsersDialog({ isOpen, onClose, isView, user }: Props) {
             setValue("name", user.name)
             setValue("email", user.email)
         }
-    }, [isView])
+    }, [isView, setValue, user.email, user.name])
 
     const onSubmit = async (data: Data) => {
         try {

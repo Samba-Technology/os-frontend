@@ -1,5 +1,5 @@
 "use client"
-import { Autocomplete, Box, Container, CssBaseline, IconButton, Paper, TextField, Typography } from "@mui/material";
+import { Autocomplete, Box, Paper, TextField, Typography } from "@mui/material";
 import { DataGrid, GridActionsCellItem, GridColDef } from "@mui/x-data-grid";
 import { useContext, useEffect, useState } from "react";
 import PageviewIcon from '@mui/icons-material/Pageview';
@@ -18,8 +18,9 @@ import AuthContext from "@/contexts/auth";
 import { User } from "@/models/user.model";
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import ocurrencePDF from "@/reports/ocurrences/ocurrence";
+import CancelIcon from '@mui/icons-material/Cancel';
 
-export default function AppArchiveOcurrences() {
+export default function ArchiveOcurrences() {
     const [open, setOpen] = useState(false)
     const [loading, setLoading] = useState(false)
     const [ocurrences, setOcurrences] = useState<Ocurrence[]>([])
@@ -111,6 +112,10 @@ export default function AppArchiveOcurrences() {
                         icon = <CheckCircleIcon />
                         text = 'Resolvida'
                         break
+                    case 'CANCELED':
+                        icon = <CancelIcon />
+                        text = 'Cancelada'
+                        break
                     default:
                         icon = undefined
                         text = undefined
@@ -192,7 +197,7 @@ export default function AppArchiveOcurrences() {
         }
 
         fetchStudents()
-    }, [])
+    }, [user])
 
     const viewOcurrence = (ocurrence: any) => {
         setView(true)
