@@ -3,7 +3,6 @@ import AuthContext from '@/contexts/auth';
 import { useContext, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Header from '@/components/header/header';
-import { Typography } from '@mui/material';
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
     const { signed } = useContext(AuthContext)
@@ -13,7 +12,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         if (!signed) {
             router.push('/auth/login')
         }
-    }, [signed])
+    }, [signed, router])
 
     return (
         <div className='flex flex-col h-screen w-screen'>

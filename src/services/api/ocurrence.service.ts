@@ -42,4 +42,8 @@ export class OcurrenceService {
     public static conclue(id: number) {
         return api.delete(`/ocurrences/${id}`).then(response => response.data)
     }
+
+    public static cancel(id: number) {
+        return api.delete(`/ocurrences/cancel/${id}`).then(response => response.data)
+    }
 }

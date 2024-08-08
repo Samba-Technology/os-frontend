@@ -1,5 +1,5 @@
 "use client"
-import { Autocomplete, Box, Container, CssBaseline, IconButton, Paper, TextField, Typography } from "@mui/material";
+import { Autocomplete, Box, IconButton, Paper, TextField, Typography } from "@mui/material";
 import { DataGrid, GridActionsCellItem, GridColDef } from "@mui/x-data-grid";
 import { useContext, useEffect, useState } from "react";
 import CommentIcon from '@mui/icons-material/Comment';
@@ -24,15 +24,16 @@ import { UsersService } from "@/services/api/users.service";
 import { User } from "@/models/user.model";
 import ocurrencePDF from "@/reports/ocurrences/ocurrence";
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
+import CancelIcon from '@mui/icons-material/Cancel';
 
-export default function AppOcurrences() {
+export default function Ocurrences() {
     const [open, setOpen] = useState(false)
     const [openStudents, setOpenStudents] = useState(false)
     const [loading, setLoading] = useState(false)
     const [ocurrences, setOcurrences] = useState<Ocurrence[]>([])
     const [pagination, setPagination] = useState({
         page: 0,
-        pageSize: 10
+        pageSize: 5
     })
     const [total, setTotal] = useState(0)
     const [view, setView] = useState(false)
@@ -120,6 +121,10 @@ export default function AppOcurrences() {
                         icon = <CheckCircleIcon />
                         text = 'Resolvida'
                         break
+                    case 'CANCELED':
+                        icon = <CancelIcon />
+                        text = 'Cancelada'
+                        break
                     default:
                         icon = undefined
                         text = undefined
@@ -155,6 +160,13 @@ export default function AppOcurrences() {
                         <GridActionsCellItem key={params.id} icon={<CommentIcon />} onClick={() => dispatchOcurrence(params.row)} disabled={params.row.status === "OPENED" ? true : params.row.status === "RESOLVED" ? true : false} label={params.row.status === "WAITING" ? "Editar despacho" : "Adicionar despacho"} showInMenu />,
                         <GridActionsCellItem key={params.id} icon={<CheckCircleIcon />} onClick={() => conclueOcurrence(params.row.id)} disabled={params.row.status === "WAITING" ? false : true} label="Concluir Ocorrência" showInMenu />,
                         <GridActionsCellItem key={params.id} icon={<PictureAsPdfIcon />} onClick={() => ocurrencePDF(params.row)} disabled={params.row.status === "WAITING" ? false : true} label="Visualização em PDF" showInMenu />
+                    ]
+                }
+
+                if (user && params.row.status === "OPENED" && params.row.userId === user.id) {
+                    actions = [
+                        ...actions,
+                        <GridActionsCellItem key={params.id} icon={<CancelIcon />} onClick={() => cancelOcurrence(params.row.id)} label="Cancelar Ocorrência" showInMenu />,
                     ]
                 }
 
@@ -204,7 +216,7 @@ export default function AppOcurrences() {
         }
 
         fetchStudents()
-    }, [openStudents])
+    }, [openStudents, user])
 
     //Ações
 
@@ -239,7 +251,17 @@ export default function AppOcurrences() {
         try {
             const ocurrence = await OcurrenceService.conclue(ocurrenceId)
             refreshData(ocurrence)
-            toast.success('Ocorrencia concluida com sucesso.')
+            toast.success('Ocorrência concluida com sucesso.')
+        } catch (e: any) {
+            toast.error(e.response.data.message)
+        }
+    }
+
+    const cancelOcurrence = async (ocurrenceId: number) => {
+        try {
+            const ocurrence = await OcurrenceService.cancel(ocurrenceId)
+            refreshData(ocurrence)
+            toast.success('Ocorrência cancelada com sucesso!')
         } catch (e: any) {
             toast.error(e.response.data.message)
         }
@@ -273,68 +295,63 @@ export default function AppOcurrences() {
     }
 
     return (
-        <Box className="flex justify-center items-center h-3/4 flex-col">
-            <CssBaseline />
-            <Container component="main" maxWidth="lg">
-                <Paper elevation={3} className="flex flex-col gap-2 p-6">
-                    <Box component="div" className="flex flex-col gap-4 mt-2">
-                        <Typography variant="h4">Ocorrências</Typography>
-                        <Box component="div" className="flex gap-2 items-center">
-                            {user && isAdmin(user.role) && (
-                                <Autocomplete
-                                    fullWidth
-                                    disablePortal
-                                    options={users}
-                                    getOptionLabel={(user) => user.name}
-                                    onChange={(event, user, reason) => {
-                                        user && setQueryUser(user);
-                                        reason === "clear" && setQueryUser(undefined)
-                                    }}
-                                    renderInput={(params) => <TextField {...params} label="Pesquisa por Responsável" />}
-                                />
-                            )}
-                            <Autocomplete
-                                fullWidth
-                                disablePortal
-                                options={students}
-                                getOptionLabel={(student) => student.name}
-                                onChange={(event, student, reason) => {
-                                    student && setQueryStudent(student);
-                                    reason === "clear" && setQueryStudent(undefined)
-                                }}
-                                renderInput={(params) => <TextField {...params} label="Pesquisa por Aluno(a)" />}
-                            />
-                            <IconButton onClick={() => {
-                                setEdit(true)
-                                setOpen(true)
-                            }} size="large">
-                                <NoteAddIcon />
-                            </IconButton>
-                            <IconButton onClick={() => setOpenStudents(true)} size="large">
-                                <GroupAddIcon />
-                            </IconButton>
-                        </Box>
-                        <DataGrid
-                            rows={ocurrences}
-                            loading={loading}
-                            columns={columns}
-                            rowCount={total}
-                            paginationMode="server"
-                            pageSizeOptions={[5, 6, 7]}
-                            paginationModel={pagination}
-                            onPaginationModelChange={setPagination}
-                            componentsProps={{
-                                pagination: {
-                                    labelRowsPerPage: "Linhas por página:",
-                                }
+        <div className="flex h-full w-full justify-center items-center">
+            <Paper elevation={3} className="flex flex-col w-[80%] gap-2 p-6 2xl:w-2/3">
+                <Typography variant="h4">Ocorrências</Typography>
+                <Box component="div" className="flex gap-2 items-center">
+                    {user && isAdmin(user.role) && (
+                        <Autocomplete
+                            fullWidth
+                            disablePortal
+                            options={users}
+                            getOptionLabel={(user) => user.name}
+                            onChange={(event, user, reason) => {
+                                user && setQueryUser(user);
+                                reason === "clear" && setQueryUser(undefined)
                             }}
+                            renderInput={(params) => <TextField {...params} label="Pesquisa por Responsável" />}
                         />
-                    </Box>
-                </Paper>
-            </Container>
+                    )}
+                    <Autocomplete
+                        fullWidth
+                        disablePortal
+                        options={students}
+                        getOptionLabel={(student) => student.name}
+                        onChange={(event, student, reason) => {
+                            student && setQueryStudent(student);
+                            reason === "clear" && setQueryStudent(undefined)
+                        }}
+                        renderInput={(params) => <TextField {...params} label="Pesquisa por Aluno(a)" />}
+                    />
+                    <IconButton onClick={() => {
+                        setEdit(true)
+                        setOpen(true)
+                    }} size="large">
+                        <NoteAddIcon />
+                    </IconButton>
+                    <IconButton onClick={() => setOpenStudents(true)} size="large">
+                        <GroupAddIcon />
+                    </IconButton>
+                </Box>
+                <DataGrid
+                    rows={ocurrences}
+                    loading={loading}
+                    columns={columns}
+                    rowCount={total}
+                    paginationMode="server"
+                    pageSizeOptions={[5, 6, 7]}
+                    paginationModel={pagination}
+                    onPaginationModelChange={setPagination}
+                    componentsProps={{
+                        pagination: {
+                            labelRowsPerPage: "Linhas por página:",
+                        }
+                    }}
+                />
+            </Paper>
             <OcurrenceDialog isOpen={open} onClose={handleClose} isView={view} ocurrence={ocurrence} dispatch={dispatch} edit={edit} />
             <StudentsDialog isOpen={openStudents} onClose={handleClose} />
-        </Box>
+        </div>
     )
 
 }

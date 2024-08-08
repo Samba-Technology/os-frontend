@@ -14,7 +14,7 @@ export default function ConfirmDialog({ isOpen, onClose, onConfirm }: Props) {
         <Dialog open={isOpen} onClose={onClose} component='form'>
             <DialogTitle>Confirmação</DialogTitle>
             <DialogContent>
-                <DialogContentText>Você tem certeza que quer deletar esse usuário?</DialogContentText>
+                <DialogContentText>Você tem certeza que deseja realizar essa ação?</DialogContentText>
             </DialogContent>
             <DialogActions>
                 <Button onClick={onClose}>Cancelar</Button>

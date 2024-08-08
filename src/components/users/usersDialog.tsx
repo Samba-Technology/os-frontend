@@ -45,7 +45,7 @@ export default function UsersDialog({ isOpen, onClose, isView, user }: Props) {
             setValue("name", user.name)
             setValue("email", user.email)
         }
-    }, [isView])
+    }, [isView, setValue, user.email, user.name])
 
     const onSubmit = async (data: Data) => {
         try {
@@ -68,7 +68,7 @@ export default function UsersDialog({ isOpen, onClose, isView, user }: Props) {
 
     return (
         <Dialog open={isOpen} onClose={onClose} component="form" onSubmit={handleSubmit(onSubmit)} fullWidth>
-            <DialogTitle>Criação de usuário</DialogTitle>
+            <DialogTitle>Registro de usuário</DialogTitle>
             <DialogContent className="flex flex-col w-full gap-2">
                 {!isView && <DialogContentText>Forneça os dados do usuário.</DialogContentText>}
                 <TextField label="Nome Completo" variant="filled" disabled={isView} error={!!errors.name} helperText={errors.name?.message} {...register("name")} />

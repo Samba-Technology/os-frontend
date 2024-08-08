@@ -8,7 +8,7 @@ export default function Home() {
 
   useEffect(() => {
     router.push('/auth/login')
-  }, [])
+  }, [router])
 
   return (
     <main className="">
