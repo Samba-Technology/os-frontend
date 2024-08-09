@@ -60,11 +60,16 @@ export default function OcurrencesStatistics() {
         const solved = viewData.filter((ocurrence: Ocurrence) => ocurrence.status === "RESOLVED").length
         const canceled = viewData.filter((ocurrence: Ocurrence) => ocurrence.status === "CANCELED").length
         const solvedPercentage = Math.round((100 * solved) / (total - canceled))
+        const opened = total - (canceled + solved)
 
         const visualization = [
             {
                 title: "Ocorrências criadas",
                 value: total
+            },
+            {
+                title: "Ocorrências abertas",
+                value: opened
             },
             {
                 title: "Ocorrências resolvidas",
@@ -75,7 +80,7 @@ export default function OcurrencesStatistics() {
                 value: canceled
             },
             {
-                title: "Porcentagem de solução",
+                title: "Resolvidas (%)",
                 value: solvedPercentage
             }
         ]
@@ -116,9 +121,9 @@ export default function OcurrencesStatistics() {
                 />
                 <div className="flex flex-col gap-2 md:flex-row">
                     {visualizationData != null && visualizationData.map((data: any, index) => (
-                        <div key={index} className="flex flex-col items-center p-4 bg-neutral-50 drop-shadow-md rounded-md gap-2 w-full md:w-1/4">
+                        <div key={index} className="flex flex-col items-center p-4 bg-neutral-50 drop-shadow-md rounded-md gap-2 w-full md:w-1/5">
                             <p className="md:text-sm 2xl:text-lg">{data.title}</p>
-                            <h1 className="font-semibold text-xl md:text-2xl 2xl:text-4xl">{isNaN(data.value) ? 'N/A' : index === 3 ? data.value + "%" : data.value}</h1>
+                            <h1 className="font-semibold text-xl md:text-2xl 2xl:text-4xl">{isNaN(data.value) ? 'N/A' : index === 4 ? data.value + "%" : data.value}</h1>
                         </div>
                     ))}
                 </div>
@@ -129,9 +134,9 @@ export default function OcurrencesStatistics() {
                             series={[
                                 {
                                     data: [
-                                        { id: 0, value: visualizationData ? (visualizationData[0].value - (visualizationData[1].value + visualizationData[2].value)) : 0, label: 'Abertas', color: '#bdbdbd' },
-                                        { id: 1, value: visualizationData ? visualizationData[2].value : 0, label: 'Canceladas', color: '#757575' },
-                                        { id: 2, value: visualizationData ? visualizationData[1].value : 0, label: 'Resolvidas', color: '#454545' },
+                                        { id: 0, value: visualizationData ? (visualizationData[1].value) : 0, label: 'Abertas', color: '#bdbdbd' },
+                                        { id: 1, value: visualizationData ? visualizationData[3].value : 0, label: 'Canceladas', color: '#757575' },
+                                        { id: 2, value: visualizationData ? visualizationData[2].value : 0, label: 'Resolvidas', color: '#454545' },
                                     ],
                                     innerRadius: 10,
                                     outerRadius: 100,
@@ -156,8 +161,8 @@ export default function OcurrencesStatistics() {
                             series={[
                                 {
                                     data: [
-                                        { id: 0, value: visualizationData ? ((visualizationData[0].value - visualizationData[2].value) - visualizationData[1].value) : 0, label: 'Não resolvidas', color: '#bdbdbd' },
-                                        { id: 1, value: visualizationData ? visualizationData[1].value : 0, label: 'Resolvidas', color: '#757575' },
+                                        { id: 0, value: visualizationData ? visualizationData[1].value : 0, label: 'Não resolvidas', color: '#bdbdbd' },
+                                        { id: 1, value: visualizationData ? visualizationData[2].value : 0, label: 'Resolvidas', color: '#757575' },
                                     ],
                                     innerRadius: 10,
                                     outerRadius: 100,
