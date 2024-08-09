@@ -166,7 +166,7 @@ export default function OcurrencesStatistics() {
                         <div key={index} className="flex flex-col items-center p-4 bg-neutral-50 drop-shadow-md rounded-md gap-2 w-full md:w-1/4">
                             <p className="md:text-sm 2xl:text-lg">{data.title}</p>
                             <div className="flex items-center gap-2">
-                                <h1 className="font-semibold text-xl md:text-2xl 2xl:text-4xl">{isNaN(data.value) ? 'N/A' : index === 4 ? data.value + "%" : data.value}</h1>
+                                <h1 className="font-semibold text-xl md:text-2xl 2xl:text-4xl">{isNaN(data.value) ? 'N/A' : index === 3 ? data.value + "%" : data.value}</h1>
                                 {data.percentageChange != null && (
                                     <p className={`text-sm ${data.percentageChange >= 0 ? 'text-green-500' : 'text-red-500'}`}>
                                         {data.percentageChange.toFixed(0)}%
