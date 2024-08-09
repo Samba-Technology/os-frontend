@@ -1,8 +1,14 @@
 "use client"
 import { Ocurrence } from "@/models/ocurrence.model";
 import { OcurrenceService } from "@/services/api/ocurrence.service";
+import { pieArcLabelClasses, PieChart } from "@mui/x-charts/PieChart";
 import { Autocomplete, Paper, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
+
+interface Visualization {
+    title: string,
+    value: number
+}
 
 export default function OcurrencesStatistics() {
     const [ocurrences, setOcurrences] = useState<Ocurrence[]>([])
@@ -10,7 +16,7 @@ export default function OcurrencesStatistics() {
     const [viewMonth, setViewMonth] = useState<string | undefined>(undefined)
     //const [users, setUser] = useState<User[]>([])
     const [viewData, setViewData] = useState<Ocurrence[]>([])
-    const [visualizationData, setVisualizationData] = useState<any[]>([])
+    const [visualizationData, setVisualizationData] = useState<Visualization[] | null>(null)
 
     useEffect(() => {
         const fetchOcurrences = async () => {
@@ -70,7 +76,7 @@ export default function OcurrencesStatistics() {
             },
             {
                 title: "Porcentagem de solução",
-                value: solvedPercentage + "%"
+                value: solvedPercentage
             }
         ]
 
@@ -79,7 +85,7 @@ export default function OcurrencesStatistics() {
 
     return (
         <div className="flex w-full h-full justify-center items-center">
-            <Paper elevation={4} className="flex flex-col w-2/3 p-4 gap-2">
+            <Paper elevation={4} className="flex flex-col p-4 gap-2 w-[90%] xl:w-2/3">
                 <div className="flex justify-between">
                     <h1 className="text-2xl">Estatísticas</h1>
                     <h1>{viewMonth}</h1>
@@ -109,12 +115,67 @@ export default function OcurrencesStatistics() {
                     )}
                 />
                 <div className="flex flex-col gap-2 md:flex-row">
-                    {visualizationData ? visualizationData.map((data: any, index) => (
-                        <div key={index} className="flex flex-col items-center p-4 bg-neutral-200 rounded-md gap-2 w-full md:w-1/4">
-                            <p className="md:text-lg">{data.title}</p>
-                            <h1 className="text-4xl font-semibold">{data.value}</h1>
+                    {visualizationData != null && visualizationData.map((data: any, index) => (
+                        <div key={index} className="flex flex-col items-center p-4 bg-neutral-50 drop-shadow-md rounded-md gap-2 w-full md:w-1/4">
+                            <p className="md:text-sm 2xl:text-lg">{data.title}</p>
+                            <h1 className="font-semibold text-xl md:text-2xl 2xl:text-4xl">{isNaN(data.value) ? 'N/A' : index === 3 ? data.value + "%" : data.value}</h1>
                         </div>
-                    )) : null}
+                    ))}
+                </div>
+                <div className="hidden gap-2 md:flex">
+                    <div className="flex w-1/2 items-center flex-col bg-neutral-50 drop-shadow-md rounded-md p-4 gap-3">
+                        <h1 className="text-xl">Ocorrências</h1>
+                        <PieChart
+                            series={[
+                                {
+                                    data: [
+                                        { id: 0, value: visualizationData ? (visualizationData[0].value - (visualizationData[1].value + visualizationData[2].value)) : 0, label: 'Abertas', color: '#bdbdbd' },
+                                        { id: 1, value: visualizationData ? visualizationData[2].value : 0, label: 'Canceladas', color: '#757575' },
+                                        { id: 2, value: visualizationData ? visualizationData[1].value : 0, label: 'Resolvidas', color: '#454545' },
+                                    ],
+                                    innerRadius: 10,
+                                    outerRadius: 100,
+                                    cornerRadius: 5,
+                                    startAngle: 0,
+                                    endAngle: 360,
+                                    arcLabel: (item) => `${item.value != 0 ? item.value : ""}`,
+                                },
+                            ]}
+                            sx={{
+                                [`& .${pieArcLabelClasses.root}`]: {
+                                    fill: 'white',
+                                },
+                            }}
+                            width={450}
+                            height={200}
+                        />
+                    </div>
+                    <div className="flex w-1/2 items-center flex-col bg-neutral-50 drop-shadow-md rounded-md p-4 gap-3">
+                        <h1 className="text-xl">Porcentagem de Solução</h1>
+                        <PieChart
+                            series={[
+                                {
+                                    data: [
+                                        { id: 0, value: visualizationData ? ((visualizationData[0].value - visualizationData[2].value) - visualizationData[1].value) : 0, label: 'Não resolvidas', color: '#bdbdbd' },
+                                        { id: 1, value: visualizationData ? visualizationData[1].value : 0, label: 'Resolvidas', color: '#757575' },
+                                    ],
+                                    innerRadius: 10,
+                                    outerRadius: 100,
+                                    cornerRadius: 5,
+                                    startAngle: 0,
+                                    endAngle: 360,
+                                    arcLabel: (item) => `${item.value != 0 ? item.value : ""}`,
+                                },
+                            ]}
+                            sx={{
+                                [`& .${pieArcLabelClasses.root}`]: {
+                                    fill: 'white',
+                                },
+                            }}
+                            width={450}
+                            height={200}
+                        />
+                    </div>
                 </div>
             </Paper>
         </div>
