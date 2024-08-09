@@ -3,7 +3,7 @@ import UsersDialog from "@/components/users/usersDialog";
 import AuthContext from "@/contexts/auth";
 import { isAdmin } from "@/helpers/authorization";
 import { User } from "@/models/user.model";
-import { Autocomplete, Box, IconButton, Paper, TextField, Typography } from "@mui/material";
+import { Autocomplete, Box, IconButton, Paper, TextField, Tooltip, Typography } from "@mui/material";
 import { DataGrid, GridActionsCellItem, GridColDef } from "@mui/x-data-grid";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
@@ -49,8 +49,12 @@ export default function Users() {
             type: 'actions',
             sortable: false,
             getActions: (params) => [
-                <GridActionsCellItem key={params.id} icon={<ManageAccountsIcon />} onClick={() => viewUser(params.row)} label="Visualizar Usuário" />,
-                <GridActionsCellItem key={params.id} icon={<DeleteIcon />} onClick={() => deleteUser(params.row.id)} label="Deletar Usuário" />
+                <Tooltip title="Visualizar usuário">
+                    <GridActionsCellItem key={params.id} icon={<ManageAccountsIcon />} onClick={() => viewUser(params.row)} label="Visualizar Usuário" />
+                </Tooltip>,
+                <Tooltip title="Deletar usuário">
+                    <GridActionsCellItem key={params.id} icon={<DeleteIcon />} onClick={() => deleteUser(params.row.id)} label="Deletar Usuário" />
+                </Tooltip>
             ]
         }
     ]
@@ -151,7 +155,11 @@ export default function Users() {
                             }}
                             renderInput={(params) => <TextField {...params} label="Pesquisar Usuário" />}
                         />
-                        <IconButton onClick={() => setOpen(true)} size="large"><PersonAddAlt1Icon /></IconButton>
+                        <IconButton onClick={() => setOpen(true)} size="large">
+                            <Tooltip title="Criar usuário">
+                                <PersonAddAlt1Icon />
+                            </Tooltip>
+                        </IconButton>
                     </Box>
                     <DataGrid
                         rows={users}

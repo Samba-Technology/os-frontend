@@ -1,5 +1,5 @@
 "use client"
-import { Autocomplete, Box, Paper, TextField, Typography } from "@mui/material";
+import { Autocomplete, Box, Paper, TextField, Tooltip, Typography } from "@mui/material";
 import { DataGrid, GridActionsCellItem, GridColDef } from "@mui/x-data-grid";
 import { useContext, useEffect, useState } from "react";
 import PageviewIcon from '@mui/icons-material/Pageview';
@@ -142,12 +142,18 @@ export default function ArchiveOcurrences() {
             sortable: false,
             width: 100,
             getActions: (params) => {
-                let actions = [<GridActionsCellItem key={params.id} icon={<PageviewIcon />} onClick={() => viewOcurrence(params.row)} label="Visualizar Ocorrencia" />]
+                let actions = [
+                    <Tooltip title="Visualizar ocorrência">
+                        <GridActionsCellItem key={params.id} icon={<PageviewIcon />} onClick={() => viewOcurrence(params.row)} label="Visualizar Ocorrencia" />
+                    </Tooltip>
+                ]
 
                 if (user && isAdmin(user.role)) {
                     actions = [
                         ...actions,
-                        <GridActionsCellItem key={params.id} icon={<PictureAsPdfIcon />} onClick={() => ocurrencePDF(params.row)} label="Visualização em PDF" />
+                        <Tooltip title="Visualizar em PDF">
+                            <GridActionsCellItem key={params.id} icon={<PictureAsPdfIcon />} onClick={() => ocurrencePDF(params.row)} label="Visualização em PDF" />
+                        </Tooltip>
                     ]
                 }
 
