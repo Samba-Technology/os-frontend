@@ -183,9 +183,9 @@ export default function OcurrencesStatistics() {
                             series={[
                                 {
                                     data: [
-                                        { id: 0, value: visualizationData ? (visualizationData[0].value - (visualizationData[1].value + visualizationData[2].value)) : 0, label: 'Abertas', color: '#bdbdbd' },
-                                        { id: 1, value: visualizationData ? visualizationData[2].value : 0, label: 'Canceladas', color: '#757575' },
-                                        { id: 2, value: visualizationData ? visualizationData[1].value : 0, label: 'Resolvidas', color: '#454545' },
+                                        { id: 0, value: visualizationData ? (visualizationData[0].value - (visualizationData[1].value + visualizationData[2].value)) : 0, label: 'Abertas', color: '#5e9cff' },
+                                        { id: 1, value: visualizationData ? visualizationData[2].value : 0, label: 'Canceladas', color: '#267aff' },
+                                        { id: 2, value: visualizationData ? visualizationData[1].value : 0, label: 'Resolvidas', color: '#024abd' },
                                     ],
                                     innerRadius: 10,
                                     outerRadius: 100,
@@ -210,8 +210,8 @@ export default function OcurrencesStatistics() {
                             series={[
                                 {
                                     data: [
-                                        { id: 0, value: visualizationData ? (visualizationData[0].value - (visualizationData[1].value + visualizationData[2].value)) : 0, label: 'Não resolvidas', color: '#bdbdbd' },
-                                        { id: 1, value: visualizationData ? visualizationData[1].value : 0, label: 'Resolvidas', color: '#757575' },
+                                        { id: 0, value: visualizationData ? (visualizationData[0].value - (visualizationData[1].value + visualizationData[2].value)) : 0, label: 'Não resolvidas', color: '#5e9cff' },
+                                        { id: 1, value: visualizationData ? visualizationData[1].value : 0, label: 'Resolvidas', color: '#024abd' },
                                     ],
                                     innerRadius: 10,
                                     outerRadius: 100,
