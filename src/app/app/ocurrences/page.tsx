@@ -152,8 +152,8 @@ export default function Ocurrences() {
             width: 120,
             getActions: (params) => {
                 let actions = [
-                    <Tooltip title="Visualizar ocorrência">
-                        <GridActionsCellItem key={params.id} icon={<PageviewIcon />} onClick={() => params.row.status === "OPENED" ? editOcurrence(params.row) : viewOcurrence(params.row)} label="Visualizar Ocorrencia" />
+                    <Tooltip key={params.id} title="Visualizar ocorrência">
+                        <GridActionsCellItem icon={<PageviewIcon />} onClick={() => params.row.status === "OPENED" ? editOcurrence(params.row) : viewOcurrence(params.row)} label="Visualizar Ocorrencia" />
                     </Tooltip>
                 ]
 

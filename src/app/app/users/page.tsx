@@ -49,11 +49,11 @@ export default function Users() {
             type: 'actions',
             sortable: false,
             getActions: (params) => [
-                <Tooltip title="Visualizar usuário">
-                    <GridActionsCellItem key={params.id} icon={<ManageAccountsIcon />} onClick={() => viewUser(params.row)} label="Visualizar Usuário" />
+                <Tooltip key={params.id} title="Visualizar usuário">
+                    <GridActionsCellItem icon={<ManageAccountsIcon />} onClick={() => viewUser(params.row)} label="Visualizar Usuário" />
                 </Tooltip>,
-                <Tooltip title="Deletar usuário">
-                    <GridActionsCellItem key={params.id} icon={<DeleteIcon />} onClick={() => deleteUser(params.row.id)} label="Deletar Usuário" />
+                <Tooltip key={params.id} title="Deletar usuário">
+                    <GridActionsCellItem icon={<DeleteIcon />} onClick={() => deleteUser(params.row.id)} label="Deletar Usuário" />
                 </Tooltip>
             ]
         }

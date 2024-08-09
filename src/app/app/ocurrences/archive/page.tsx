@@ -143,16 +143,16 @@ export default function ArchiveOcurrences() {
             width: 100,
             getActions: (params) => {
                 let actions = [
-                    <Tooltip title="Visualizar ocorrência">
-                        <GridActionsCellItem key={params.id} icon={<PageviewIcon />} onClick={() => viewOcurrence(params.row)} label="Visualizar Ocorrencia" />
+                    <Tooltip key={params.id} title="Visualizar ocorrência">
+                        <GridActionsCellItem icon={<PageviewIcon />} onClick={() => viewOcurrence(params.row)} label="Visualizar Ocorrencia" />
                     </Tooltip>
                 ]
 
                 if (user && isAdmin(user.role)) {
                     actions = [
                         ...actions,
-                        <Tooltip title="Visualizar em PDF">
-                            <GridActionsCellItem key={params.id} icon={<PictureAsPdfIcon />} onClick={() => ocurrencePDF(params.row)} label="Visualização em PDF" />
+                        <Tooltip key={params.id} title="Visualizar em PDF">
+                            <GridActionsCellItem icon={<PictureAsPdfIcon />} onClick={() => ocurrencePDF(params.row)} label="Visualização em PDF" />
                         </Tooltip>
                     ]
                 }
