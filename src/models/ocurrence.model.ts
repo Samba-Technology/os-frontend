@@ -12,4 +12,5 @@ export type Ocurrence = {
     students: Student[],
     users: User,
     responsible: User
+    userId: number
 }

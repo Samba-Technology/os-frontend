@@ -4,8 +4,6 @@ import pdfFonts from 'pdfmake/build/vfs_fonts';
 export default function ocurrencePDF(ocurrence: any) {
   pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
-  console.log(ocurrence)
-
   const docDef: any = {
     pageSize: 'A4',
     info: {
