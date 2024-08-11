@@ -81,7 +81,7 @@ export default function OcurrencesStatistics() {
                         .sort((a, b) => b[1] - a[1])
                         .map(([className, count]) => ({ className, count }));
 
-                    setViewClasses(sortedClasses.slice(0, 5));
+                    setViewClasses(sortedClasses);
 
                     const previousMonth = monthsArray.pop();
                     if (previousMonth) {
@@ -127,7 +127,7 @@ export default function OcurrencesStatistics() {
                         .sort((a, b) => b.ocurrencesCount - a.ocurrencesCount)
                         .map(({ user }) => user);
 
-                    setViewUsers(recentMonthUsers.slice(0, 5));
+                    setViewUsers(recentMonthUsers);
                 }
             } catch (e) {
                 console.error(e)
@@ -154,7 +154,7 @@ export default function OcurrencesStatistics() {
                         .sort((a, b) => b.ocurrencesCount - a.ocurrencesCount)
                         .map(({ student }) => student);
 
-                    setViewStudents(recentMonthStudents.slice(0, 5));
+                    setViewStudents(recentMonthStudents);
                 }
             } catch (e) {
                 console.error(e)
@@ -216,14 +216,14 @@ export default function OcurrencesStatistics() {
 
     return (
         <div className="flex w-full h-full justify-center items-center">
-            <Paper elevation={4} className="flex flex-col p-4 gap-3 w-[90%] xl:w-2/3">
+            <Paper elevation={4} className="flex flex-col p-4 gap-3 w-[90%]">
                 <div className="flex justify-between">
-                    <h1 className="text-2xl">Estatísticas das Ocorrências</h1>
+                    <h1 className="text-lg md:text-xl 2xl:text-2xl">Estatísticas das Ocorrências</h1>
                     <h1>{viewMonth}</h1>
                 </div>
-                <div className="flex justify-between">
+                <div className="flex flex-col md:flex-row md:justify-between">
                     <Autocomplete
-                        className="w-1/3"
+                        className="w-full md:w-1/3"
                         options={months}
                         getOptionLabel={(option) => option}
                         onChange={(event, value: string | null, reason) => {
@@ -288,9 +288,9 @@ export default function OcurrencesStatistics() {
                                     .sort((a, b) => b.ocurrencesCount - a.ocurrencesCount)
                                     .map(({ student }) => student);
 
-                                setViewClasses(sortedClasses.slice(0, 5));
-                                setViewStudents(selectedMonthStudents.slice(0, 5));
-                                setViewUsers(selectedMonthUsers.slice(0, 5));
+                                setViewClasses(sortedClasses);
+                                setViewStudents(selectedMonthStudents);
+                                setViewUsers(selectedMonthUsers);
                                 setPreviousMonthData(previousMonthOccurrences);
                             }
                         }}
@@ -304,7 +304,7 @@ export default function OcurrencesStatistics() {
                     />
                     <Tabs value={page} onChange={handleChange}>
                         <Tab label="Ocorrências" />
-                        <Tab label="Professores/Alunos" />
+                        <Tab label="Prof/Alunos" />
                     </Tabs>
                 </div>
                 {page === 0 ? (
@@ -381,43 +381,50 @@ export default function OcurrencesStatistics() {
                         </div>
                     </div>
                 ) : (
-                    <div className="flex gap-2">
-                        <div className="flex flex-col items-center w-1/3 bg-neutral-50 drop-shadow-md gap-1 p-4">
+                    <div className="flex flex-col gap-2 md:flex-row text-base md:h-[300px]">
+                        <div className="flex flex-col bg-neutral-50 items-center drop-shadow-md gap-1 p-4 w-full md:w-1/3">
                             <h1 className="text-xl">Professores</h1>
-                            {viewUsers.map((user: User, index) => (
-                                <div key={index} className="flex p-2 bg-neutral-100 w-full justify-between">
-                                    <p>{user.name}</p>
-                                    <p>{viewData.filter((ocurrence: Ocurrence) => ocurrence.userId === user.id).length}</p>
-                                </div>
-                            ))}
+                            <div className="flex flex-col gap-1 overflow-y-auto p-2 w-full">
+                                {viewUsers.map((user: User, index) => (
+                                    <div key={index} className="flex p-2 bg-neutral-100 w-full justify-between">
+                                        <p>{user.name}</p>
+                                        <p>{viewData.filter((ocurrence: Ocurrence) => ocurrence.userId === user.id).length}</p>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
-                        <div className="flex flex-col items-center w-1/3 bg-neutral-50 drop-shadow-md gap-1 p-4">
+                        <div className="flex flex-col bg-neutral-50 items-center drop-shadow-md gap-1 p-4 w-full md:w-1/3">
                             <h1 className="text-xl">Estudantes</h1>
-                            {viewStudents.map((student: Student, index) => (
-                                <div key={index} className="flex p-2 bg-neutral-100 w-full justify-between">
-                                    <p>{student.name} ({student.class})</p>
-                                    <p>{viewData.reduce((count, ocurrence: Ocurrence) => {
-                                        if (ocurrence.students.some(s => s.ra === student.ra)) {
-                                            return count + 1;
-                                        }
+                            <div className="flex flex-col gap-1 overflow-y-auto p-2 w-full">
+                                {viewStudents.map((student: Student, index) => (
+                                    <div key={index} className="flex p-2 bg-neutral-100 w-full justify-between">
+                                        <p>{student.name.length > 25 ? `${student.name.substring(0, 25)}...` : student.name} ({student.class})</p>
+                                        <p>{viewData.reduce((count, ocurrence: Ocurrence) => {
+                                            if (ocurrence.students.some(s => s.ra === student.ra)) {
+                                                return count + 1;
+                                            }
 
-                                        return count;
-                                    }, 0)}</p>
-                                </div>
-                            ))}
+                                            return count;
+                                        }, 0)}</p>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
-                        <div className="flex flex-col items-center w-1/3 bg-neutral-50 drop-shadow-md gap-1 p-4">
+                        <div className="flex flex-col bg-neutral-50 items-center drop-shadow-md gap-1 p-4 w-full md:w-1/3">
                             <h1 className="text-xl">Séries</h1>
-                            {viewClasses.map((c: any, index: any) => (
-                                <div key={index} className="flex p-2 bg-neutral-100 w-full justify-between">
-                                    <p>{c.className}</p>
-                                    <p>{c.count}</p>
-                                </div>
-                            ))}
+                            <div className="flex flex-col gap-1 overflow-y-auto p-2 w-full">
+                                {viewClasses.map((c: any, index: any) => (
+                                    <div key={index} className="flex p-2 bg-neutral-100 w-full justify-between">
+                                        <p>{c.className}</p>
+                                        <p>{c.count}</p>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                     </div>
-                )}
-            </Paper>
-        </div>
+                )
+                }
+            </Paper >
+        </div >
     )
 }
