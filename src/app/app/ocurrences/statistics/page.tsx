@@ -112,7 +112,7 @@ export default function OcurrencesStatistics() {
         } else {
             fetchOcurrences()
         }
-    }, [])
+    }, [router, user])
 
     useEffect(() => {
         const fetchUsers = async () => {
