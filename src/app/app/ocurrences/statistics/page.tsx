@@ -2,7 +2,7 @@
 import { Ocurrence } from "@/models/ocurrence.model";
 import { OcurrenceService } from "@/services/api/ocurrence.service";
 import { pieArcLabelClasses, PieChart } from "@mui/x-charts/PieChart";
-import { Autocomplete, Paper, Tab, Tabs, TextField } from "@mui/material";
+import { Autocomplete, Paper, Tab, Tabs, TextField, Tooltip } from "@mui/material";
 import React, { useContext, useEffect, useState } from "react";
 import { User } from "@/models/user.model";
 import { UsersService } from "@/services/api/users.service";
@@ -11,6 +11,14 @@ import { StudentsService } from "@/services/api/students.service";
 import AuthContext from "@/contexts/auth";
 import { isAdmin } from "@/helpers/authorization";
 import { useRouter } from "next/navigation";
+import LibraryAddIcon from '@mui/icons-material/LibraryAdd';
+import LibraryAddCheckIcon from '@mui/icons-material/LibraryAddCheck';
+import ErrorIcon from '@mui/icons-material/Error';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import SchoolIcon from '@mui/icons-material/School';
+import PersonIcon from '@mui/icons-material/Person';
+import GroupIcon from '@mui/icons-material/Group';
+import DescriptionIcon from '@mui/icons-material/Description';
 
 interface Visualization {
     title: string,
@@ -188,22 +196,26 @@ export default function OcurrencesStatistics() {
             {
                 title: "Criadas",
                 value: viewStats.total,
-                percentageChange: prevStats.total ? ((viewStats.total - prevStats.total) / prevStats.total) * 100 : null
+                percentageChange: prevStats.total ? ((viewStats.total - prevStats.total) / prevStats.total) * 100 : null,
+                icon: <LibraryAddIcon color="primary" />
             },
             {
                 title: "Resolvidas",
                 value: viewStats.solved,
-                percentageChange: prevStats.solved ? ((viewStats.solved - prevStats.solved) / prevStats.solved) * 100 : null
+                percentageChange: prevStats.solved ? ((viewStats.solved - prevStats.solved) / prevStats.solved) * 100 : null,
+                icon: <LibraryAddCheckIcon color="success" />
             },
             {
                 title: "Canceladas",
                 value: viewStats.canceled,
-                percentageChange: prevStats.canceled ? ((viewStats.canceled - prevStats.canceled) / prevStats.canceled) * 100 : null
+                percentageChange: prevStats.canceled ? ((viewStats.canceled - prevStats.canceled) / prevStats.canceled) * 100 : null,
+                icon: <ErrorIcon color="warning" />
             },
             {
                 title: "Resolvidas (%)",
                 value: viewStats.solvedPercentage,
-                percentageChange: prevStats.solvedPercentage ? ((viewStats.solvedPercentage - prevStats.solvedPercentage) / prevStats.solvedPercentage) * 100 : null
+                percentageChange: prevStats.solvedPercentage ? ((viewStats.solvedPercentage - prevStats.solvedPercentage) / prevStats.solvedPercentage) * 100 : null,
+                icon: <CheckCircleIcon color="info" />
             }
         ];
 
@@ -221,9 +233,9 @@ export default function OcurrencesStatistics() {
                     <h1 className="text-lg md:text-xl 2xl:text-2xl">Estatísticas das Ocorrências</h1>
                     <h1>{viewMonth}</h1>
                 </div>
-                <div className="flex flex-col md:flex-row md:justify-between">
+                <div className="flex flex-row gap-2 md:justify-between">
                     <Autocomplete
-                        className="w-full md:w-1/3"
+                        className="w-1/2 md:w-1/3"
                         options={months}
                         getOptionLabel={(option) => option}
                         onChange={(event, value: string | null, reason) => {
@@ -299,20 +311,28 @@ export default function OcurrencesStatistics() {
                                 {...params}
                                 variant="filled"
                                 label="Pesquisa por mês"
+                                color="primary"
                             />
                         )}
                     />
                     <Tabs value={page} onChange={handleChange}>
-                        <Tab label="Ocorrências" />
-                        <Tab label="Prof/Alunos" />
+                        <Tooltip title="Ocorrências">
+                            <Tab icon={<DescriptionIcon />} />
+                        </Tooltip>
+                        <Tooltip title="Professores/Alunos">
+                            <Tab icon={<GroupIcon />} />
+                        </Tooltip>
                     </Tabs>
                 </div>
                 {page === 0 ? (
                     <div className="flex flex-col gap-2">
                         <div className="flex flex-col gap-2 md:flex-row">
                             {visualizationData != null && visualizationData.map((data: any, index) => (
-                                <div key={index} className="flex flex-col items-center p-4 bg-neutral-50 drop-shadow-md rounded-md gap-2 w-full md:w-1/4">
-                                    <p className="md:text-sm 2xl:text-lg">{data.title}</p>
+                                <div key={index} className="flex flex-col items-center p-4 bg-neutral-50 drop-shadow-md rounded-md gap-3 w-full md:w-1/4">
+                                    <div className="flex justify-between items-center w-full">
+                                        <p className="md:text-sm 2xl:text-lg">{data.title}</p>
+                                        <p>{data.icon} </p>
+                                    </div>
                                     <div className="flex items-center gap-2">
                                         <h1 className="font-semibold text-xl md:text-2xl 2xl:text-4xl">{isNaN(data.value) ? 'N/A' : index === 3 ? data.value + "%" : data.value}</h1>
                                         {data.percentageChange != null && (
@@ -383,7 +403,10 @@ export default function OcurrencesStatistics() {
                 ) : (
                     <div className="flex flex-col gap-2 md:flex-row text-base md:h-[300px]">
                         <div className="flex flex-col bg-neutral-50 items-center drop-shadow-md gap-1 p-4 w-full md:w-1/3">
-                            <h1 className="text-xl">Professores</h1>
+                            <div className="flex justify-between items-center w-full">
+                                <h1 className="text-xl">Professores</h1>
+                                <SchoolIcon color="info" />
+                            </div>
                             <div className="flex flex-col gap-1 overflow-y-auto p-2 w-full">
                                 {viewUsers.map((user: User, index) => (
                                     <div key={index} className="flex p-2 bg-neutral-100 w-full justify-between">
@@ -394,7 +417,10 @@ export default function OcurrencesStatistics() {
                             </div>
                         </div>
                         <div className="flex flex-col bg-neutral-50 items-center drop-shadow-md gap-1 p-4 w-full md:w-1/3">
-                            <h1 className="text-xl">Estudantes</h1>
+                            <div className="flex justify-between items-center w-full">
+                                <h1 className="text-xl">Estudantes</h1>
+                                <PersonIcon color="info" />
+                            </div>
                             <div className="flex flex-col gap-1 overflow-y-auto p-2 w-full">
                                 {viewStudents.map((student: Student, index) => (
                                     <div key={index} className="flex p-2 bg-neutral-100 w-full justify-between">
@@ -411,7 +437,10 @@ export default function OcurrencesStatistics() {
                             </div>
                         </div>
                         <div className="flex flex-col bg-neutral-50 items-center drop-shadow-md gap-1 p-4 w-full md:w-1/3">
-                            <h1 className="text-xl">Séries</h1>
+                            <div className="flex justify-between items-center w-full">
+                                <h1 className="text-xl">Séries</h1>
+                                <GroupIcon color="info" />
+                            </div>
                             <div className="flex flex-col gap-1 overflow-y-auto p-2 w-full">
                                 {viewClasses.map((c: any, index: any) => (
                                     <div key={index} className="flex p-2 bg-neutral-100 w-full justify-between">
