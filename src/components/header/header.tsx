@@ -1,4 +1,4 @@
-import { Box, Divider, IconButton, Menu, MenuItem, Typography } from "@mui/material";
+import { Box, Divider, IconButton, Menu, MenuItem, Tooltip, Typography } from "@mui/material";
 import DescriptionIcon from '@mui/icons-material/Description';
 import GroupIcon from '@mui/icons-material/Group';
 import { useRouter } from "next/navigation";
@@ -9,6 +9,7 @@ import ArchiveIcon from '@mui/icons-material/Archive';
 import IconCodeSandbox from "../icons/logo";
 import LogoutIcon from '@mui/icons-material/Logout';
 import MenuIcon from '@mui/icons-material/Menu';
+import AnalyticsIcon from '@mui/icons-material/Analytics';
 
 export default function Header() {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -26,40 +27,45 @@ export default function Header() {
     };
 
     return (
-        <Box component="div" className="flex items-center h-[80px] w-full justify-between gap-10 px-16">
+        <Box component="div" className="flex items-center w-full justify-between gap-10 px-16 py-2">
             <Box component="div" className="flex justify-center gap-3">
                 <IconCodeSandbox fontSize="50px" />
-                <div className="hidden lg:flex gap-3">
-                    <Divider orientation="vertical" variant="middle" flexItem />
-                    <Typography variant="overline" fontSize="20px" fontWeight="bold">Samba Technology</Typography>
-                </div>
             </Box>
             {signed && (
                 <>
                     <Box component="div" className="hidden gap-6 items-center lg:flex">
                         <Box component="div" className="flex items-center gap-5">
                             <Box className="flex items-center gap-2 cursor-pointer" onClick={() => router.push('/app/ocurrences/archive')}>
-                                <ArchiveIcon />
-                                <Typography variant="overline" fontWeight="bold" >Arquivadas</Typography>
+                                <Tooltip title="Ocorrências arquivadas">
+                                    <ArchiveIcon />
+                                </Tooltip>
                             </Box>
                             <Box className="flex items-center gap-2 cursor-pointer" onClick={() => router.push('/app/ocurrences')}>
-                                <DescriptionIcon />
-                                <Typography variant="overline" fontWeight="bold" >Ocorrências</Typography>
+                                <Tooltip title="Ocorrências em aberto">
+                                    <DescriptionIcon />
+                                </Tooltip>
                             </Box>
                             {!!user && isAdmin(user.role) ? (
                                 <>
-                                    <Box className="flex items-center gap-2 cursor-pointer" onClick={() => router.push('/app/users')}>
-                                        <GroupIcon />
-                                        <Typography variant="overline" fontWeight="bold" >Usuários</Typography>
-                                    </Box>
+                                    <div className="cursor-pointer" onClick={() => router.replace('/app/ocurrences/statistics')}>
+                                        <Tooltip title="Estatísticas de ocorrências">
+                                            <AnalyticsIcon />
+                                        </Tooltip>
+                                    </div>
+                                    <div className="cursor-pointer" onClick={() => router.replace('/app/users')}>
+                                        <Tooltip title="Gestão de usuários">
+                                            <GroupIcon />
+                                        </Tooltip>
+                                    </div>
                                 </>
                             ) : null}
-                            <Divider orientation="vertical" flexItem />
                             <IconButton onClick={() => {
                                 localStorage.removeItem("access-token");
                                 window.location.reload()
                             }}>
-                                <LogoutIcon />
+                                <Tooltip title="Sair">
+                                    <LogoutIcon fontSize="small" />
+                                </Tooltip>
                             </IconButton>
                         </Box>
                     </Box>
@@ -89,12 +95,16 @@ export default function Header() {
                                 <DescriptionIcon />
                                 Ocorrências
                             </MenuItem>
-                            {!!user && isAdmin(user.role) ? (
-                                <MenuItem className="flex gap-2" onClick={() => router.push('/app/users')}>
-                                    <GroupIcon />
-                                    Usuários
-                                </MenuItem>
-                            ) : null}
+                            {!!user && isAdmin(user.role) ? [
+                                    <MenuItem key="stats" className="flex gap-2" onClick={() => router.push('/app/ocurrences/statistics')}>
+                                        <AnalyticsIcon />
+                                        Estatísticas das ocorrências
+                                    </MenuItem>,
+                                    <MenuItem key="users" className="flex gap-2" onClick={() => router.push('/app/users')}>
+                                        <GroupIcon />
+                                        Usuários
+                                    </MenuItem>
+                            ] : null}
                             <Divider />
                             <MenuItem className="flex gap-2" onClick={() => {
                                 localStorage.removeItem("access-token");

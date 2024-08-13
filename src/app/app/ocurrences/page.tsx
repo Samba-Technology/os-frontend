@@ -1,5 +1,5 @@
 "use client"
-import { Autocomplete, Box, IconButton, Paper, TextField, Typography } from "@mui/material";
+import { Autocomplete, Box, IconButton, Paper, TextField, Tooltip, Typography } from "@mui/material";
 import { DataGrid, GridActionsCellItem, GridColDef } from "@mui/x-data-grid";
 import { useContext, useEffect, useState } from "react";
 import CommentIcon from '@mui/icons-material/Comment';
@@ -151,7 +151,11 @@ export default function Ocurrences() {
             sortable: false,
             width: 120,
             getActions: (params) => {
-                let actions = [<GridActionsCellItem key={params.id} icon={<PageviewIcon />} onClick={() => params.row.status === "OPENED" ? editOcurrence(params.row) : viewOcurrence(params.row)} label="Visualizar Ocorrencia" />]
+                let actions = [
+                    <Tooltip key={params.id} title="Visualizar ocorrência">
+                        <GridActionsCellItem icon={<PageviewIcon />} onClick={() => params.row.status === "OPENED" ? editOcurrence(params.row) : viewOcurrence(params.row)} label="Visualizar Ocorrencia" />
+                    </Tooltip>
+                ]
 
                 if (user && isAdmin(user.role)) {
                     actions = [
@@ -327,10 +331,14 @@ export default function Ocurrences() {
                         setEdit(true)
                         setOpen(true)
                     }} size="large">
-                        <NoteAddIcon />
+                        <Tooltip title="Adicionar ocorrência">
+                            <NoteAddIcon />
+                        </Tooltip>
                     </IconButton>
                     <IconButton onClick={() => setOpenStudents(true)} size="large">
-                        <GroupAddIcon />
+                        <Tooltip title="Adicionar aluno">
+                            <GroupAddIcon />
+                        </Tooltip>
                     </IconButton>
                 </Box>
                 <DataGrid

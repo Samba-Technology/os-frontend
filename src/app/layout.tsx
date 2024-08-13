@@ -8,8 +8,8 @@ import { AuthProvider } from "@/contexts/auth";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Gestão de Ocorrências",
-  description: "Gestão de Ocorrências, realizada por Samba Technology",
+  title: "Sistema de Ocorrências",
+  description: "Sistema de ocorrências realizado por Samba Technology",
 };
 
 export default function RootLayout({
@@ -18,7 +18,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="pt-br">
       <body className={inter.className}>
         <Mui>
           <AuthProvider>
