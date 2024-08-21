@@ -12,7 +12,7 @@ import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import { UsersService } from "@/services/api/users.service";
 import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
 import { toast } from "react-toastify";
-import ConfirmDialog from "@/components/users/confirmDialog";
+import ConfirmDialog from "@/components/utils/confirmDialog";
 
 export default function Users() {
     const [open, setOpen] = useState(false)
@@ -179,7 +179,7 @@ export default function Users() {
                 </Box>
             </Paper>
             <UsersDialog isOpen={open} onClose={handleClose} isView={view} user={userV} />
-            <ConfirmDialog isOpen={confirmOpen} onClose={handleClose} onConfirm={handleConfirm} />
+            <ConfirmDialog isOpen={confirmOpen} onClose={handleClose} onConfirm={handleConfirm} title="Confirmação" description="Você tem certeza que deseja excluir permanentemente esse usuário?" button="Excluir" />
         </div>
     )
 

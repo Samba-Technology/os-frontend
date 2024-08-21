@@ -7,18 +7,21 @@ interface Props {
     isOpen: boolean;
     onClose: () => void;
     onConfirm: () => void;
+    title: string,
+    description: string,
+    button: string
 }
 
-export default function ConfirmDialog({ isOpen, onClose, onConfirm }: Props) {
+export default function ConfirmDialog({ isOpen, onClose, onConfirm, title, description, button }: Props) {
     return (
         <Dialog open={isOpen} onClose={onClose} component='form'>
-            <DialogTitle>Confirmação</DialogTitle>
+            <DialogTitle>{title}</DialogTitle>
             <DialogContent>
-                <DialogContentText>Você tem certeza que deseja realizar essa ação?</DialogContentText>
+                <DialogContentText>{description}</DialogContentText>
             </DialogContent>
             <DialogActions>
-                <Button onClick={onClose}>Cancelar</Button>
-                <Button onClick={onConfirm} color="error">Deletar</Button>
+                <Button onClick={onClose} color="error" variant="contained">Cancelar</Button>
+                <Button onClick={onConfirm} color="success" variant="contained">{button}</Button>
             </DialogActions>
         </Dialog>
     )

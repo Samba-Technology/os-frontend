@@ -9,6 +9,7 @@ import { Autocomplete, Button, Chip, CircularProgress, Dialog, DialogActions, Di
 import { useContext, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
+import ConfirmDialog from "../utils/confirmDialog";
 
 interface Props {
     isOpen: boolean;
@@ -36,6 +37,9 @@ const schema = yup.object({
 export default function OcurrenceDialog({ isOpen, onClose, isView, ocurrence, dispatch, edit }: Props) {
     const [students, setStudents] = useState<Student[]>([])
     const [loading, setLoading] = useState(false)
+    const [confirmOpen, setConfirmOpen] = useState(false)
+    const [ocurrenceData, setOcurrenceData] = useState<Data>()
+    const [studentsNames, setStudentNames] = useState()
 
     const { user } = useContext(AuthContext)
 
@@ -74,17 +78,28 @@ export default function OcurrenceDialog({ isOpen, onClose, isView, ocurrence, di
     }, [isView, ocurrence.description, ocurrence.dispatch, ocurrence.level, ocurrence.students, reset, setValue])
 
     const onSubmit = async (data: Data) => {
+        setOcurrenceData(data);
+        setConfirmOpen(true);
+    }
+
+    const onError = (e: any) => {
+        console.error(e)
+    }
+
+    const handleConfirm = async () => {
         try {
             setLoading(true)
-            if (!dispatch && !isView) {
-                await OcurrenceService.create(data.description, data.level, data.students)
-                toast.success('Ocorrência criada com sucesso!')
-            } else if (dispatch) {
-                data.dispatch && await OcurrenceService.dispatch(ocurrence.id, data.dispatch)
-                toast.success('Despacho adicionado com sucesso.')
-            } else if (edit) {
-                await OcurrenceService.edit(ocurrence.id, data.description, data.level, data.students)
-                toast.success('Ocorrência editada com sucesso!')
+            if (ocurrenceData) {
+                if (!dispatch && !isView) {
+                    await OcurrenceService.create(ocurrenceData.description, ocurrenceData.level, ocurrenceData.students)
+                    toast.success('Ocorrência criada com sucesso!')
+                } else if (dispatch) {
+                    ocurrenceData.dispatch && await OcurrenceService.dispatch(ocurrence.id, ocurrenceData.dispatch)
+                    toast.success('Despacho adicionado com sucesso.')
+                } else if (edit) {
+                    await OcurrenceService.edit(ocurrence.id, ocurrenceData.description, ocurrenceData.level, ocurrenceData.students)
+                    toast.success('Ocorrência editada com sucesso!')
+                }
             }
 
             onClose()
@@ -102,11 +117,9 @@ export default function OcurrenceDialog({ isOpen, onClose, isView, ocurrence, di
         }
     }
 
-    const onError = (e: any) => {
-        console.error(e)
+    const handleClose = () => {
+        setConfirmOpen(false);
     }
-
-
 
     return (
         <Dialog open={isOpen} onClose={onClose} component="form" onSubmit={handleSubmit(onSubmit, onError)} fullWidth>
@@ -174,6 +187,7 @@ export default function OcurrenceDialog({ isOpen, onClose, isView, ocurrence, di
                 {dispatch && <Button variant="contained" type="submit" disabled={loading}>{loading ? <CircularProgress size={20} /> : "Editar Despacho"}</Button>}
                 {user && isView && edit && ocurrence.userId == user.id && <Button variant="contained" type="submit" disabled={loading}>{loading ? <CircularProgress size={20} /> : "Editar Ocorrência"}</Button>}
             </DialogActions>
+            <ConfirmDialog isOpen={confirmOpen} onClose={handleClose} onConfirm={handleConfirm} title="Os alunos selecionados estão corretos?" description="Verifique o nome e a série dos alunos para garantir que os alunos selecionados estão corretos! Lembre-se também que pode ser adicionado mais de um aluno por ocorrência!" button="Confirmar" />
         </Dialog>
     )
 }
