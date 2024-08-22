@@ -173,6 +173,7 @@ export default function OcurrenceDialog({ isOpen, onClose, isView, ocurrence, di
                                 <TextField
                                     {...params}
                                     variant="filled"
+                                    error={!!errors.students}
                                     helperText={errors.students?.message}
                                     label="Alunos(as)"
                                 />
@@ -207,6 +208,7 @@ export default function OcurrenceDialog({ isOpen, onClose, isView, ocurrence, di
                                 <TextField
                                     {...params}
                                     variant="filled"
+                                    error={!!errors.tutors}
                                     helperText={errors.tutors?.message}
                                     label="Tutores(as)"
                                 />

@@ -8,6 +8,9 @@ yup.setLocale({
         email: 'Esse email não é válido.',
         min: 'Valor muito curto.',
         max: 'Valor muito alto.'
+    },
+    array: {
+        min: 'É necessário selecionar pelo menos 1 item para continuar.'
     }
 })
 
