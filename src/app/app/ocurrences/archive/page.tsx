@@ -222,13 +222,13 @@ export default function ArchiveOcurrences() {
 
     return (
         <div className="flex h-full w-full justify-center items-center">
-            <Paper elevation={3} className="flex w-[80%] flex-col gap-2 p-6 2xl:w-2/3">
+            <Paper elevation={3} className="flex w-[90%] flex-col gap-2 p-6 2xl:w-2/3">
                 <Typography variant="h4">Ocorrências Arquivadas</Typography>
                 <Box component="div" className="flex gap-2 items-center">
                     <div className="flex w-full gap-2">
                         {user && isAdmin(user.role) && (
                             <Autocomplete
-                                className="w-1/3"
+                                className="w-full"
                                 disablePortal
                                 options={users}
                                 getOptionLabel={(user) => user.name}
@@ -240,7 +240,7 @@ export default function ArchiveOcurrences() {
                             />
                         )}
                         <Autocomplete
-                            className="w-1/3"
+                            className="w-full"
                             disablePortal
                             options={classes}
                             getOptionLabel={(c) => c}
@@ -251,7 +251,7 @@ export default function ArchiveOcurrences() {
                             renderInput={(params) => <TextField {...params} label="Pesquisa por Série" />}
                         />
                         <Autocomplete
-                            className="w-1/3"
+                            className="w-full"
                             disablePortal
                             options={students}
                             getOptionLabel={(student) => student.name}

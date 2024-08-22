@@ -10,6 +10,8 @@ import { useContext, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import ConfirmDialog from "../utils/confirmDialog";
+import { User } from "@/models/user.model";
+import { UsersService } from "@/services/api/users.service";
 
 interface Props {
     isOpen: boolean;
@@ -24,6 +26,7 @@ type Data = {
     description: string,
     level: string,
     students: string[],
+    tutors: number[],
     dispatch?: string | null,
 }
 
@@ -31,6 +34,7 @@ const schema = yup.object({
     description: yup.string().required(),
     level: yup.string().required(),
     students: yup.array().min(1).required(),
+    tutors: yup.array().min(1).required(),
     dispatch: yup.string().nullable()
 })
 
@@ -39,6 +43,7 @@ export default function OcurrenceDialog({ isOpen, onClose, isView, ocurrence, di
     const [loading, setLoading] = useState(false)
     const [confirmOpen, setConfirmOpen] = useState(false)
     const [ocurrenceData, setOcurrenceData] = useState<Data>()
+    const [tutors, setTutors] = useState<User[]>([])
 
     const { user } = useContext(AuthContext)
 
@@ -48,11 +53,21 @@ export default function OcurrenceDialog({ isOpen, onClose, isView, ocurrence, di
                 const response = await StudentsService.findStudents()
                 setStudents(response)
             } catch (e) {
-                console.error(e)
+                console.error(e);
             }
         }
 
-        fetchStudents()
+        const fetchTutors = async () => {
+            try {
+                const response = await UsersService.findUsers()
+                setTutors(response.data)
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        fetchTutors();
+        fetchStudents();
     }, [isOpen])
 
     const { control, handleSubmit, register, formState: { errors }, reset, setValue } = useForm<Data>({
@@ -68,13 +83,14 @@ export default function OcurrenceDialog({ isOpen, onClose, isView, ocurrence, di
     useEffect(() => {
         if (isView) {
             setValue("students", ocurrence.students.map((student: Student) => student.ra))
+            ocurrence.tutors && setValue("tutors", ocurrence.tutors.map((tutor: User) => tutor.id))
             setValue("level", ocurrence.level, { shouldValidate: true })
             setValue("description", ocurrence.description)
             setValue("dispatch", ocurrence.dispatch)
         } else {
             reset()
         }
-    }, [isView, ocurrence.description, ocurrence.dispatch, ocurrence.level, ocurrence.students, reset, setValue])
+    }, [isView, ocurrence.description, ocurrence.dispatch, ocurrence.level, ocurrence.students, ocurrence.tutors, reset, setValue])
 
     const onSubmit = async (data: Data) => {
         setOcurrenceData(data);
@@ -90,13 +106,13 @@ export default function OcurrenceDialog({ isOpen, onClose, isView, ocurrence, di
             setLoading(true)
             if (ocurrenceData) {
                 if (!dispatch && !isView) {
-                    await OcurrenceService.create(ocurrenceData.description, ocurrenceData.level, ocurrenceData.students)
+                    await OcurrenceService.create(ocurrenceData.description, ocurrenceData.level, ocurrenceData.students, ocurrenceData.tutors)
                     toast.success('Ocorrência criada com sucesso!')
                 } else if (dispatch) {
                     ocurrenceData.dispatch && await OcurrenceService.dispatch(ocurrence.id, ocurrenceData.dispatch)
                     toast.success('Despacho adicionado com sucesso.')
                 } else if (edit) {
-                    await OcurrenceService.edit(ocurrence.id, ocurrenceData.description, ocurrenceData.level, ocurrenceData.students)
+                    await OcurrenceService.edit(ocurrence.id, ocurrenceData.description, ocurrenceData.level, ocurrenceData.students, ocurrenceData.tutors)
                     toast.success('Ocorrência editada com sucesso!')
                 }
             }
@@ -107,12 +123,10 @@ export default function OcurrenceDialog({ isOpen, onClose, isView, ocurrence, di
             if (e?.response?.data?.message) {
                 toast.error(e.response.data.message)
             } else {
-                console.log(e)
                 toast.error('Algo deu errado.')
             }
         } finally {
             setLoading(false)
-            window.location.reload()
         }
     }
 
@@ -123,7 +137,7 @@ export default function OcurrenceDialog({ isOpen, onClose, isView, ocurrence, di
     return (
         <Dialog open={isOpen} onClose={onClose} component="form" onSubmit={handleSubmit(onSubmit, onError)} fullWidth>
             <DialogTitle className="flex justify-between items-center">
-                <h3>Registro de Ocorrência</h3>
+                <p>Registro de Ocorrência</p>
                 {isView ? <p className="text-sm">{"Data da ocorrência: " + new Date(ocurrence.createdAt)
                     .toLocaleString('pt-BR', {
                         day: '2-digit',
@@ -170,6 +184,40 @@ export default function OcurrenceDialog({ isOpen, onClose, isView, ocurrence, di
                             }}
                         />)}
                 />
+                <Controller
+                    name="tutors"
+                    control={control}
+                    render={({ field: { onChange, value } }) => (
+                        <Autocomplete
+                            fullWidth
+                            multiple
+                            disabled={!edit}
+                            options={tutors}
+                            getOptionLabel={(option) => option.name}
+                            onChange={(event, tutors) => { onChange(tutors.map(tutor => tutor.id)) }}
+                            value={Array.isArray(value) ? tutors.filter(tutor => value.includes(tutor.id)) : []}
+                            renderOption={(params, tutor) => {
+                                return (
+                                    <li {...params} key={tutor.id}>
+                                        {tutor.name}
+                                    </li>
+                                )
+                            }}
+                            renderInput={(params) => (
+                                <TextField
+                                    {...params}
+                                    variant="filled"
+                                    helperText={errors.tutors?.message}
+                                    label="Tutores(as)"
+                                />
+                            )}
+                            renderTags={(value, getTagProps) => {
+                                return value.map((option, index) => (
+                                    <Chip {...getTagProps({ index })} key={option.id} label={option.name} />
+                                ))
+                            }}
+                        />)}
+                />
                 <TextField disabled={!edit} label="Descrição" variant="filled" fullWidth multiline rows="7" error={!!errors.description} helperText={errors.description?.message} {...register("description")} />
                 <FormControl variant="filled" disabled={!edit}>
                     <InputLabel>Nível</InputLabel>
@@ -197,7 +245,7 @@ export default function OcurrenceDialog({ isOpen, onClose, isView, ocurrence, di
                 {dispatch && <Button variant="contained" type="submit" disabled={loading}>{loading ? <CircularProgress size={20} /> : "Editar Despacho"}</Button>}
                 {user && isView && edit && ocurrence.userId == user.id && <Button variant="contained" type="submit" disabled={loading}>{loading ? <CircularProgress size={20} /> : "Editar Ocorrência"}</Button>}
             </DialogActions>
-            <ConfirmDialog isOpen={confirmOpen} onClose={handleClose} onConfirm={handleConfirm} title="Os alunos selecionados estão corretos?" description="Verifique o nome e a série dos alunos para garantir que os alunos selecionados estão corretos! Lembre-se também que pode ser adicionado mais de um aluno por ocorrência!" button="Confirmar" />
+            <ConfirmDialog isOpen={confirmOpen} onClose={handleClose} onConfirm={handleConfirm} title="Você tem certeza?" description="Garanta que todos os dados informados estão corretos antes de confirmar!" button="Confirmar" />
         </Dialog>
     )
 }

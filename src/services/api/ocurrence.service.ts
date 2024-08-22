@@ -1,19 +1,21 @@
 import api from "@/helpers/api"
 
 export class OcurrenceService {
-    public static create(description: string, level: string, students: string[]) {
+    public static create(description: string, level: string, students: string[], tutors: number[]) {
         return api.post('/ocurrences', {
             description: description,
             level: level,
-            students: students
+            students: students,
+            tutors: tutors
         }).then(response => response.data)
     }
 
-    public static edit(id: number, description: string, level: string, students: string[]) {
+    public static edit(id: number, description: string, level: string, students: string[], tutors: number[]) {
         return api.post(`/ocurrences/edit/${id}`, {
             description: description,
             level: level,
-            students: students
+            students: students,
+            tutors: tutors
         }).then(response => response.data)
     }
 

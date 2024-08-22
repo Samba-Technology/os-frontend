@@ -303,13 +303,13 @@ export default function Ocurrences() {
 
     return (
         <div className="flex h-full w-full justify-center items-center">
-            <Paper elevation={3} className="flex flex-col w-[80%] gap-2 p-6 2xl:w-2/3">
+            <Paper elevation={3} className="flex flex-col w-[90%] gap-2 p-6 2xl:w-2/3">
                 <Typography variant="h4">Ocorrências</Typography>
                 <Box component="div" className="flex gap-2 items-center">
                     <div className="flex w-full gap-2">
                         {user && isAdmin(user.role) && (
                             <Autocomplete
-                                className="w-1/3"
+                                className="w-full"
                                 disablePortal
                                 options={users}
                                 getOptionLabel={(user) => user.name}
@@ -321,7 +321,7 @@ export default function Ocurrences() {
                             />
                         )}
                         <Autocomplete
-                            className="w-1/3"
+                            className="w-full"
                             disablePortal
                             options={classes}
                             getOptionLabel={(c) => c}
@@ -332,7 +332,7 @@ export default function Ocurrences() {
                             renderInput={(params) => <TextField {...params} label="Pesquisa por Série" />}
                         />
                         <Autocomplete
-                            className="w-1/3"
+                            className="w-full"
                             disablePortal
                             options={students}
                             getOptionLabel={(student) => student.name}
