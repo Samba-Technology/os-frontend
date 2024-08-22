@@ -39,7 +39,6 @@ export default function OcurrenceDialog({ isOpen, onClose, isView, ocurrence, di
     const [loading, setLoading] = useState(false)
     const [confirmOpen, setConfirmOpen] = useState(false)
     const [ocurrenceData, setOcurrenceData] = useState<Data>()
-    const [studentsNames, setStudentNames] = useState()
 
     const { user } = useContext(AuthContext)
 
@@ -123,7 +122,18 @@ export default function OcurrenceDialog({ isOpen, onClose, isView, ocurrence, di
 
     return (
         <Dialog open={isOpen} onClose={onClose} component="form" onSubmit={handleSubmit(onSubmit, onError)} fullWidth>
-            <DialogTitle>Registro de Ocorrência</DialogTitle>
+            <DialogTitle className="flex justify-between items-center">
+                <h3>Registro de Ocorrência</h3>
+                {isView ? <p className="text-sm">{"Data da ocorrência: " + new Date(ocurrence.createdAt)
+                    .toLocaleString('pt-BR', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    })
+                    .replace(',', '')}</p> : null}
+            </DialogTitle>
             <DialogContent className="flex flex-col gap-3">
                 {!isView && <DialogContentText>Forneça os dados da ocorrência.</DialogContentText>}
                 <Controller
@@ -135,13 +145,13 @@ export default function OcurrenceDialog({ isOpen, onClose, isView, ocurrence, di
                             multiple
                             disabled={!edit}
                             options={students}
-                            getOptionLabel={(option) => option.name}
+                            getOptionLabel={(option) => option.name + " (" + option.class + ")"}
                             onChange={(event, students) => { onChange(students.map(student => student.ra)) }}
                             value={students.filter(student => value.includes(student.ra))}
                             renderOption={(params, student) => {
                                 return (
                                     <li {...params} key={student.ra}>
-                                        {student.name}
+                                        {student.name + " (" + student.class + ")"}
                                     </li>
                                 )
                             }}

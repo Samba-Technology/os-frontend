@@ -44,6 +44,8 @@ export default function Ocurrences() {
     const [queryStudent, setQueryStudent] = useState<Student>()
     const [users, setUsers] = useState<User[]>([])
     const [queryUser, setQueryUser] = useState<User>()
+    const [classes, setClasses] = useState<any[]>([])
+    const [queryClass, setQueryClass] = useState<string>();
 
     const { user } = useContext(AuthContext)
 
@@ -61,7 +63,7 @@ export default function Ocurrences() {
             headerName: 'Estudantes',
             flex: 1,
             valueGetter(params) {
-                return params.value.map((student: any) => student.name).join(", ")
+                return params.value.map((student: any) => student.name.substring(0, 10) + " (" + student.class + ")").join(", ")
             },
         },
         {
@@ -183,7 +185,7 @@ export default function Ocurrences() {
         const fetchOcurrences = async () => {
             try {
                 setLoading(true)
-                const ocurrences = await OcurrenceService.findOcurrences(pagination.page + 1, pagination.pageSize, false, queryStudent?.ra, queryUser?.id)
+                const ocurrences = await OcurrenceService.findOcurrences(pagination.page + 1, pagination.pageSize, false, queryStudent?.ra, queryUser?.id, queryClass)
                 setOcurrences(ocurrences.data)
                 setTotal(ocurrences.meta.total)
             } catch (e) {
@@ -194,13 +196,14 @@ export default function Ocurrences() {
         }
 
         fetchOcurrences()
-    }, [pagination, queryStudent, queryUser])
+    }, [pagination, queryStudent, queryUser, queryClass])
 
     useEffect(() => {
         const fetchStudents = async () => {
             try {
                 const response = await StudentsService.findStudents()
                 setStudents(response)
+                setClasses(Array.from(new Set(response.map(student => student.class))));
             } catch (e) {
                 console.error(e)
             }
@@ -303,30 +306,43 @@ export default function Ocurrences() {
             <Paper elevation={3} className="flex flex-col w-[80%] gap-2 p-6 2xl:w-2/3">
                 <Typography variant="h4">Ocorrências</Typography>
                 <Box component="div" className="flex gap-2 items-center">
-                    {user && isAdmin(user.role) && (
+                    <div className="flex w-full gap-2">
+                        {user && isAdmin(user.role) && (
+                            <Autocomplete
+                                className="w-1/3"
+                                disablePortal
+                                options={users}
+                                getOptionLabel={(user) => user.name}
+                                onChange={(event, user, reason) => {
+                                    user && setQueryUser(user);
+                                    reason === "clear" && setQueryUser(undefined)
+                                }}
+                                renderInput={(params) => <TextField {...params} label="Pesquisa por Responsável" />}
+                            />
+                        )}
                         <Autocomplete
-                            fullWidth
+                            className="w-1/3"
                             disablePortal
-                            options={users}
-                            getOptionLabel={(user) => user.name}
-                            onChange={(event, user, reason) => {
-                                user && setQueryUser(user);
+                            options={classes}
+                            getOptionLabel={(c) => c}
+                            onChange={(event, c, reason) => {
+                                c && setQueryClass(c);
                                 reason === "clear" && setQueryUser(undefined)
                             }}
-                            renderInput={(params) => <TextField {...params} label="Pesquisa por Responsável" />}
+                            renderInput={(params) => <TextField {...params} label="Pesquisa por Série" />}
                         />
-                    )}
-                    <Autocomplete
-                        fullWidth
-                        disablePortal
-                        options={students}
-                        getOptionLabel={(student) => student.name}
-                        onChange={(event, student, reason) => {
-                            student && setQueryStudent(student);
-                            reason === "clear" && setQueryStudent(undefined)
-                        }}
-                        renderInput={(params) => <TextField {...params} label="Pesquisa por Aluno(a)" />}
-                    />
+                        <Autocomplete
+                            className="w-1/3"
+                            disablePortal
+                            options={students}
+                            getOptionLabel={(student) => student.name}
+                            onChange={(event, student, reason) => {
+                                student && setQueryStudent(student);
+                                reason === "clear" && setQueryStudent(undefined)
+                            }}
+                            renderInput={(params) => <TextField {...params} label="Pesquisa por Aluno(a)" />}
+                        />
+                    </div>
                     <IconButton onClick={() => {
                         setEdit(true)
                         setOpen(true)

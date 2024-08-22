@@ -72,12 +72,12 @@ export default function StudentsDialog({ isOpen, onClose }: Props) {
                             defaultValue=""
                             render={({ field: { onChange, value } }) => (
                                 <Select variant="filled" label="Série" error={!!errors.series} value={value} onChange={onChange} >
-                                    <MenuItem value="6º">6º</MenuItem>
-                                    <MenuItem value="7º">7º</MenuItem>
-                                    <MenuItem value="8º">8º</MenuItem>
-                                    <MenuItem value="1ª">1ª</MenuItem>
-                                    <MenuItem value="2ª">2ª</MenuItem>
-                                    <MenuItem value="3ª">3ª</MenuItem>
+                                    <MenuItem value="6">6º</MenuItem>
+                                    <MenuItem value="7">7º</MenuItem>
+                                    <MenuItem value="8">8º</MenuItem>
+                                    <MenuItem value="1">1ª</MenuItem>
+                                    <MenuItem value="2">2ª</MenuItem>
+                                    <MenuItem value="3">3ª</MenuItem>
                                 </Select>
                             )}
                         />

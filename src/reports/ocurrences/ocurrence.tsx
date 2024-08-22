@@ -55,10 +55,16 @@ export default function ocurrencePDF(ocurrence: any) {
     footer: {
       columns: [
         {
+          text: 'Assinatura do Aluno',
+          style: ['normal', 'bold'],
+          alignment: 'center',
+          margin: [60, 0, 0, 0]
+        },
+        {
           text: 'Assinatura do Responsável',
           style: ['normal', 'bold'],
           alignment: 'left',
-          margin: [60, 0, 0, 0]
+          margin: [0, 0, 0, 0]
         },
         {
           text: 'Assinatura do Gestor',

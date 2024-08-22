@@ -10,9 +10,5 @@ export default function Home() {
     router.push('/auth/login')
   }, [router])
 
-  return (
-    <main className="">
-      <p>Redirecionando...</p>
-    </main>
-  );
+  return null;
 }
