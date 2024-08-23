@@ -44,7 +44,7 @@ export default function ArchiveOcurrences() {
         {
             field: 'user',
             headerName: 'Profissional',
-            width: 150,
+            width: 200,
             valueFormatter(params) {
                 return params.value.name
             }
@@ -60,7 +60,7 @@ export default function ArchiveOcurrences() {
         {
             field: 'responsible',
             headerName: 'Responsável',
-            width: 150,
+            width: 200,
             valueFormatter(params) {
                 return params.value ? params.value.name : ""
             },
@@ -223,9 +223,9 @@ export default function ArchiveOcurrences() {
     return (
         <div className="flex h-full w-full justify-center items-center">
             <Paper elevation={3} className="flex w-[90%] flex-col gap-2 p-6 2xl:w-2/3">
-                <Typography variant="h4">Ocorrências Arquivadas</Typography>
+                <h1 className="text-2xl">Ocorrências Arquivadas</h1>
                 <Box component="div" className="flex gap-2 items-center">
-                    <div className="flex w-full gap-2">
+                    <div className="flex w-full gap-2 flex-col md:flex-row">
                         {user && isAdmin(user.role) && (
                             <Autocomplete
                                 className="w-full"

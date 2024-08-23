@@ -53,7 +53,7 @@ export default function Ocurrences() {
         {
             field: 'user',
             headerName: 'Profissional',
-            width: 150,
+            width: 200,
             valueFormatter(params) {
                 return params.value.name
             }
@@ -69,7 +69,7 @@ export default function Ocurrences() {
         {
             field: 'responsible',
             headerName: 'Responsável',
-            width: 150,
+            width: 200,
             valueFormatter(params) {
                 return params.value ? params.value.name : ""
             },
@@ -303,10 +303,27 @@ export default function Ocurrences() {
 
     return (
         <div className="flex h-full w-full justify-center items-center">
-            <Paper elevation={3} className="flex flex-col w-[90%] gap-2 p-6 2xl:w-2/3">
-                <Typography variant="h4">Ocorrências</Typography>
-                <Box component="div" className="flex gap-2 items-center">
-                    <div className="flex w-full gap-2">
+            <Paper elevation={3} className="flex flex-col w-[90%] gap-2 p-6">
+                <Box component="div" className="flex flex-col gap-2 items-center">
+                    <div className="flex w-full justify-between items-center">
+                        <h1 className="text-2xl">Ocorrências Abertas</h1>
+                        <div className="flex gap-1">
+                            <IconButton onClick={() => {
+                                setEdit(true)
+                                setOpen(true)
+                            }} size="large">
+                                <Tooltip title="Adicionar ocorrência">
+                                    <NoteAddIcon />
+                                </Tooltip>
+                            </IconButton>
+                            <IconButton onClick={() => setOpenStudents(true)} size="large">
+                                <Tooltip title="Adicionar aluno">
+                                    <GroupAddIcon />
+                                </Tooltip>
+                            </IconButton>
+                        </div>
+                    </div>
+                    <div className="flex w-full flex-col gap-2 md:flex-row">
                         {user && isAdmin(user.role) && (
                             <Autocomplete
                                 className="w-full"
@@ -343,19 +360,6 @@ export default function Ocurrences() {
                             renderInput={(params) => <TextField {...params} label="Pesquisa por Aluno(a)" />}
                         />
                     </div>
-                    <IconButton onClick={() => {
-                        setEdit(true)
-                        setOpen(true)
-                    }} size="large">
-                        <Tooltip title="Adicionar ocorrência">
-                            <NoteAddIcon />
-                        </Tooltip>
-                    </IconButton>
-                    <IconButton onClick={() => setOpenStudents(true)} size="large">
-                        <Tooltip title="Adicionar aluno">
-                            <GroupAddIcon />
-                        </Tooltip>
-                    </IconButton>
                 </Box>
                 <DataGrid
                     rows={ocurrences}
