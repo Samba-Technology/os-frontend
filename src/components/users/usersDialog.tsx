@@ -10,7 +10,7 @@ import { toast } from "react-toastify";
 interface Props {
     isOpen: boolean;
     onClose: () => void;
-    isView: boolean;
+    isEdit: boolean;
     user?: any;
 }
 
@@ -28,7 +28,7 @@ const schema = yup.object({
     passwordConfirm: yup.string().min(8).required('A confirmação de senha é necessária.').oneOf([yup.ref('password')], "As senhas não coincidem.")
 })
 
-export default function UsersDialog({ isOpen, onClose, isView, user }: Props) {
+export default function UsersDialog({ isOpen, onClose, isEdit, user }: Props) {
     const [loading, setLoading] = useState(false)
 
     const { handleSubmit, register, formState: { errors }, reset, setValue } = useForm<Data>({
@@ -41,17 +41,23 @@ export default function UsersDialog({ isOpen, onClose, isView, user }: Props) {
     })
 
     useEffect(() => {
-        if (isView) {
+        if (isEdit) {
             setValue("name", user.name)
             setValue("email", user.email)
         }
-    }, [isView, setValue, user.email, user.name])
+    }, [isEdit, setValue, user.email, user.name])
 
     const onSubmit = async (data: Data) => {
         try {
             setLoading(true)
-            await UsersService.create(data.name, data.email, data.password)
-            toast.success('Conta criada com sucesso.')
+            if (!isEdit) {
+                await UsersService.create(data.name, data.email, data.password)
+                toast.success('Conta criada com sucesso.')
+            } else {
+                await UsersService.edit(user.id, data.name, data.email, data.password);
+                toast.success('Conta editada com sucesso.')
+            }
+
             onClose()
             reset()
         } catch (e: any) {
@@ -62,7 +68,6 @@ export default function UsersDialog({ isOpen, onClose, isView, user }: Props) {
             }
         } finally {
             setLoading(false)
-            window.location.reload()
         }
     }
 
@@ -70,22 +75,18 @@ export default function UsersDialog({ isOpen, onClose, isView, user }: Props) {
         <Dialog open={isOpen} onClose={onClose} component="form" onSubmit={handleSubmit(onSubmit)} fullWidth>
             <DialogTitle>Registro de usuário</DialogTitle>
             <DialogContent className="flex flex-col w-full gap-2">
-                {!isView && <DialogContentText>Forneça os dados do usuário.</DialogContentText>}
-                <TextField label="Nome Completo" variant="filled" disabled={isView} error={!!errors.name} helperText={errors.name?.message} {...register("name")} />
-                <TextField label="Email" variant="filled" disabled={isView} error={!!errors.email} helperText={errors.email?.message} {...register("email")} />
-                {!isView && (
-                    <>
-                        <TextField label="Senha" type="password" disabled={isView} variant="filled" error={!!errors.password} helperText={errors.password?.message} {...register("password")} />
-                        <TextField label="Confirmar Senha" type="password" disabled={isView} variant="filled" error={!!errors.passwordConfirm} helperText={errors.passwordConfirm?.message} {...register("passwordConfirm")} />
-                    </>
-                )}
+                <DialogContentText>Forneça os dados do usuário.</DialogContentText>
+                <TextField label="Nome Completo" variant="filled" error={!!errors.name} helperText={errors.name?.message} {...register("name")} />
+                <TextField label="Email" variant="filled" error={!!errors.email} helperText={errors.email?.message} {...register("email")} />
+                <TextField label={isEdit ? 'Nova senha' : 'Senha'} type="password" variant="filled" error={!!errors.password} helperText={errors.password?.message} {...register("password")} />
+                <TextField label="Confirmar Senha" type="password" variant="filled" error={!!errors.passwordConfirm} helperText={errors.passwordConfirm?.message} {...register("passwordConfirm")} />
             </DialogContent>
             <DialogActions className="flex gap-1">
                 <Button variant="contained" onClick={() => {
                     onClose();
                     reset()
                 }}>Fechar</Button>
-                {!isView && <Button variant="contained" type="submit" disabled={loading}>{loading ? <CircularProgress size={20} /> : "Criar"}</Button>}
+                <Button variant="contained" type="submit" disabled={loading}>{loading ? <CircularProgress size={20} /> : isEdit ? "Editar" : "Criar"}</Button>
             </DialogActions>
         </Dialog>
     )

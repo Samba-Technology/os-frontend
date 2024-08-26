@@ -9,6 +9,14 @@ export class UsersService {
         })
     }
 
+    public static edit(userId: string, name: string, email: string, password: string) {
+        return api.post(`/users/${userId}`, {
+            name: name,
+            email: email,
+            password: password
+        })
+    }
+
     public static findMe() {
         return api.get('/users/me').then(response => response.data)
     }

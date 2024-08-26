@@ -25,10 +25,10 @@ export default function Users() {
         pageSize: 5
     })
     const [total, setTotal] = useState(0)
-    const [view, setView] = useState(false)
-    const [userV, setUserV] = useState({})
+    const [userView, setUserView] = useState({})
     const [userId, setUserId] = useState('')
     const [queryUser, setQueryUser] = useState<User>()
+    const [edit, setEdit] = useState(false);
 
     const { user } = useContext(AuthContext)
     const router = useRouter()
@@ -49,8 +49,8 @@ export default function Users() {
             type: 'actions',
             sortable: false,
             getActions: (params) => [
-                <Tooltip key={params.id} title="Visualizar usuário">
-                    <GridActionsCellItem icon={<ManageAccountsIcon />} onClick={() => viewUser(params.row)} label="Visualizar Usuário" />
+                <Tooltip key={params.id} title="Editar usuário">
+                    <GridActionsCellItem icon={<ManageAccountsIcon />} onClick={() => editUser(params.row)} label="Editar usuário" />
                 </Tooltip>,
                 <Tooltip key={params.id} title="Deletar usuário">
                     <GridActionsCellItem icon={<DeleteIcon />} onClick={() => deleteUser(params.row.id)} label="Deletar Usuário" />
@@ -88,10 +88,10 @@ export default function Users() {
 
     //Ações
 
-    const viewUser = (user: any) => {
-        setView(true)
-        setUserV(user)
-        setOpen(true)
+    const editUser = (user: any) => {
+        setUserView(user);
+        setEdit(true);
+        setOpen(true);
     }
 
     const deleteUser = (id: string) => {
@@ -103,9 +103,9 @@ export default function Users() {
 
     const handleClose = () => {
         setOpen(false)
-        setView(false)
-        setUserV({})
+        setUserView({})
         setConfirmOpen(false)
+        setEdit(false);
     }
 
     const handleConfirm = async () => {
@@ -178,7 +178,7 @@ export default function Users() {
                     />
                 </Box>
             </Paper>
-            <UsersDialog isOpen={open} onClose={handleClose} isView={view} user={userV} />
+            <UsersDialog isOpen={open} onClose={handleClose} user={userView} isEdit={edit} />
             <ConfirmDialog isOpen={confirmOpen} onClose={handleClose} onConfirm={handleConfirm} title="Confirmação" description="Você tem certeza que deseja excluir permanentemente esse usuário?" button="Excluir" />
         </div>
     )

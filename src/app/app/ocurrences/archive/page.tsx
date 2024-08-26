@@ -147,17 +147,11 @@ export default function ArchiveOcurrences() {
                 let actions = [
                     <Tooltip key={params.id} title="Visualizar ocorrência">
                         <GridActionsCellItem icon={<PageviewIcon />} onClick={() => viewOcurrence(params.row)} label="Visualizar Ocorrencia" />
+                    </Tooltip>,
+                    <Tooltip key={params.id} title="Visualizar em PDF">
+                        <GridActionsCellItem icon={<PictureAsPdfIcon />} onClick={() => ocurrencePDF(params.row)} label="Visualização em PDF" />
                     </Tooltip>
                 ]
-
-                if (user && isAdmin(user.role)) {
-                    actions = [
-                        ...actions,
-                        <Tooltip key={params.id} title="Visualizar em PDF">
-                            <GridActionsCellItem icon={<PictureAsPdfIcon />} onClick={() => ocurrencePDF(params.row)} label="Visualização em PDF" />
-                        </Tooltip>
-                    ]
-                }
 
                 return actions
             }
@@ -169,6 +163,7 @@ export default function ArchiveOcurrences() {
             try {
                 setLoading(true)
                 const ocurrences = await OcurrenceService.findOcurrences(pagination.page + 1, pagination.pageSize, true, queryStudent?.ra, queryUser?.id, queryClass)
+                
                 setOcurrences(ocurrences.data)
                 setTotal(ocurrences.meta.total)
             } catch (e) {
