@@ -117,8 +117,9 @@ export default function OcurrenceDialog({ isOpen, onClose, isView, ocurrence, di
                 }
             }
 
-            onClose()
-            reset()
+            setConfirmOpen(false);
+            onClose();
+            reset();
         } catch (e: any) {
             if (e?.response?.data?.message) {
                 toast.error(e.response.data.message)

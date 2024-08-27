@@ -164,8 +164,8 @@ export default function ArchiveOcurrences() {
                 setLoading(true)
                 const ocurrences = await OcurrenceService.findOcurrences(pagination.page + 1, pagination.pageSize, true, queryStudent?.ra, queryUser?.id, queryClass)
                 
-                setOcurrences(ocurrences.data)
-                setTotal(ocurrences.meta.total)
+                setOcurrences(ocurrences.data);
+                setTotal(ocurrences.meta.total);
             } catch (e) {
                 console.error(e)
             } finally {

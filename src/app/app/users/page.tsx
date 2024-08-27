@@ -140,7 +140,7 @@ export default function Users() {
 
     return (
         <div className="flex h-full w-full justify-center items-center">
-            <Paper elevation={3} className="flex flex-col w-[80%] gap-2 p-6 2xl:w-2/3">
+            <Paper elevation={3} className="flex flex-col w-[90%] gap-2 p-6">
                 <Typography variant="h4">Usuários</Typography>
                 <Box component="div" className="flex flex-col gap-4 mt-2">
                     <Box component="div" className="flex gap-2 items-center">

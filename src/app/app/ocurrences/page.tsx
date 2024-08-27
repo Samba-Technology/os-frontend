@@ -25,6 +25,7 @@ import { User } from "@/models/user.model";
 import ocurrencePDF from "@/reports/ocurrences/ocurrence";
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import CancelIcon from '@mui/icons-material/Cancel';
+import { io } from "socket.io-client";
 
 export default function Ocurrences() {
     const [open, setOpen] = useState(false)
@@ -225,6 +226,21 @@ export default function Ocurrences() {
         fetchStudents()
     }, [openStudents, user])
 
+    useEffect(() => {
+        if (user && isAdmin(user.role) && process.env.NEXT_PUBLIC_API_URL) {
+            const socketInstance = io(process.env.NEXT_PUBLIC_API_URL);
+
+            socketInstance.on('newOcurrence', (ocurrence) => {
+                setOcurrences((prevOcurrences) => [...prevOcurrences, ocurrence]);
+                toast.info("Nova ocorrência de " + ocurrence.user.name.split(' ')[0] + "!", { autoClose: false });
+            })
+
+            return () => {
+                socketInstance.disconnect();
+            };
+        }
+    }, [user])
+
     //Ações
 
     const viewOcurrence = (ocurrence: any) => {
@@ -236,8 +252,8 @@ export default function Ocurrences() {
     const assumeOcurrence = async (ocurrenceId: number) => {
         try {
             const ocurrence = await OcurrenceService.assume(ocurrenceId)
-            viewOcurrence(ocurrence)
-            refreshData(ocurrence)
+            viewOcurrence(ocurrence);
+            refreshData(ocurrence);
             toast.success('Ocorrencia assumida com sucesso.')
         } catch (e: any) {
             toast.error(e.response.data.message)
@@ -246,7 +262,7 @@ export default function Ocurrences() {
 
     const dispatchOcurrence = async (ocurrence: any) => {
         setDispatch(true)
-        viewOcurrence(ocurrence)
+        viewOcurrence(ocurrence);
     }
 
     const editOcurrence = async (ocurrence: any) => {

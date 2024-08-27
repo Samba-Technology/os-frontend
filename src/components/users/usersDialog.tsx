@@ -52,10 +52,10 @@ export default function UsersDialog({ isOpen, onClose, isEdit, user }: Props) {
             setLoading(true)
             if (!isEdit) {
                 await UsersService.create(data.name, data.email, data.password)
-                toast.success('Conta criada com sucesso.')
+                toast.success('Usuário criado com sucesso.');
             } else {
                 await UsersService.edit(user.id, data.name, data.email, data.password);
-                toast.success('Conta editada com sucesso.')
+                toast.success('Usuário editado com sucesso.');
             }
 
             onClose()
