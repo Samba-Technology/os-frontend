@@ -1,8 +1,9 @@
 "use client"
-import AuthContext from '@/contexts/auth';
+import AuthContext from '@/contexts/authContext';
 import { useContext, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Header from '@/components/header/header';
+import { Box } from '@mui/material';
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
     const { signed } = useContext(AuthContext)

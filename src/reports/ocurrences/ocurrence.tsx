@@ -21,7 +21,17 @@ export default function ocurrencePDF(ocurrence: any) {
         margin: [0, 40, 0, 0]
       },
       {
-        text: ocurrence.students.map((student: any) => student.name).join(", "),
+        text: ocurrence.students.map((student: any) => student.name + " (" + student.class + ")").join(", "),
+        style: "normal",
+        margin: [0, 5, 0, 0]
+      },
+      {
+        text: "cujo(s) tutor(es) é(são):",
+        style: ["normal", "bold"],
+        margin: [0, 5, 0, 0]
+      },
+      {
+        text: ocurrence.tutors.map((tutor: any) => tutor.name).join(", "),
         style: "normal",
         margin: [0, 5, 0, 0]
       },
@@ -30,7 +40,7 @@ export default function ocurrencePDF(ocurrence: any) {
         margin: [0, 10, 0, 10]
       },
       {
-        text: `Onde descreveu:`,
+        text: `E descreveu:`,
         style: ["normal", "bold"]
       },
       {
@@ -56,22 +66,27 @@ export default function ocurrencePDF(ocurrence: any) {
       columns: [
         {
           text: 'Assinatura do Aluno',
-          style: ['normal', 'bold'],
-          alignment: 'center',
-          margin: [60, 0, 0, 0]
+          style: ['normal'],
+          alignment: 'left',
+          margin: [10, 0, 0, 0]
         },
         {
           text: 'Assinatura do Responsável',
-          style: ['normal', 'bold'],
-          alignment: 'left',
-          margin: [0, 0, 0, 0]
+          style: ['normal'],
+          margin: [0, 0, 5, 0]
+        },
+        {
+          text: 'Totor(es) (se necessário)',
+          style: ['normal'],
+          margin: [5, 0, 0, 0]
         },
         {
           text: 'Assinatura do Gestor',
-          style: ['normal', 'bold'],
+          style: ['normal'],
           alignment: 'right',
-          margin: [0, 0, 60, 0]
+          margin: [0, 0, 10, 0]
         }
+
       ]
     },
     styles: {

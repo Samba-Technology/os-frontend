@@ -1,11 +1,11 @@
 "use client"
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Box, Button, CircularProgress, Container, CssBaseline, Paper, TextField, Typography } from "@mui/material";
+import { Box, Button, CircularProgress, Container, Paper, TextField, Typography } from "@mui/material";
 import { useForm } from "react-hook-form";
 import yup from "@/helpers/validation"
 import { useContext, useState } from "react";
 import { toast } from "react-toastify";
-import AuthContext from "@/contexts/auth";
+import AuthContext from "@/contexts/authContext";
 import { useRouter } from "next/navigation";
 
 type Data = {
@@ -52,7 +52,6 @@ export default function Login() {
     return (
         <Box className="flex justify-center items-center h-full flex-col">
             <Container component="main" maxWidth="xs">
-                <CssBaseline />
                 <Paper component="form" elevation={3} onSubmit={handleSubmit(onSubmit)} className="flex flex-col justify-center items-center p-4">
                     <Box className="mb-3">
                         <Typography variant="h5" fontWeight="bold">Entrar</Typography>

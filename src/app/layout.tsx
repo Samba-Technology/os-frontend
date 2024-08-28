@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import Mui from "@/components/mui/mui";
 import Toastify from "@/components/toastify/toastify";
-import { AuthProvider } from "@/contexts/auth";
+import { AuthProvider } from "@/contexts/authContext";
+import { ThemeContextProvider } from "@/contexts/theme/themeContext";
+import { CssBaseline } from "@mui/material";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,12 +21,13 @@ export default function RootLayout({
   return (
     <html lang="pt-br">
       <body className={inter.className}>
-        <Mui>
+        <ThemeContextProvider>
+        <CssBaseline />
           <AuthProvider>
             {children}
           </AuthProvider>
           <Toastify />
-        </Mui>
+        </ThemeContextProvider>
       </body>
     </html>
   );

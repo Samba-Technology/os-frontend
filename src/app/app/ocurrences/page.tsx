@@ -4,7 +4,7 @@ import { DataGrid, GridActionsCellItem, GridColDef } from "@mui/x-data-grid";
 import { useContext, useEffect, useState } from "react";
 import CommentIcon from '@mui/icons-material/Comment';
 import PageviewIcon from '@mui/icons-material/Pageview';
-import AuthContext from "@/contexts/auth";
+import AuthContext from "@/contexts/authContext";
 import { isAdmin } from "@/helpers/authorization";
 import { Ocurrence } from "@/models/ocurrence.model";
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
@@ -170,7 +170,7 @@ export default function Ocurrences() {
                     ]
                 }
 
-                if (user && params.row.status === "OPENED" && params.row.userId === user.id) {
+                if (user && params.row.status === "OPENED" && (params.row.userId === user.id || isAdmin(user.role))) {
                     actions = [
                         ...actions,
                         <GridActionsCellItem key={params.id} icon={<CancelIcon />} onClick={() => cancelOcurrence(params.row.id)} label="Cancelar Ocorrência" showInMenu />,
@@ -318,7 +318,7 @@ export default function Ocurrences() {
     }
 
     return (
-        <div className="flex h-full w-full justify-center items-center">
+        <Box className="flex h-full w-full justify-center items-center">
             <Paper elevation={3} className="flex flex-col w-[90%] gap-2 p-6">
                 <Box component="div" className="flex flex-col gap-2 items-center">
                     <div className="flex w-full justify-between items-center">
@@ -395,7 +395,7 @@ export default function Ocurrences() {
             </Paper>
             <OcurrenceDialog isOpen={open} onClose={handleClose} isView={view} ocurrence={ocurrence} dispatch={dispatch} edit={edit} />
             <StudentsDialog isOpen={openStudents} onClose={handleClose} />
-        </div>
+        </Box>
     )
 
 }

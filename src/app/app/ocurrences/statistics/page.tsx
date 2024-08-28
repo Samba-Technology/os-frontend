@@ -2,13 +2,13 @@
 import { Ocurrence } from "@/models/ocurrence.model";
 import { OcurrenceService } from "@/services/api/ocurrence.service";
 import { pieArcLabelClasses, PieChart } from "@mui/x-charts/PieChart";
-import { Autocomplete, Paper, Tab, Tabs, TextField, Tooltip } from "@mui/material";
+import { Autocomplete, Box, Paper, Tab, Tabs, TextField, Tooltip } from "@mui/material";
 import React, { useContext, useEffect, useState } from "react";
 import { User } from "@/models/user.model";
 import { UsersService } from "@/services/api/users.service";
 import { Student } from "@/models/student.model";
 import { StudentsService } from "@/services/api/students.service";
-import AuthContext from "@/contexts/auth";
+import AuthContext from "@/contexts/authContext";
 import { isAdmin } from "@/helpers/authorization";
 import { useRouter } from "next/navigation";
 import LibraryAddIcon from '@mui/icons-material/LibraryAdd';
@@ -309,7 +309,7 @@ export default function OcurrencesStatistics() {
                         renderInput={(params) => (
                             <TextField
                                 {...params}
-                                variant="filled"
+                                
                                 label="Pesquisa por mês"
                                 color="primary"
                             />
@@ -328,7 +328,7 @@ export default function OcurrencesStatistics() {
                     <div className="flex flex-col gap-2">
                         <div className="flex flex-col gap-2 md:flex-row">
                             {visualizationData != null && visualizationData.map((data: any, index) => (
-                                <div key={index} className="flex flex-col items-center p-4 bg-neutral-50 drop-shadow-md rounded-md gap-3 w-full md:w-1/4">
+                                <Paper elevation={2} key={index} className="flex flex-col items-center p-4 drop-shadow-md rounded-md gap-3 w-full md:w-1/4">
                                     <div className="flex justify-between items-center w-full">
                                         <p className="md:text-sm 2xl:text-lg">{data.title}</p>
                                         <p>{data.icon} </p>
@@ -341,11 +341,11 @@ export default function OcurrencesStatistics() {
                                             </p>
                                         )}
                                     </div>
-                                </div>
+                                </Paper>
                             ))}
                         </div>
                         <div className="hidden gap-2 md:flex">
-                            <div className="flex w-1/2 items-center flex-col bg-neutral-50 drop-shadow-md rounded-md p-4 gap-3">
+                            <Paper elevation={2} className="flex w-1/2 items-center flex-col bg-neutral-50 drop-shadow-md rounded-md p-4 gap-3">
                                 <h1 className="text-xl">Ocorrências</h1>
                                 <PieChart
                                     series={[
@@ -371,8 +371,8 @@ export default function OcurrencesStatistics() {
                                     width={450}
                                     height={200}
                                 />
-                            </div>
-                            <div className="flex w-1/2 items-center flex-col bg-neutral-50 drop-shadow-md rounded-md p-4 gap-3">
+                            </Paper>
+                            <Paper elevation={2} className="flex w-1/2 items-center flex-col bg-neutral-50 drop-shadow-md rounded-md p-4 gap-3">
                                 <h1 className="text-xl">Porcentagem de Solução</h1>
                                 <PieChart
                                     series={[
@@ -397,33 +397,33 @@ export default function OcurrencesStatistics() {
                                     width={450}
                                     height={200}
                                 />
-                            </div>
+                            </Paper>
                         </div>
                     </div>
                 ) : (
                     <div className="flex flex-col gap-2 md:flex-row text-base md:h-[300px]">
-                        <div className="flex flex-col bg-neutral-50 items-center drop-shadow-md gap-1 p-4 w-full md:w-1/3">
+                        <Paper className="flex flex-col items-center drop-shadow-md gap-1 p-4 w-full md:w-1/3">
                             <div className="flex justify-between items-center w-full">
                                 <h1 className="text-xl">Professores</h1>
                                 <SchoolIcon color="info" />
                             </div>
                             <div className="flex flex-col gap-1 overflow-y-auto p-2 w-full">
                                 {viewUsers.map((user: User, index) => (
-                                    <div key={index} className="flex p-2 bg-neutral-100 w-full justify-between">
+                                    <Paper elevation={3} key={index} className="flex p-2 bg-neutral-100 w-full justify-between">
                                         <p>{user.name}</p>
                                         <p>{viewData.filter((ocurrence: Ocurrence) => ocurrence.userId === user.id).length}</p>
-                                    </div>
+                                    </Paper>
                                 ))}
                             </div>
-                        </div>
-                        <div className="flex flex-col bg-neutral-50 items-center drop-shadow-md gap-1 p-4 w-full md:w-1/3">
+                        </Paper>
+                        <Paper className="flex flex-col items-center drop-shadow-md gap-1 p-4 w-full md:w-1/3">
                             <div className="flex justify-between items-center w-full">
                                 <h1 className="text-xl">Estudantes</h1>
                                 <PersonIcon color="info" />
                             </div>
                             <div className="flex flex-col gap-1 overflow-y-auto p-2 w-full">
                                 {viewStudents.map((student: Student, index) => (
-                                    <div key={index} className="flex p-2 bg-neutral-100 w-full justify-between">
+                                    <Paper elevation={3} key={index} className="flex p-2 bg-neutral-100 w-full justify-between">
                                         <p>{student.name.length > 25 ? `${student.name.substring(0, 25)}...` : student.name} ({student.class})</p>
                                         <p>{viewData.reduce((count, ocurrence: Ocurrence) => {
                                             if (ocurrence.students.some(s => s.ra === student.ra)) {
@@ -432,24 +432,24 @@ export default function OcurrencesStatistics() {
 
                                             return count;
                                         }, 0)}</p>
-                                    </div>
+                                    </Paper>
                                 ))}
                             </div>
-                        </div>
-                        <div className="flex flex-col bg-neutral-50 items-center drop-shadow-md gap-1 p-4 w-full md:w-1/3">
+                        </Paper>
+                        <Paper className="flex flex-col items-center drop-shadow-md gap-1 p-4 w-full md:w-1/3">
                             <div className="flex justify-between items-center w-full">
                                 <h1 className="text-xl">Séries</h1>
                                 <GroupIcon color="info" />
                             </div>
                             <div className="flex flex-col gap-1 overflow-y-auto p-2 w-full">
                                 {viewClasses.map((c: any, index: any) => (
-                                    <div key={index} className="flex p-2 bg-neutral-100 w-full justify-between">
+                                    <Paper elevation={3} key={index} className="flex p-2 bg-neutral-100 w-full justify-between">
                                         <p>{c.className}</p>
                                         <p>{c.count}</p>
-                                    </div>
+                                    </Paper>
                                 ))}
                             </div>
-                        </div>
+                        </Paper>
                     </div>
                 )
                 }

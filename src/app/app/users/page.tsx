@@ -1,6 +1,6 @@
 "use client"
 import UsersDialog from "@/components/users/usersDialog";
-import AuthContext from "@/contexts/auth";
+import AuthContext from "@/contexts/authContext";
 import { isAdmin } from "@/helpers/authorization";
 import { User } from "@/models/user.model";
 import { Autocomplete, Box, IconButton, Paper, TextField, Tooltip, Typography } from "@mui/material";

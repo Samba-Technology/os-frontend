@@ -2,10 +2,11 @@
 import yup from "@/helpers/validation";
 import { StudentsService } from "@/services/api/students.service";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
+import { Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, InputLabel, MenuItem, Select, TextField, Tooltip } from "@mui/material";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
+import CloseIcon from '@mui/icons-material/Close';
 
 interface Props {
     isOpen: boolean;
@@ -58,20 +59,30 @@ export default function StudentsDialog({ isOpen, onClose }: Props) {
     }
 
     return (
-        <Dialog open={isOpen} onClose={onClose} component="form" onSubmit={handleSubmit(onSubmit)}>
-            <DialogTitle>Criação de estudante</DialogTitle>
+        <Dialog open={isOpen} onClose={onClose} component="form" onSubmit={handleSubmit(onSubmit)} fullWidth>
+            <DialogTitle className="flex justify-between items-center">
+                <p>Registro de Estudante</p>
+                <div className="cursor-pointer" onClick={() => {
+                    onClose()
+                    reset()
+                }}>
+                    <Tooltip title="Fechar">
+                        <CloseIcon />
+                    </Tooltip>
+                </div>
+            </DialogTitle>
             <DialogContent className="flex flex-col w-full gap-2">
-                <DialogContentText>Insira algumas informações do estudante que será criado.</DialogContentText>
-                <TextField className="w-full" label="Nome Completo" variant="filled" error={!!errors.name} helperText={errors.name?.message} {...register("name")} />
+                <DialogContentText>Forneça os dados do estudante.</DialogContentText>
+                <TextField className="w-full" label="Nome Completo"  error={!!errors.name} helperText={errors.name?.message} {...register("name")} />
                 <Box className="flex gap-1">
-                    <FormControl variant="filled" className="w-1/2">
+                    <FormControl  className="w-1/2">
                         <InputLabel>Série</InputLabel>
                         <Controller
                             name="series"
                             control={control}
                             defaultValue=""
                             render={({ field: { onChange, value } }) => (
-                                <Select variant="filled" label="Série" error={!!errors.series} value={value} onChange={onChange} >
+                                <Select  label="Série" error={!!errors.series} value={value} onChange={onChange} >
                                     <MenuItem value="6">6º</MenuItem>
                                     <MenuItem value="7">7º</MenuItem>
                                     <MenuItem value="8">8º</MenuItem>
@@ -82,14 +93,14 @@ export default function StudentsDialog({ isOpen, onClose }: Props) {
                             )}
                         />
                     </FormControl>
-                    <FormControl variant="filled" className="w-1/2">
+                    <FormControl  className="w-1/2">
                         <InputLabel>Turma</InputLabel>
                         <Controller
                             name="class"
                             control={control}
                             defaultValue=""
                             render={({ field: { onChange, value } }) => (
-                                <Select variant="filled" label="Turma" error={!!errors.class} value={value} onChange={onChange}>
+                                <Select  label="Turma" error={!!errors.class} value={value} onChange={onChange}>
                                     <MenuItem value="A">A</MenuItem>
                                     <MenuItem value="B">B</MenuItem>
                                     <MenuItem value="C">C</MenuItem>
@@ -99,13 +110,9 @@ export default function StudentsDialog({ isOpen, onClose }: Props) {
                         />
                     </FormControl>
                 </Box>
-                <TextField label="RA" variant="filled" error={!!errors.ra} helperText={errors.ra?.message} {...register("ra")} />
+                <TextField label="RA"  error={!!errors.ra} helperText={errors.ra?.message} {...register("ra")} />
             </DialogContent>
             <DialogActions className="flex gap-1">
-                <Button variant="contained" onClick={() => {
-                    onClose();
-                    reset();
-                }}>Fechar</Button>
                 <Button variant="contained" type="submit" disabled={loading}>{loading ? <CircularProgress size={20} /> : "Criar"}</Button>
             </DialogActions>
         </Dialog>

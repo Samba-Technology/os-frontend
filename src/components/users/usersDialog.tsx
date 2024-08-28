@@ -2,10 +2,11 @@
 import yup from "@/helpers/validation";
 import { UsersService } from "@/services/api/users.service";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from "@mui/material";
+import { Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, Tooltip } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
+import CloseIcon from '@mui/icons-material/Close';
 
 interface Props {
     isOpen: boolean;
@@ -73,19 +74,25 @@ export default function UsersDialog({ isOpen, onClose, isEdit, user }: Props) {
 
     return (
         <Dialog open={isOpen} onClose={onClose} component="form" onSubmit={handleSubmit(onSubmit)} fullWidth>
-            <DialogTitle>Registro de usuário</DialogTitle>
+            <DialogTitle className="flex justify-between items-center">
+                <p>Registro de Usuário</p>
+                <div className="cursor-pointer" onClick={() => {
+                    onClose()
+                    reset()
+                }}>
+                    <Tooltip title="Fechar">
+                        <CloseIcon />
+                    </Tooltip>
+                </div>
+            </DialogTitle>
             <DialogContent className="flex flex-col w-full gap-2">
                 <DialogContentText>Forneça os dados do usuário.</DialogContentText>
-                <TextField label="Nome Completo" variant="filled" error={!!errors.name} helperText={errors.name?.message} {...register("name")} />
-                <TextField label="Email" variant="filled" error={!!errors.email} helperText={errors.email?.message} {...register("email")} />
-                <TextField label={isEdit ? 'Nova senha' : 'Senha'} type="password" variant="filled" error={!!errors.password} helperText={errors.password?.message} {...register("password")} />
-                <TextField label="Confirmar Senha" type="password" variant="filled" error={!!errors.passwordConfirm} helperText={errors.passwordConfirm?.message} {...register("passwordConfirm")} />
+                <TextField label="Nome Completo" error={!!errors.name} helperText={errors.name?.message} {...register("name")} />
+                <TextField label="Email" error={!!errors.email} helperText={errors.email?.message} {...register("email")} />
+                <TextField label={isEdit ? 'Nova senha' : 'Senha'} type="password"  error={!!errors.password} helperText={errors.password?.message} {...register("password")} />
+                <TextField label="Confirmar Senha" type="password"  error={!!errors.passwordConfirm} helperText={errors.passwordConfirm?.message} {...register("passwordConfirm")} />
             </DialogContent>
             <DialogActions className="flex gap-1">
-                <Button variant="contained" onClick={() => {
-                    onClose();
-                    reset()
-                }}>Fechar</Button>
                 <Button variant="contained" type="submit" disabled={loading}>{loading ? <CircularProgress size={20} /> : isEdit ? "Editar" : "Criar"}</Button>
             </DialogActions>
         </Dialog>
