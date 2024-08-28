@@ -13,6 +13,20 @@ const darkTheme = createTheme({
       main: "#7A4BFD"
     }
   },
+  components: {
+    MuiTextField: {
+      styleOverrides: {
+        root: {
+          '& input:-webkit-autofill': {
+            backgroundColor: '#f3e5f5',
+            WebkitTextFillColor: 'inherit',
+            WebkitBoxShadow: '0 0 0 100px inherit inset',
+          },
+        },
+      },
+    },
+  },
+
 });
 
 export { lightTheme, darkTheme };
