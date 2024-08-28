@@ -9,8 +9,8 @@ import { CssBaseline } from "@mui/material";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Sistema de Ocorrências",
-  description: "Sistema de ocorrências realizado por Samba Technology",
+  title: "Ocorrências - Samba Code",
+  description: "Sistema de ocorrências produzido por Samba Code ©",
 };
 
 export default function RootLayout({

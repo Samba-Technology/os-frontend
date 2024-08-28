@@ -34,7 +34,7 @@ export default function Header() {
                     src="/logo.png"
                     width={60}
                     height={60}
-                    alt="Picture of the author"
+                    alt="Samba Code Logo"
                 />
             </Box>
             <div className="flex gap-4">
