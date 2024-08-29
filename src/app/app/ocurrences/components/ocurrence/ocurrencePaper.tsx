@@ -1,5 +1,5 @@
 "use client"
-import { Autocomplete, Box, IconButton, Paper, TextField, Tooltip, Typography } from "@mui/material";
+import { Autocomplete, Box, Button, IconButton, Paper, TextField, Tooltip, Typography } from "@mui/material";
 import { DataGrid, GridActionsCellItem, GridColDef } from "@mui/x-data-grid";
 import { useContext, useEffect, useState } from "react";
 import CommentIcon from '@mui/icons-material/Comment';
@@ -175,7 +175,7 @@ export default function OcurrencePaper({ title, isArchive }: OcurrencePaperProps
                             <GridActionsCellItem key={params.id} icon={<PictureAsPdfIcon />} onClick={() => ocurrencePDF(params.row)} disabled={params.row.status === "WAITING" ? false : true} label="Visualização em PDF" showInMenu />
                         ]
                     }
-    
+
                     if (user && params.row.status === "OPENED" && (params.row.userId === user.id || isAdmin(user.role))) {
                         actions = [
                             ...actions,
@@ -244,19 +244,27 @@ export default function OcurrencePaper({ title, isArchive }: OcurrencePaperProps
     }, [openStudents, user])
 
     useEffect(() => {
-        if (user && isAdmin(user.role) && process.env.NEXT_PUBLIC_API_URL) {
+        if (!isArchive && user && process.env.NEXT_PUBLIC_API_URL) {
             const socketInstance = io(process.env.NEXT_PUBLIC_API_URL);
 
             socketInstance.on('newOcurrence', (ocurrence) => {
-                setOcurrences((prevOcurrences) => [...prevOcurrences, ocurrence]);
-                toast.info("Nova ocorrência de " + ocurrence.user.name.split(' ')[0] + "!", { autoClose: false });
+                if (user.id === ocurrence.userId || isAdmin(user.role)) {
+                    setOcurrences((prevOcurrences) => [...prevOcurrences, ocurrence]);
+                    if (isAdmin(user.role)) toast.info("Nova ocorrência de " + ocurrence.user.name.split(' ')[0] + "!", { autoClose: false });
+                }
+            })
+
+            socketInstance.on('editOcurrence', (ocurrence) => {
+                if (user.id === ocurrence.userId || isAdmin(user.role)) {
+                    refreshData(ocurrence);
+                }
             })
 
             return () => {
                 socketInstance.disconnect();
             };
         }
-    }, [user])
+    }, [user, isArchive])
 
     const viewOcurrence = (ocurrence: any) => {
         setView(true)
@@ -268,7 +276,6 @@ export default function OcurrencePaper({ title, isArchive }: OcurrencePaperProps
         try {
             const ocurrence = await OcurrenceService.assume(ocurrenceId)
             viewOcurrence(ocurrence);
-            refreshData(ocurrence);
             toast.success('Ocorrencia assumida com sucesso.')
         } catch (e: any) {
             toast.error(e.response.data.message)
@@ -287,8 +294,7 @@ export default function OcurrencePaper({ title, isArchive }: OcurrencePaperProps
 
     const conclueOcurrence = async (ocurrenceId: number) => {
         try {
-            const ocurrence = await OcurrenceService.conclue(ocurrenceId)
-            refreshData(ocurrence)
+            await OcurrenceService.conclue(ocurrenceId)
             toast.success('Ocorrência concluida com sucesso.')
         } catch (e: any) {
             toast.error(e.response.data.message)
@@ -297,8 +303,7 @@ export default function OcurrencePaper({ title, isArchive }: OcurrencePaperProps
 
     const cancelOcurrence = async (ocurrenceId: number) => {
         try {
-            const ocurrence = await OcurrenceService.cancel(ocurrenceId)
-            refreshData(ocurrence)
+            OcurrenceService.cancel(ocurrenceId)
             toast.success('Ocorrência cancelada com sucesso!')
         } catch (e: any) {
             toast.error(e.response.data.message)
@@ -351,7 +356,7 @@ export default function OcurrencePaper({ title, isArchive }: OcurrencePaperProps
                         </IconButton>
                     </div>}
                 </div>
-                <div className="flex w-full flex-col gap-2 md:flex-row">
+                {ocurrences.length > 0 && <div className="flex w-full flex-col gap-2 md:flex-row">
                     {user && isAdmin(user.role) && (
                         <Autocomplete
                             className="w-full"
@@ -387,9 +392,9 @@ export default function OcurrencePaper({ title, isArchive }: OcurrencePaperProps
                         }}
                         renderInput={(params) => <TextField {...params} label="Pesquisa por Aluno(a)" />}
                     />
-                </div>
+                </div>}
             </Box>
-            <DataGrid
+            {ocurrences.length > 0 ? <DataGrid
                 rows={ocurrences}
                 loading={loading}
                 columns={columns}
@@ -403,7 +408,10 @@ export default function OcurrencePaper({ title, isArchive }: OcurrencePaperProps
                         labelRowsPerPage: "Linhas por página:",
                     }
                 }}
-            />
+            /> : <Paper elevation={3} className="flex flex-col w-full items-center p-5 gap-4">
+                <h1 className="text-2xl">Está tudo tranquilo por aqui!</h1>
+                <p>Excelente, parece que nenhuma ocorrência foi encontrada.</p>
+            </Paper>}
             <OcurrenceDialog isOpen={open} onClose={handleClose} isView={view} ocurrence={ocurrence} dispatch={dispatch} edit={edit} />
             <StudentsDialog isOpen={openStudents} onClose={handleClose} />
         </Paper>
