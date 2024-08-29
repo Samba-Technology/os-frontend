@@ -59,7 +59,7 @@ export default function Login() {
                     <Box className="flex flex-col gap-4 w-full">
                         <TextField label="Email" error={!!errors.email} helperText={errors.email?.message} {...register("email")} />
                         <TextField label="Senha" error={!!errors.password} helperText={errors.password?.message} type="password" {...register("password")} />
-                        <Button type="submit" variant="outlined" className="w-full h-[56px]" disabled={loading}>{loading ? <CircularProgress size={20} /> : "Entrar"}</Button>
+                        <Button type="submit" variant="contained" className="w-full h-[56px]" disabled={loading}>{loading ? <CircularProgress size={20} /> : "Entrar"}</Button>
                     </Box>
                 </Paper>
             </Container>

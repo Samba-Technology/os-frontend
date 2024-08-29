@@ -368,7 +368,7 @@ export default function Ocurrences() {
                             className="w-full"
                             disablePortal
                             options={students}
-                            getOptionLabel={(student) => student.name}
+                            getOptionLabel={(student) => student.name + " (" + student.class + ")"}
                             onChange={(event, student, reason) => {
                                 student && setQueryStudent(student);
                                 reason === "clear" && setQueryStudent(undefined)

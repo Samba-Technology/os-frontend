@@ -405,11 +405,11 @@ export default function OcurrencesStatistics() {
                         <Paper className="flex flex-col items-center drop-shadow-md gap-1 p-4 w-full md:w-1/3">
                             <div className="flex justify-between items-center w-full">
                                 <h1 className="text-xl">Professores</h1>
-                                <SchoolIcon color="info" />
+                                <SchoolIcon color="primary" />
                             </div>
                             <div className="flex flex-col gap-1 overflow-y-auto p-2 w-full">
                                 {viewUsers.map((user: User, index) => (
-                                    <Paper elevation={3} key={index} className="flex p-2 bg-neutral-100 w-full justify-between">
+                                    <Paper elevation={2} key={index} className="flex p-2 bg-neutral-100 w-full justify-between">
                                         <p>{user.name}</p>
                                         <p>{viewData.filter((ocurrence: Ocurrence) => ocurrence.userId === user.id).length}</p>
                                     </Paper>
@@ -419,11 +419,11 @@ export default function OcurrencesStatistics() {
                         <Paper className="flex flex-col items-center drop-shadow-md gap-1 p-4 w-full md:w-1/3">
                             <div className="flex justify-between items-center w-full">
                                 <h1 className="text-xl">Estudantes</h1>
-                                <PersonIcon color="info" />
+                                <PersonIcon color="primary" />
                             </div>
                             <div className="flex flex-col gap-1 overflow-y-auto p-2 w-full">
                                 {viewStudents.map((student: Student, index) => (
-                                    <Paper elevation={3} key={index} className="flex p-2 bg-neutral-100 w-full justify-between">
+                                    <Paper elevation={2} key={index} className="flex p-2 bg-neutral-100 w-full justify-between">
                                         <p>{student.name.length > 25 ? `${student.name.substring(0, 25)}...` : student.name} ({student.class})</p>
                                         <p>{viewData.reduce((count, ocurrence: Ocurrence) => {
                                             if (ocurrence.students.some(s => s.ra === student.ra)) {
@@ -439,11 +439,11 @@ export default function OcurrencesStatistics() {
                         <Paper className="flex flex-col items-center drop-shadow-md gap-1 p-4 w-full md:w-1/3">
                             <div className="flex justify-between items-center w-full">
                                 <h1 className="text-xl">Séries</h1>
-                                <GroupIcon color="info" />
+                                <GroupIcon color="primary" />
                             </div>
                             <div className="flex flex-col gap-1 overflow-y-auto p-2 w-full">
                                 {viewClasses.map((c: any, index: any) => (
-                                    <Paper elevation={3} key={index} className="flex p-2 bg-neutral-100 w-full justify-between">
+                                    <Paper elevation={2} key={index} className="flex p-2 bg-neutral-100 w-full justify-between">
                                         <p>{c.className}</p>
                                         <p>{c.count}</p>
                                     </Paper>

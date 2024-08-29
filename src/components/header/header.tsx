@@ -30,12 +30,15 @@ export default function Header() {
     return (
         <Box component="div" className="flex items-center w-full justify-between gap-10 px-6 py-2 lg:px-16">
             <Box component="div" className="flex justify-center gap-3">
-                <Image
-                    src="/logo.png"
-                    width={60}
-                    height={60}
-                    alt="Samba Code Logo"
-                />
+                <Tooltip className="cursor-pointer" title="Copyright © 2024 Samba Code">
+                    <Image
+                        src="/logo.png"
+                        width={60}
+                        height={60}
+                        alt="Samba Code Logo"
+                        style={{ width: 'auto', height: 'auto' }}
+                    />
+                </Tooltip>
             </Box>
             <div className="flex gap-4">
                 <ThemeToggleButton />
@@ -106,7 +109,7 @@ export default function Header() {
                                 {!!user && isAdmin(user.role) ? [
                                     <MenuItem key="stats" className="flex gap-2" onClick={() => router.push('/app/ocurrences/statistics')}>
                                         <AnalyticsIcon />
-                                        Estatísticas das ocorrências
+                                        Estatísticas
                                     </MenuItem>,
                                     <MenuItem key="users" className="flex gap-2" onClick={() => router.push('/app/users')}>
                                         <GroupIcon />
