@@ -73,16 +73,16 @@ export default function StudentsDialog({ isOpen, onClose }: Props) {
             </DialogTitle>
             <DialogContent className="flex flex-col w-full gap-2">
                 <DialogContentText>Forneça os dados do estudante.</DialogContentText>
-                <TextField className="w-full" label="Nome Completo"  error={!!errors.name} helperText={errors.name?.message} {...register("name")} />
+                <TextField className="w-full" label="Nome Completo" error={!!errors.name} helperText={errors.name?.message} {...register("name")} />
                 <Box className="flex gap-1">
-                    <FormControl  className="w-1/2">
+                    <FormControl className="w-1/2">
                         <InputLabel>Série</InputLabel>
                         <Controller
                             name="series"
                             control={control}
                             defaultValue=""
                             render={({ field: { onChange, value } }) => (
-                                <Select  label="Série" error={!!errors.series} value={value} onChange={onChange} >
+                                <Select label="Série" error={!!errors.series} value={value} onChange={onChange} >
                                     <MenuItem value="6">6º</MenuItem>
                                     <MenuItem value="7">7º</MenuItem>
                                     <MenuItem value="8">8º</MenuItem>
@@ -93,14 +93,14 @@ export default function StudentsDialog({ isOpen, onClose }: Props) {
                             )}
                         />
                     </FormControl>
-                    <FormControl  className="w-1/2">
+                    <FormControl className="w-1/2">
                         <InputLabel>Turma</InputLabel>
                         <Controller
                             name="class"
                             control={control}
                             defaultValue=""
                             render={({ field: { onChange, value } }) => (
-                                <Select  label="Turma" error={!!errors.class} value={value} onChange={onChange}>
+                                <Select label="Turma" error={!!errors.class} value={value} onChange={onChange}>
                                     <MenuItem value="A">A</MenuItem>
                                     <MenuItem value="B">B</MenuItem>
                                     <MenuItem value="C">C</MenuItem>
@@ -110,7 +110,7 @@ export default function StudentsDialog({ isOpen, onClose }: Props) {
                         />
                     </FormControl>
                 </Box>
-                <TextField label="RA"  error={!!errors.ra} helperText={errors.ra?.message} {...register("ra")} />
+                <TextField label="RA" error={!!errors.ra} helperText={errors.ra?.message} {...register("ra")} />
             </DialogContent>
             <DialogActions className="flex gap-1">
                 <Button variant="contained" type="submit" disabled={loading}>{loading ? <CircularProgress size={20} /> : "Criar"}</Button>

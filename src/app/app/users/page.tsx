@@ -170,7 +170,7 @@ export default function Users() {
                         paginationModel={pagination}
                         onPaginationModelChange={setPagination}
                         rowCount={total}
-                        componentsProps={{
+                        slotProps={{
                             pagination: {
                                 labelRowsPerPage: "Linhas por página:",
                             }

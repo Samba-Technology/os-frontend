@@ -2,7 +2,7 @@
 import { Ocurrence } from "@/models/ocurrence.model";
 import { OcurrenceService } from "@/services/api/ocurrence.service";
 import { pieArcLabelClasses, PieChart } from "@mui/x-charts/PieChart";
-import { Autocomplete, Box, Paper, Tab, Tabs, TextField, Tooltip } from "@mui/material";
+import { Autocomplete, Paper, Tab, Tabs, TextField, Tooltip } from "@mui/material";
 import React, { useContext, useEffect, useState } from "react";
 import { User } from "@/models/user.model";
 import { UsersService } from "@/services/api/users.service";
