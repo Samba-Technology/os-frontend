@@ -356,7 +356,7 @@ export default function OcurrencePaper({ title, isArchive }: OcurrencePaperProps
                         </IconButton>
                     </div>}
                 </div>
-                {ocurrences.length > 0 && <div className="flex w-full flex-col gap-2 md:flex-row">
+                {(ocurrences.length > 0 || queryClass || queryStudent || queryUser) && (<div className="flex w-full flex-col gap-2 md:flex-row">
                     {user && isAdmin(user.role) && (
                         <Autocomplete
                             className="w-full"
@@ -392,7 +392,7 @@ export default function OcurrencePaper({ title, isArchive }: OcurrencePaperProps
                         }}
                         renderInput={(params) => <TextField {...params} label="Pesquisa por Aluno(a)" />}
                     />
-                </div>}
+                </div>)}
             </Box>
             {ocurrences.length > 0 ? <DataGrid
                 rows={ocurrences}
