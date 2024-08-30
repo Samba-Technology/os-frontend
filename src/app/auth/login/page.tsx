@@ -36,7 +36,7 @@ export default function Login() {
             setLoading(true)
 
             await login({ email: data.email, password: data.password })
-            router.push('/app/ocurrences')
+            router.push('/app/occurrences')
             toast.success('Logado com sucesso!')
         } catch (e: any) {
             if (e?.response?.data?.message) {

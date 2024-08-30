@@ -1,6 +1,6 @@
 "use client"
 import { Box } from "@mui/material";
-import OcurrencePaper from "./components/ocurrence/ocurrencePaper";
+import OcurrencePaper from "./components/occurrence/occurrencePaper";
 
 export default function Ocurrences() {
     return (

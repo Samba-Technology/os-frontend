@@ -46,19 +46,19 @@ export default function Header() {
                     <>
                         <Box component="div" className="hidden gap-6 items-center lg:flex">
                             <Box component="div" className="flex items-center gap-5">
-                                <Box className="cursor-pointer" onClick={() => router.push('/app/ocurrences/archive')}>
+                                <Box className="cursor-pointer" onClick={() => router.push('/app/occurrences/archive')}>
                                     <Tooltip title="Ocorrências arquivadas">
                                         <ArchiveIcon />
                                     </Tooltip>
                                 </Box>
-                                <Box className="cursor-pointer" onClick={() => router.push('/app/ocurrences')}>
+                                <Box className="cursor-pointer" onClick={() => router.push('/app/occurrences')}>
                                     <Tooltip title="Ocorrências em aberto">
                                         <DescriptionIcon />
                                     </Tooltip>
                                 </Box>
                                 {!!user && isAdmin(user.role) ? (
                                     <>
-                                        <div className="cursor-pointer" onClick={() => router.replace('/app/ocurrences/statistics')}>
+                                        <div className="cursor-pointer" onClick={() => router.replace('/app/occurrences/statistics')}>
                                             <Tooltip title="Estatísticas de ocorrências">
                                                 <AnalyticsIcon />
                                             </Tooltip>
@@ -98,16 +98,16 @@ export default function Header() {
                                 open={open}
                                 onClose={handleClose}
                             >
-                                <MenuItem className="flex gap-2" onClick={() => router.push('/app/ocurrences/archive')}>
+                                <MenuItem className="flex gap-2" onClick={() => router.push('/app/occurrences/archive')}>
                                     <ArchiveIcon />
                                     Arquivadas
                                 </MenuItem>
-                                <MenuItem className="flex gap-2" onClick={() => router.push('/app/ocurrences')}>
+                                <MenuItem className="flex gap-2" onClick={() => router.push('/app/occurrences')}>
                                     <DescriptionIcon />
                                     Ocorrências
                                 </MenuItem>
                                 {!!user && isAdmin(user.role) ? [
-                                    <MenuItem key="stats" className="flex gap-2" onClick={() => router.push('/app/ocurrences/statistics')}>
+                                    <MenuItem key="stats" className="flex gap-2" onClick={() => router.push('/app/occurrences/statistics')}>
                                         <AnalyticsIcon />
                                         Estatísticas
                                     </MenuItem>,

@@ -130,7 +130,7 @@ export default function OcurrenceDialog({ isOpen, onClose, isView, ocurrence, di
             <DialogTitle className="flex justify-between items-center">
                 <div className="gap-2">
                     <p>Registro de Ocorrência</p>
-                    {isView && <p className="text-sm">{new Date(ocurrence.createdAt)
+                    {isView && <p className="text-sm">{ocurrence.user.name}, {new Date(ocurrence.createdAt)
                         .toLocaleString('pt-BR', {
                             day: '2-digit',
                             month: '2-digit',

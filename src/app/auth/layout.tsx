@@ -11,7 +11,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
 
     useEffect(() => {
         if (signed) {
-            router.push('/app/ocurrences')
+            router.push('/app/occurrences')
         }
     }, [router, signed])
 

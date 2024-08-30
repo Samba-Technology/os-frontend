@@ -1,5 +1,5 @@
 "use client"
-import { Autocomplete, Box, Button, IconButton, Paper, TextField, Tooltip, Typography } from "@mui/material";
+import { Autocomplete, Box, IconButton, Paper, TextField, Tooltip, Typography } from "@mui/material";
 import { DataGrid, GridActionsCellItem, GridColDef } from "@mui/x-data-grid";
 import { useContext, useEffect, useState } from "react";
 import CommentIcon from '@mui/icons-material/Comment';
@@ -24,7 +24,7 @@ import ocurrencePDF from "@/reports/ocurrences/ocurrence";
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { io } from "socket.io-client";
-import OcurrenceDialog from "./ocurrenceDialog";
+import OcurrenceDialog from "./occurrenceDialog";
 import StudentsDialog from "../students/studentsDialog";
 
 interface OcurrencePaperProps {
@@ -161,7 +161,7 @@ export default function OcurrencePaper({ title, isArchive }: OcurrencePaperProps
             getActions: (params) => {
                 let actions = [
                     <Tooltip key={params.id} title="Visualizar ocorrência">
-                        <GridActionsCellItem icon={<PageviewIcon />} onClick={() => params.row.status === "OPENED" ? editOcurrence(params.row) : viewOcurrence(params.row)} label="Visualizar Ocorrencia" />
+                        <GridActionsCellItem icon={<PageviewIcon />} onClick={() => params.row.status === "OPENED" && user && params.row.userId === user.id ? editOcurrence(params.row) : viewOcurrence(params.row)} label="Visualizar Ocorrencia" />
                     </Tooltip>
                 ]
 

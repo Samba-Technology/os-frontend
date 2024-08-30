@@ -108,7 +108,7 @@ export default function OcurrencesStatistics() {
         }
 
         if (user && !isAdmin(user.role)) {
-            router.push("/app/ocurrences")
+            router.push("/app/occurrences")
         } else {
             fetchOcurrences()
         }
