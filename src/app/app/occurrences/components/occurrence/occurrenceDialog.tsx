@@ -5,19 +5,21 @@ import { Student } from "@/models/student.model";
 import { Occurrenceservice } from "@/services/api/occurrence.service";
 import { StudentsService } from "@/services/api/students.service";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Autocomplete, Button, Chip, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, InputLabel, MenuItem, Select, TextField, Tooltip, Typography } from "@mui/material";
+import { Autocomplete, Button, Chip, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, FormHelperText, InputLabel, MenuItem, Select, TextField, Tooltip, Typography } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { User } from "@/models/user.model";
 import { UsersService } from "@/services/api/users.service";
 import CloseIcon from '@mui/icons-material/Close';
+import TagIcon from '@mui/icons-material/Tag';
+import { Tag } from "@mui/icons-material";
 
 interface Props {
     isOpen: boolean;
     onClose: () => void;
     isView: boolean;
-    ocurrence?: any;
+    occurrence?: any;
     dispatch?: boolean;
     edit?: boolean;
 }
@@ -41,7 +43,7 @@ const schema = yup.object({
     dispatch: yup.string().nullable()
 })
 
-export default function OcurrenceDialog({ isOpen, onClose, isView, ocurrence, dispatch, edit }: Props) {
+export default function OccurrenceDialog({ isOpen, onClose, isView, occurrence, dispatch, edit }: Props) {
     const [students, setStudents] = useState<Student[]>([])
     const [loading, setLoading] = useState(false)
     const [tutors, setTutors] = useState<User[]>([])
@@ -76,6 +78,7 @@ export default function OcurrenceDialog({ isOpen, onClose, isView, ocurrence, di
         defaultValues: {
             description: "",
             level: "",
+            tutors: [],
             students: [],
             dispatch: ""
         }
@@ -83,15 +86,15 @@ export default function OcurrenceDialog({ isOpen, onClose, isView, ocurrence, di
 
     useEffect(() => {
         if (isView) {
-            setValue("students", ocurrence.students.map((student: Student) => student.ra))
-            ocurrence.tutors && setValue("tutors", ocurrence.tutors.map((tutor: User) => tutor.id))
-            setValue("level", ocurrence.level, { shouldValidate: true })
-            setValue("description", ocurrence.description)
-            setValue("dispatch", ocurrence.dispatch)
+            setValue("students", occurrence.students.map((student: Student) => student.ra))
+            occurrence.tutors && setValue("tutors", occurrence.tutors.map((tutor: User) => tutor.id))
+            setValue("level", occurrence.level, { shouldValidate: true })
+            setValue("description", occurrence.description)
+            setValue("dispatch", occurrence.dispatch)
         } else {
             reset()
         }
-    }, [isView, ocurrence.description, ocurrence.dispatch, ocurrence.level, ocurrence.students, ocurrence.tutors, reset, setValue])
+    }, [isView, occurrence.description, occurrence.dispatch, occurrence.level, occurrence.students, occurrence.tutors, reset, setValue])
 
     const onSubmit = async (data: Data) => {
         try {
@@ -101,10 +104,10 @@ export default function OcurrenceDialog({ isOpen, onClose, isView, ocurrence, di
                 await Occurrenceservice.create(data.description, data.level, data.students, data.tutors)
                 toast.success('Ocorrência criada com sucesso!')
             } else if (dispatch) {
-                data.dispatch && await Occurrenceservice.dispatch(ocurrence.id, data.dispatch)
+                data.dispatch && await Occurrenceservice.dispatch(occurrence.id, data.dispatch)
                 toast.success('Despacho adicionado com sucesso.')
             } else if (edit) {
-                await Occurrenceservice.edit(ocurrence.id, data.description, data.level, data.students, data.tutors)
+                await Occurrenceservice.edit(occurrence.id, data.description, data.level, data.students, data.tutors)
                 toast.success('Ocorrência editada com sucesso!')
             }
 
@@ -122,15 +125,28 @@ export default function OcurrenceDialog({ isOpen, onClose, isView, ocurrence, di
     }
 
     const onError = (e: any) => {
-        console.error(e)
+        console.error(e);
     }
 
     return (
         <Dialog open={isOpen} onClose={onClose} component="form" onSubmit={handleSubmit(onSubmit, onError)} fullWidth>
             <DialogTitle className="flex justify-between items-center">
                 <div className="gap-2">
-                    <p>Registro de Ocorrência</p>
-                    {isView && <p className="text-sm">{ocurrence.user.name}, {new Date(ocurrence.createdAt)
+                    <div className="flex gap-2 items-center cursor-pointer">
+                        <p>{!isView && "Registro de "}Ocorrência</p>
+                        {isView &&
+                            <Tooltip title={`Ocorrência de n°${occurrence.id}`}>
+                                <Chip icon={<Tag />} size="small" label={occurrence.id} sx={{
+                                    '& .MuiChip-label': {
+                                        whiteSpace: 'normal',
+                                        marginTop: 0.4,
+                                        marginLeft: -0.5
+                                    },
+                                }} />
+                            </Tooltip>
+                        }
+                    </div>
+                    {isView && <p className="text-xs mt-1 md:text-sm">{occurrence.user.name}, {new Date(occurrence.createdAt)
                         .toLocaleString('pt-BR', {
                             day: '2-digit',
                             month: '2-digit',
@@ -207,7 +223,6 @@ export default function OcurrenceDialog({ isOpen, onClose, isView, ocurrence, di
                             renderInput={(params) => (
                                 <TextField
                                     {...params}
-
                                     error={!!errors.tutors}
                                     helperText={errors.tutors?.message}
                                     label="Tutores(as)"
@@ -220,7 +235,7 @@ export default function OcurrenceDialog({ isOpen, onClose, isView, ocurrence, di
                             }}
                         />)}
                 />
-                <TextField disabled={!edit} label="Descrição" fullWidth multiline rows="7" error={!!errors.description} helperText={errors.description?.message} {...register("description")} />
+                <TextField disabled={!edit} label="Descrição" fullWidth multiline rows="7" error={!!errors.description} helperText={errors.description?.message} {...register("description")} inputProps={{ style: { textAlign: "justify", textJustify: "inter-word", paddingRight: 10 } }} />
                 <FormControl disabled={!edit}>
                     <InputLabel>Nível</InputLabel>
                     <Controller
@@ -233,15 +248,17 @@ export default function OcurrenceDialog({ isOpen, onClose, isView, ocurrence, di
                                 <MenuItem value="MEDIUM">Médio</MenuItem>
                                 <MenuItem value="HIGH">Alto</MenuItem>
                             </Select>
+
                         )}
                     />
+                    <FormHelperText error={!!errors.level}>{errors.level?.message}</FormHelperText>
                 </FormControl>
-                {isView ? <TextField disabled={!dispatch} fullWidth multiline rows="4" label="Despacho" {...register('dispatch')} /> : null}
+                {isView ? <TextField disabled={!dispatch} fullWidth multiline rows="4" label="Despacho" {...register('dispatch')} inputProps={{ style: { textAlign: "justify", textJustify: "inter-word", paddingRight: 10 } }} /> : null}
             </DialogContent>
             <DialogActions className="flex items-center">
                 {!isView && <Button variant="contained" type="submit" disabled={loading}>{loading ? <CircularProgress size={20} /> : "Criar"}</Button>}
                 {dispatch && <Button variant="contained" type="submit" disabled={loading}>{loading ? <CircularProgress size={20} /> : "Editar Despacho"}</Button>}
-                {user && isView && edit && ocurrence.userId == user.id && <Button variant="contained" type="submit" disabled={loading}>{loading ? <CircularProgress size={20} /> : "Editar Ocorrência"}</Button>}
+                {user && isView && edit && occurrence.userId == user.id && <Button variant="contained" type="submit" disabled={loading}>{loading ? <CircularProgress size={20} /> : "Editar Ocorrência"}</Button>}
             </DialogActions>
         </Dialog >
     )

@@ -73,13 +73,13 @@ export default function Users() {
                 const users = await UsersService.findUsers(pagination.page + 1, pagination.pageSize, queryUser?.id)
                 const sUsers = await UsersService.findUsers()
 
-                setSearchUsers(sUsers.data)
-                setUsers(users.data)
-                setTotal(users.meta.total)
+                setSearchUsers(sUsers.data);
+                setUsers(users.data);
+                setTotal(users.meta.total);
             } catch (e) {
-                console.error(e)
+                console.error(e);
             } finally {
-                setLoading(false)
+                setLoading(false);
             }
         }
 

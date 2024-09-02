@@ -1,14 +1,14 @@
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
 
-export default function ocurrencePDF(ocurrence: any) {
+export default function occurrencePDF(occurrence: any) {
   pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
   const docDef: any = {
     pageSize: 'A4',
     info: {
       title: 'Ocorrencia Disciplinar',
-      author: ocurrence.responsible.name
+      author: occurrence.responsible.name
     },
     content: [
       {
@@ -16,12 +16,12 @@ export default function ocurrencePDF(ocurrence: any) {
         style: 'header',
       },
       {
-        text: `O Profissional ${ocurrence.user.name}, no dia ${new Date(ocurrence.createdAt).toLocaleDateString()}, produziu o registro de ocorrência dos alunos:`,
+        text: `O Profissional ${occurrence.user.name}, no dia ${new Date(occurrence.createdAt).toLocaleDateString()}, produziu o registro de ocorrência dos alunos:`,
         style: ["normal", "bold"],
         margin: [0, 40, 0, 0]
       },
       {
-        text: ocurrence.students.map((student: any) => student.name + " (" + student.class + ")").join(", "),
+        text: occurrence.students.map((student: any) => student.name + " (" + student.class + ")").join(", "),
         style: "normal",
         margin: [0, 5, 0, 0]
       },
@@ -31,7 +31,7 @@ export default function ocurrencePDF(ocurrence: any) {
         margin: [0, 5, 0, 0]
       },
       {
-        text: ocurrence.tutors.map((tutor: any) => tutor.name).join(", "),
+        text: occurrence.tutors.map((tutor: any) => tutor.name).join(", "),
         style: "normal",
         margin: [0, 5, 0, 0]
       },
@@ -44,7 +44,7 @@ export default function ocurrencePDF(ocurrence: any) {
         style: ["normal", "bold"]
       },
       {
-        text: ocurrence.description,
+        text: occurrence.description,
         style: "normal",
         margin: [0, 5, 0, 0]
       },
@@ -53,11 +53,11 @@ export default function ocurrencePDF(ocurrence: any) {
         margin: [0, 10, 0, 10]
       },
       {
-        text: `Em sequencia regimentar, o profissional da gestão ${ocurrence.responsible.name}, despacha:`,
+        text: `Em sequencia regimentar, o profissional da gestão ${occurrence.responsible.name}, despacha:`,
         style: ["normal", "bold"]
       },
       {
-        text: ocurrence.dispatch,
+        text: occurrence.dispatch,
         style: ["normal"],
         margin: [0, 5, 0, 0]
       },

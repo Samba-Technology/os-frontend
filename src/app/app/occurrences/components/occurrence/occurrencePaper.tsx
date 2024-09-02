@@ -20,19 +20,19 @@ import { StudentsService } from "@/services/api/students.service";
 import { Student } from "@/models/student.model";
 import { UsersService } from "@/services/api/users.service";
 import { User } from "@/models/user.model";
-import ocurrencePDF from "@/reports/occurrences/occurrence";
+import occurrencePDF from "@/reports/occurrences/occurrence";
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { io } from "socket.io-client";
-import OcurrenceDialog from "./occurrenceDialog";
+import OccurrenceDialog from "./occurrenceDialog";
 import StudentsDialog from "../students/studentsDialog";
 
-interface OcurrencePaperProps {
+interface OccurrencePaperProps {
     title: string,
     isArchive: boolean
 }
 
-export default function OcurrencePaper({ title, isArchive }: OcurrencePaperProps) {
+export default function OccurrencePaper({ title, isArchive }: OccurrencePaperProps) {
     const [open, setOpen] = useState(false)
     const [openStudents, setOpenStudents] = useState(false)
     const [loading, setLoading] = useState(false)
@@ -45,7 +45,7 @@ export default function OcurrencePaper({ title, isArchive }: OcurrencePaperProps
     const [view, setView] = useState(false)
     const [dispatch, setDispatch] = useState(false)
     const [edit, setEdit] = useState(false)
-    const [ocurrence, setOcurrence] = useState({})
+    const [occurrence, setOccurrence] = useState({})
     const [students, setStudents] = useState<Student[]>([])
     const [queryStudent, setQueryStudent] = useState<Student>()
     const [users, setUsers] = useState<User[]>([])
@@ -161,7 +161,7 @@ export default function OcurrencePaper({ title, isArchive }: OcurrencePaperProps
             getActions: (params) => {
                 let actions = [
                     <Tooltip key={params.id} title="Visualizar ocorrência">
-                        <GridActionsCellItem icon={<PageviewIcon />} onClick={() => params.row.status === "OPENED" && user && params.row.userId === user.id ? editOcurrence(params.row) : viewOcurrence(params.row)} label="Visualizar Ocorrencia" />
+                        <GridActionsCellItem icon={<PageviewIcon />} onClick={() => params.row.status === "OPENED" && user && params.row.userId === user.id ? editOccurrence(params.row) : viewOccurrence(params.row)} label="Visualizar Ocorrencia" />
                     </Tooltip>
                 ]
 
@@ -169,17 +169,17 @@ export default function OcurrencePaper({ title, isArchive }: OcurrencePaperProps
                     if (user && isAdmin(user.role)) {
                         actions = [
                             ...actions,
-                            <GridActionsCellItem key={params.id} icon={<WorkIcon />} onClick={() => assumeOcurrence(params.row.id)} disabled={params.row.status === "OPENED" ? false : true} label="Assumir Ocorrencia" showInMenu />,
-                            <GridActionsCellItem key={params.id} icon={<CommentIcon />} onClick={() => dispatchOcurrence(params.row)} disabled={params.row.status === "OPENED" ? true : params.row.status === "RESOLVED" ? true : false} label={params.row.status === "WAITING" ? "Editar despacho" : "Adicionar despacho"} showInMenu />,
-                            <GridActionsCellItem key={params.id} icon={<CheckCircleIcon />} onClick={() => conclueOcurrence(params.row.id)} disabled={params.row.status === "WAITING" ? false : true} label="Concluir Ocorrência" showInMenu />,
-                            <GridActionsCellItem key={params.id} icon={<PictureAsPdfIcon />} onClick={() => ocurrencePDF(params.row)} disabled={params.row.status === "WAITING" ? false : true} label="Visualização em PDF" showInMenu />
+                            <GridActionsCellItem key={params.id} icon={<WorkIcon />} onClick={() => assumeOccurrence(params.row.id)} disabled={params.row.status === "OPENED" ? false : true} label="Assumir Ocorrencia" showInMenu />,
+                            <GridActionsCellItem key={params.id} icon={<CommentIcon />} onClick={() => dispatchOccurrence(params.row)} disabled={params.row.status === "OPENED" ? true : params.row.status === "RESOLVED" ? true : false} label={params.row.status === "WAITING" ? "Editar despacho" : "Adicionar despacho"} showInMenu />,
+                            <GridActionsCellItem key={params.id} icon={<CheckCircleIcon />} onClick={() => conclueOccurrence(params.row.id)} disabled={params.row.status === "WAITING" ? false : true} label="Concluir Ocorrência" showInMenu />,
+                            <GridActionsCellItem key={params.id} icon={<PictureAsPdfIcon />} onClick={() => occurrencePDF(params.row)} disabled={params.row.status === "WAITING" ? false : true} label="Visualização em PDF" showInMenu />
                         ]
                     }
 
                     if (user && params.row.status === "OPENED" && (params.row.userId === user.id || isAdmin(user.role))) {
                         actions = [
                             ...actions,
-                            <GridActionsCellItem key={params.id} icon={<CancelIcon />} onClick={() => cancelOcurrence(params.row.id)} label="Cancelar Ocorrência" showInMenu />,
+                            <GridActionsCellItem key={params.id} icon={<CancelIcon />} onClick={() => cancelOccurrence(params.row.id)} label="Cancelar Ocorrência" showInMenu />,
                         ]
                     }
                 } else {
@@ -187,7 +187,7 @@ export default function OcurrencePaper({ title, isArchive }: OcurrencePaperProps
                         actions = [
                             ...actions,
                             <Tooltip key={params.id} title="Visualizar em PDF">
-                                <GridActionsCellItem icon={<PictureAsPdfIcon />} onClick={() => ocurrencePDF(params.row)} label="Visualização em PDF" />
+                                <GridActionsCellItem icon={<PictureAsPdfIcon />} onClick={() => occurrencePDF(params.row)} label="Visualização em PDF" />
                             </Tooltip>
                         ]
                     }
@@ -207,7 +207,7 @@ export default function OcurrencePaper({ title, isArchive }: OcurrencePaperProps
                 setOccurrences(occurrences.data)
                 setTotal(occurrences.meta.total)
             } catch (e) {
-                console.error(e)
+                console.error(e);
             } finally {
                 setLoading(false)
             }
@@ -223,7 +223,7 @@ export default function OcurrencePaper({ title, isArchive }: OcurrencePaperProps
                 setStudents(response)
                 setClasses(Array.from(new Set(response.map(student => student.class))));
             } catch (e) {
-                console.error(e)
+                console.error(e);
             }
         }
 
@@ -233,7 +233,7 @@ export default function OcurrencePaper({ title, isArchive }: OcurrencePaperProps
                     const response = await UsersService.findUsers()
                     setUsers(response.data)
                 } catch (e) {
-                    console.error(e)
+                    console.error(e);
                 }
             }
 
@@ -247,16 +247,16 @@ export default function OcurrencePaper({ title, isArchive }: OcurrencePaperProps
         if (!isArchive && user && process.env.NEXT_PUBLIC_API_URL) {
             const socketInstance = io(process.env.NEXT_PUBLIC_API_URL);
 
-            socketInstance.on('newOccurrence', (ocurrence) => {
-                if (user.id === ocurrence.userId || isAdmin(user.role)) {
-                    setOccurrences((prevOccurrences) => [...prevOccurrences, ocurrence]);
-                    if (isAdmin(user.role) && ocurrence.userId !== user.id) toast.info("Nova ocorrência de " + ocurrence.user.name.split(' ')[0] + "!", { autoClose: false });
+            socketInstance.on('newOccurrence', (occurrence) => {
+                if (user.id === occurrence.userId || isAdmin(user.role)) {
+                    setOccurrences((prevOccurrences) => [...prevOccurrences, occurrence]);
+                    if (isAdmin(user.role) && occurrence.userId !== user.id) toast.info("Nova ocorrência de " + occurrence.user.name.split(' ')[0] + "!", { autoClose: false });
                 }
             })
 
-            socketInstance.on('editOccurrence', (ocurrence) => {
-                if (user.id === ocurrence.userId || isAdmin(user.role)) {
-                    refreshData(ocurrence);
+            socketInstance.on('editOccurrence', (occurrence) => {
+                if (user.id === occurrence.userId || isAdmin(user.role)) {
+                    refreshData(occurrence);
                 }
             })
 
@@ -266,60 +266,60 @@ export default function OcurrencePaper({ title, isArchive }: OcurrencePaperProps
         }
     }, [user, isArchive])
 
-    const viewOcurrence = (ocurrence: any) => {
+    const viewOccurrence = (occurrence: any) => {
         setView(true)
-        setOcurrence(ocurrence)
+        setOccurrence(occurrence)
         setOpen(true)
     }
 
-    const assumeOcurrence = async (ocurrenceId: number) => {
+    const assumeOccurrence = async (occurrenceId: number) => {
         try {
-            const ocurrence = await Occurrenceservice.assume(ocurrenceId)
-            viewOcurrence(ocurrence);
+            const occurrence = await Occurrenceservice.assume(occurrenceId)
+            viewOccurrence(occurrence);
             toast.success('Ocorrencia assumida com sucesso.')
         } catch (e: any) {
             toast.error(e.response.data.message)
         }
     }
 
-    const dispatchOcurrence = async (ocurrence: any) => {
+    const dispatchOccurrence = async (occurrence: any) => {
         setDispatch(true)
-        viewOcurrence(ocurrence);
+        viewOccurrence(occurrence);
     }
 
-    const editOcurrence = async (ocurrence: any) => {
+    const editOccurrence = async (occurrence: any) => {
         setEdit(true)
-        viewOcurrence(ocurrence)
+        viewOccurrence(occurrence)
     }
 
-    const conclueOcurrence = async (ocurrenceId: number) => {
+    const conclueOccurrence = async (occurrenceId: number) => {
         try {
-            await Occurrenceservice.conclue(ocurrenceId)
+            await Occurrenceservice.conclue(occurrenceId)
             toast.success('Ocorrência concluida com sucesso.')
         } catch (e: any) {
             toast.error(e.response.data.message)
         }
     }
 
-    const cancelOcurrence = async (ocurrenceId: number) => {
+    const cancelOccurrence = async (occurrenceId: number) => {
         try {
-            Occurrenceservice.cancel(ocurrenceId)
+            Occurrenceservice.cancel(occurrenceId)
             toast.success('Ocorrência cancelada com sucesso!')
         } catch (e: any) {
             toast.error(e.response.data.message)
         }
     }
 
-    const refreshData = (ocurrence: any) => {
+    const refreshData = (occurrence: any) => {
         setOccurrences((values) => {
             const occurrences = [...values]
-            const index = occurrences.findIndex((value) => value.id === ocurrence.id)
+            const index = occurrences.findIndex((value) => value.id === occurrence.id)
 
             if (index !== -1) {
-                if (ocurrence.deleted) {
+                if (occurrence.deleted) {
                     occurrences.splice(index, 1)
                 } else {
-                    occurrences[index] = ocurrence
+                    occurrences[index] = occurrence
                 }
             }
             return occurrences
@@ -330,7 +330,7 @@ export default function OcurrencePaper({ title, isArchive }: OcurrencePaperProps
         setOpen(false)
         setOpenStudents(false)
         setView(false)
-        setOcurrence({})
+        setOccurrence({})
         setDispatch(false)
         setEdit(false)
     }
@@ -412,7 +412,7 @@ export default function OcurrencePaper({ title, isArchive }: OcurrencePaperProps
                 <h1 className="text-2xl">Está tudo tranquilo por aqui!</h1>
                 <p>Excelente, parece que nenhuma ocorrência foi encontrada.</p>
             </Paper>}
-            <OcurrenceDialog isOpen={open} onClose={handleClose} isView={view} ocurrence={ocurrence} dispatch={dispatch} edit={edit} />
+            <OccurrenceDialog isOpen={open} onClose={handleClose} isView={view} occurrence={occurrence} dispatch={dispatch} edit={edit} />
             <StudentsDialog isOpen={openStudents} onClose={handleClose} />
         </Paper>
     )

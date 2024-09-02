@@ -55,8 +55,8 @@ export default function OccurrencesStatistics() {
                 setOccurrences(sortedOccurrences);
 
                 const monthsSet = new Set<string>();
-                sortedOccurrences.forEach((ocurrence: Ocurrence) => {
-                    const date = new Date(ocurrence.createdAt);
+                sortedOccurrences.forEach((occurrence: Ocurrence) => {
+                    const date = new Date(occurrence.createdAt);
                     const month = date.toLocaleDateString('default', { month: '2-digit', year: 'numeric' }).replace('/', '/');
                     monthsSet.add(month);
                 });
@@ -124,8 +124,8 @@ export default function OccurrencesStatistics() {
                 const recentMonth = nMonths.pop()
                 if (recentMonth) {
                     const recentMonthUsers = uResponse.data.map((user: User) => {
-                        const occurrences = user.ocurrences.filter((ocurrence: Ocurrence) => {
-                            const date = new Date(ocurrence.createdAt);
+                        const occurrences = user.ocurrences.filter((occurrence: Ocurrence) => {
+                            const date = new Date(occurrence.createdAt);
                             const month = date.toLocaleDateString('default', { month: '2-digit', year: 'numeric' }).replace('/', '/');
                             return month === recentMonth;
                         });
@@ -138,7 +138,7 @@ export default function OccurrencesStatistics() {
                     setViewUsers(recentMonthUsers);
                 }
             } catch (e) {
-                console.error(e)
+                console.error(e);
             }
         }
 
@@ -151,8 +151,8 @@ export default function OccurrencesStatistics() {
                 const recentMonth = nMonths.pop()
                 if (recentMonth) {
                     const recentMonthStudents = sResponse.map((student: Student) => {
-                        const occurrences = student.ocurrences.filter((ocurrence: Ocurrence) => {
-                            const date = new Date(ocurrence.createdAt);
+                        const occurrences = student.ocurrences.filter((occurrence: Ocurrence) => {
+                            const date = new Date(occurrence.createdAt);
                             const month = date.toLocaleDateString('default', { month: '2-digit', year: 'numeric' }).replace('/', '/');
                             return month === recentMonth;
                         });
@@ -165,7 +165,7 @@ export default function OccurrencesStatistics() {
                     setViewStudents(recentMonthStudents);
                 }
             } catch (e) {
-                console.error(e)
+                console.error(e);
             }
         }
 
@@ -177,8 +177,8 @@ export default function OccurrencesStatistics() {
     useEffect(() => {
         const calculateStatistics = (data: Ocurrence[]) => {
             const total = data.length;
-            const solved = data.filter((ocurrence: Ocurrence) => ocurrence.status === "RESOLVED").length;
-            const canceled = data.filter((ocurrence: Ocurrence) => ocurrence.status === "CANCELED").length;
+            const solved = data.filter((occurrence: Ocurrence) => occurrence.status === "RESOLVED").length;
+            const canceled = data.filter((occurrence: Ocurrence) => occurrence.status === "CANCELED").length;
             const solvedPercentage = Math.round((100 * solved) / (total - canceled));
 
             return {
@@ -264,8 +264,8 @@ export default function OccurrencesStatistics() {
                                 });
 
                                 const selectedMonthUsers = users.map((user: User) => {
-                                    const occurrences = user.ocurrences.filter((ocurrence: Ocurrence) => {
-                                        const date = new Date(ocurrence.createdAt);
+                                    const occurrences = user.ocurrences.filter((occurrence: Ocurrence) => {
+                                        const date = new Date(occurrence.createdAt);
                                         const month = date.toLocaleDateString('default', { month: '2-digit', year: 'numeric' }).replace('/', '/');
                                         return month === value;
                                     });
@@ -289,8 +289,8 @@ export default function OccurrencesStatistics() {
                                     .map(([className, count]) => ({ className, count }));
 
                                 const selectedMonthStudents = students.map((student: Student) => {
-                                    const occurrences = student.ocurrences.filter((ocurrence: Ocurrence) => {
-                                        const date = new Date(ocurrence.createdAt);
+                                    const occurrences = student.ocurrences.filter((occurrence: Ocurrence) => {
+                                        const date = new Date(occurrence.createdAt);
                                         const month = date.toLocaleDateString('default', { month: '2-digit', year: 'numeric' }).replace('/', '/');
                                         return month === value;
                                     });
@@ -309,7 +309,7 @@ export default function OccurrencesStatistics() {
                         renderInput={(params) => (
                             <TextField
                                 {...params}
-                                
+
                                 label="Pesquisa por mês"
                                 color="primary"
                             />
@@ -411,7 +411,7 @@ export default function OccurrencesStatistics() {
                                 {viewUsers.map((user: User, index) => (
                                     <Paper elevation={2} key={index} className="flex p-2 bg-neutral-100 w-full justify-between">
                                         <p>{user.name}</p>
-                                        <p>{viewData.filter((ocurrence: Ocurrence) => ocurrence.userId === user.id).length}</p>
+                                        <p>{viewData.filter((occurrence: Ocurrence) => occurrence.userId === user.id).length}</p>
                                     </Paper>
                                 ))}
                             </div>
@@ -425,8 +425,8 @@ export default function OccurrencesStatistics() {
                                 {viewStudents.map((student: Student, index) => (
                                     <Paper elevation={2} key={index} className="flex p-2 bg-neutral-100 w-full justify-between">
                                         <p>{student.name.length > 25 ? `${student.name.substring(0, 25)}...` : student.name} ({student.class})</p>
-                                        <p>{viewData.reduce((count, ocurrence: Ocurrence) => {
-                                            if (ocurrence.students.some(s => s.ra === student.ra)) {
+                                        <p>{viewData.reduce((count, occurrence: Ocurrence) => {
+                                            if (occurrence.students.some(s => s.ra === student.ra)) {
                                                 return count + 1;
                                             }
 
