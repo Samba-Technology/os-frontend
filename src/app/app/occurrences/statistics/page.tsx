@@ -124,7 +124,7 @@ export default function OccurrencesStatistics() {
                 const recentMonth = nMonths.pop()
                 if (recentMonth) {
                     const recentMonthUsers = uResponse.data.map((user: User) => {
-                        const occurrences = user.occurrences.filter((ocurrence: Ocurrence) => {
+                        const occurrences = user.ocurrences.filter((ocurrence: Ocurrence) => {
                             const date = new Date(ocurrence.createdAt);
                             const month = date.toLocaleDateString('default', { month: '2-digit', year: 'numeric' }).replace('/', '/');
                             return month === recentMonth;
@@ -151,7 +151,7 @@ export default function OccurrencesStatistics() {
                 const recentMonth = nMonths.pop()
                 if (recentMonth) {
                     const recentMonthStudents = sResponse.map((student: Student) => {
-                        const occurrences = student.occurrences.filter((ocurrence: Ocurrence) => {
+                        const occurrences = student.ocurrences.filter((ocurrence: Ocurrence) => {
                             const date = new Date(ocurrence.createdAt);
                             const month = date.toLocaleDateString('default', { month: '2-digit', year: 'numeric' }).replace('/', '/');
                             return month === recentMonth;
@@ -264,7 +264,7 @@ export default function OccurrencesStatistics() {
                                 });
 
                                 const selectedMonthUsers = users.map((user: User) => {
-                                    const occurrences = user.occurrences.filter((ocurrence: Ocurrence) => {
+                                    const occurrences = user.ocurrences.filter((ocurrence: Ocurrence) => {
                                         const date = new Date(ocurrence.createdAt);
                                         const month = date.toLocaleDateString('default', { month: '2-digit', year: 'numeric' }).replace('/', '/');
                                         return month === value;
@@ -289,7 +289,7 @@ export default function OccurrencesStatistics() {
                                     .map(([className, count]) => ({ className, count }));
 
                                 const selectedMonthStudents = students.map((student: Student) => {
-                                    const occurrences = student.occurrences.filter((ocurrence: Ocurrence) => {
+                                    const occurrences = student.ocurrences.filter((ocurrence: Ocurrence) => {
                                         const date = new Date(ocurrence.createdAt);
                                         const month = date.toLocaleDateString('default', { month: '2-digit', year: 'numeric' }).replace('/', '/');
                                         return month === value;

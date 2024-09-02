@@ -5,5 +5,5 @@ export type User = {
   name: string;
   email: string;
   role: string;
-  occurrences: Ocurrence[]
+  ocurrences: Ocurrence[]
 }

@@ -250,7 +250,7 @@ export default function OcurrencePaper({ title, isArchive }: OcurrencePaperProps
             socketInstance.on('newOccurrence', (ocurrence) => {
                 if (user.id === ocurrence.userId || isAdmin(user.role)) {
                     setOccurrences((prevOccurrences) => [...prevOccurrences, ocurrence]);
-                    if (isAdmin(user.role)) toast.info("Nova ocorrência de " + ocurrence.user.name.split(' ')[0] + "!", { autoClose: false });
+                    if (isAdmin(user.role) && ocurrence.userId !== user.id) toast.info("Nova ocorrência de " + ocurrence.user.name.split(' ')[0] + "!", { autoClose: false });
                 }
             })
 
