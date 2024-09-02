@@ -1,8 +1,8 @@
-import { Ocurrence } from "./ocurrence.model"
+import { Ocurrence } from "./occurrence.model"
 
 export type Student = {
     ra: string,
     name: string,
     class: string,
-    ocurrences: Ocurrence[]
+    occurrences: Ocurrence[]
 }

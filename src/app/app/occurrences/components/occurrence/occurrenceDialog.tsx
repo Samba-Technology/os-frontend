@@ -2,7 +2,7 @@
 import AuthContext from "@/contexts/authContext";
 import yup from "@/helpers/validation";
 import { Student } from "@/models/student.model";
-import { OcurrenceService } from "@/services/api/ocurrence.service";
+import { Occurrenceservice } from "@/services/api/occurrence.service";
 import { StudentsService } from "@/services/api/students.service";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Autocomplete, Button, Chip, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, InputLabel, MenuItem, Select, TextField, Tooltip, Typography } from "@mui/material";
@@ -98,13 +98,13 @@ export default function OcurrenceDialog({ isOpen, onClose, isView, ocurrence, di
             setLoading(true)
 
             if (!dispatch && !isView) {
-                await OcurrenceService.create(data.description, data.level, data.students, data.tutors)
+                await Occurrenceservice.create(data.description, data.level, data.students, data.tutors)
                 toast.success('Ocorrência criada com sucesso!')
             } else if (dispatch) {
-                data.dispatch && await OcurrenceService.dispatch(ocurrence.id, data.dispatch)
+                data.dispatch && await Occurrenceservice.dispatch(ocurrence.id, data.dispatch)
                 toast.success('Despacho adicionado com sucesso.')
             } else if (edit) {
-                await OcurrenceService.edit(ocurrence.id, data.description, data.level, data.students, data.tutors)
+                await Occurrenceservice.edit(ocurrence.id, data.description, data.level, data.students, data.tutors)
                 toast.success('Ocorrência editada com sucesso!')
             }
 

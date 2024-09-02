@@ -1,8 +1,8 @@
 import api from "@/helpers/api"
 
-export class OcurrenceService {
+export class Occurrenceservice {
     public static create(description: string, level: string, students: string[], tutors: number[]) {
-        return api.post('/ocurrences', {
+        return api.post('/occurrences', {
             description: description,
             level: level,
             students: students,
@@ -11,7 +11,7 @@ export class OcurrenceService {
     }
 
     public static edit(id: number, description: string, level: string, students: string[], tutors: number[]) {
-        return api.post(`/ocurrences/edit/${id}`, {
+        return api.post(`/occurrences/edit/${id}`, {
             description: description,
             level: level,
             students: students,
@@ -19,8 +19,8 @@ export class OcurrenceService {
         }).then(response => response.data)
     }
 
-    public static findOcurrences(page: number, limit: number, isArchive: boolean, queryStudent?: string, queryUser?: number, queryClass?: string) {
-        return api.get('/ocurrences', {
+    public static findOccurrences(page: number, limit: number, isArchive: boolean, queryStudent?: string, queryUser?: number, queryClass?: string) {
+        return api.get('/occurrences', {
             params: {
                 page: page,
                 limit: limit,
@@ -33,20 +33,20 @@ export class OcurrenceService {
     }
 
     public static assume(id: number) {
-        return api.put(`/ocurrences/${id}`).then(response => response.data)
+        return api.put(`/occurrences/${id}`).then(response => response.data)
     }
 
     public static dispatch(id: number, dispatch: string) {
-        return api.post(`/ocurrences/${id}`, {
+        return api.post(`/occurrences/${id}`, {
             dispatch: dispatch
         })
     }
 
     public static conclue(id: number) {
-        return api.delete(`/ocurrences/${id}`).then(response => response.data)
+        return api.delete(`/occurrences/${id}`).then(response => response.data)
     }
 
     public static cancel(id: number) {
-        return api.delete(`/ocurrences/cancel/${id}`).then(response => response.data)
+        return api.delete(`/occurrences/cancel/${id}`).then(response => response.data)
     }
 }

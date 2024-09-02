@@ -6,11 +6,11 @@ import CommentIcon from '@mui/icons-material/Comment';
 import PageviewIcon from '@mui/icons-material/Pageview';
 import AuthContext from "@/contexts/authContext";
 import { isAdmin } from "@/helpers/authorization";
-import { Ocurrence } from "@/models/ocurrence.model";
+import { Ocurrence } from "@/models/occurrence.model";
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
 import WorkHistoryIcon from '@mui/icons-material/WorkHistory';
-import { OcurrenceService } from "@/services/api/ocurrence.service";
+import { Occurrenceservice } from "@/services/api/occurrence.service";
 import WorkIcon from '@mui/icons-material/Work';
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
@@ -20,7 +20,7 @@ import { StudentsService } from "@/services/api/students.service";
 import { Student } from "@/models/student.model";
 import { UsersService } from "@/services/api/users.service";
 import { User } from "@/models/user.model";
-import ocurrencePDF from "@/reports/ocurrences/ocurrence";
+import ocurrencePDF from "@/reports/occurrences/occurrence";
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { io } from "socket.io-client";
@@ -36,7 +36,7 @@ export default function OcurrencePaper({ title, isArchive }: OcurrencePaperProps
     const [open, setOpen] = useState(false)
     const [openStudents, setOpenStudents] = useState(false)
     const [loading, setLoading] = useState(false)
-    const [ocurrences, setOcurrences] = useState<Ocurrence[]>([])
+    const [occurrences, setOccurrences] = useState<Ocurrence[]>([])
     const [pagination, setPagination] = useState({
         page: 0,
         pageSize: 5
@@ -200,12 +200,12 @@ export default function OcurrencePaper({ title, isArchive }: OcurrencePaperProps
     ]
 
     useEffect(() => {
-        const fetchOcurrences = async () => {
+        const fetchOccurrences = async () => {
             try {
                 setLoading(true)
-                const ocurrences = await OcurrenceService.findOcurrences(pagination.page + 1, pagination.pageSize, isArchive, queryStudent?.ra, queryUser?.id, queryClass)
-                setOcurrences(ocurrences.data)
-                setTotal(ocurrences.meta.total)
+                const occurrences = await Occurrenceservice.findOccurrences(pagination.page + 1, pagination.pageSize, isArchive, queryStudent?.ra, queryUser?.id, queryClass)
+                setOccurrences(occurrences.data)
+                setTotal(occurrences.meta.total)
             } catch (e) {
                 console.error(e)
             } finally {
@@ -213,7 +213,7 @@ export default function OcurrencePaper({ title, isArchive }: OcurrencePaperProps
             }
         }
 
-        fetchOcurrences()
+        fetchOccurrences()
     }, [pagination, queryStudent, queryUser, queryClass, isArchive])
 
     useEffect(() => {
@@ -247,14 +247,14 @@ export default function OcurrencePaper({ title, isArchive }: OcurrencePaperProps
         if (!isArchive && user && process.env.NEXT_PUBLIC_API_URL) {
             const socketInstance = io(process.env.NEXT_PUBLIC_API_URL);
 
-            socketInstance.on('newOcurrence', (ocurrence) => {
+            socketInstance.on('newOccurrence', (ocurrence) => {
                 if (user.id === ocurrence.userId || isAdmin(user.role)) {
-                    setOcurrences((prevOcurrences) => [...prevOcurrences, ocurrence]);
+                    setOccurrences((prevOccurrences) => [...prevOccurrences, ocurrence]);
                     if (isAdmin(user.role)) toast.info("Nova ocorrência de " + ocurrence.user.name.split(' ')[0] + "!", { autoClose: false });
                 }
             })
 
-            socketInstance.on('editOcurrence', (ocurrence) => {
+            socketInstance.on('editOccurrence', (ocurrence) => {
                 if (user.id === ocurrence.userId || isAdmin(user.role)) {
                     refreshData(ocurrence);
                 }
@@ -274,7 +274,7 @@ export default function OcurrencePaper({ title, isArchive }: OcurrencePaperProps
 
     const assumeOcurrence = async (ocurrenceId: number) => {
         try {
-            const ocurrence = await OcurrenceService.assume(ocurrenceId)
+            const ocurrence = await Occurrenceservice.assume(ocurrenceId)
             viewOcurrence(ocurrence);
             toast.success('Ocorrencia assumida com sucesso.')
         } catch (e: any) {
@@ -294,7 +294,7 @@ export default function OcurrencePaper({ title, isArchive }: OcurrencePaperProps
 
     const conclueOcurrence = async (ocurrenceId: number) => {
         try {
-            await OcurrenceService.conclue(ocurrenceId)
+            await Occurrenceservice.conclue(ocurrenceId)
             toast.success('Ocorrência concluida com sucesso.')
         } catch (e: any) {
             toast.error(e.response.data.message)
@@ -303,7 +303,7 @@ export default function OcurrencePaper({ title, isArchive }: OcurrencePaperProps
 
     const cancelOcurrence = async (ocurrenceId: number) => {
         try {
-            OcurrenceService.cancel(ocurrenceId)
+            Occurrenceservice.cancel(ocurrenceId)
             toast.success('Ocorrência cancelada com sucesso!')
         } catch (e: any) {
             toast.error(e.response.data.message)
@@ -311,18 +311,18 @@ export default function OcurrencePaper({ title, isArchive }: OcurrencePaperProps
     }
 
     const refreshData = (ocurrence: any) => {
-        setOcurrences((values) => {
-            const ocurrences = [...values]
-            const index = ocurrences.findIndex((value) => value.id === ocurrence.id)
+        setOccurrences((values) => {
+            const occurrences = [...values]
+            const index = occurrences.findIndex((value) => value.id === ocurrence.id)
 
             if (index !== -1) {
                 if (ocurrence.deleted) {
-                    ocurrences.splice(index, 1)
+                    occurrences.splice(index, 1)
                 } else {
-                    ocurrences[index] = ocurrence
+                    occurrences[index] = ocurrence
                 }
             }
-            return ocurrences
+            return occurrences
         })
     }
 
@@ -356,7 +356,7 @@ export default function OcurrencePaper({ title, isArchive }: OcurrencePaperProps
                         </IconButton>
                     </div>}
                 </div>
-                {(ocurrences.length > 0 || queryClass || queryStudent || queryUser) && (<div className="flex w-full flex-col gap-2 md:flex-row">
+                {(occurrences.length > 0 || queryClass || queryStudent || queryUser) && (<div className="flex w-full flex-col gap-2 md:flex-row">
                     {user && isAdmin(user.role) && (
                         <Autocomplete
                             className="w-full"
@@ -394,8 +394,8 @@ export default function OcurrencePaper({ title, isArchive }: OcurrencePaperProps
                     />
                 </div>)}
             </Box>
-            {ocurrences.length > 0 ? <DataGrid
-                rows={ocurrences}
+            {occurrences.length > 0 ? <DataGrid
+                rows={occurrences}
                 loading={loading}
                 columns={columns}
                 rowCount={total}

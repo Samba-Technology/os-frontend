@@ -1,6 +1,8 @@
 {
-  "name": "ocurrence-system",
-  "version": "0.1.0",
+  "name": "occurrence-backend",
+  "version": "2.5.0",
+  "description": "Occurrence System Backend",
+  "author": "Samba Code",
   "private": true,
   "scripts": {
     "dev": "next dev",

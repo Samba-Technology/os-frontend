@@ -1,6 +1,6 @@
 "use client"
-import { Ocurrence } from "@/models/ocurrence.model";
-import { OcurrenceService } from "@/services/api/ocurrence.service";
+import { Ocurrence } from "@/models/occurrence.model";
+import { Occurrenceservice } from "@/services/api/occurrence.service";
 import { pieArcLabelClasses, PieChart } from "@mui/x-charts/PieChart";
 import { Autocomplete, Paper, Tab, Tabs, TextField, Tooltip } from "@mui/material";
 import React, { useContext, useEffect, useState } from "react";
@@ -26,8 +26,8 @@ interface Visualization {
     porcentageChange?: number,
 }
 
-export default function OcurrencesStatistics() {
-    const [ocurrences, setOcurrences] = useState<Ocurrence[]>([])
+export default function OccurrencesStatistics() {
+    const [occurrences, setOccurrences] = useState<Ocurrence[]>([])
     const [months, setMonths] = useState<string[]>([])
     const [viewMonth, setViewMonth] = useState<string | undefined>(undefined)
     const [viewData, setViewData] = useState<Ocurrence[]>([])
@@ -44,18 +44,18 @@ export default function OcurrencesStatistics() {
     const router = useRouter()
 
     useEffect(() => {
-        const fetchOcurrences = async () => {
+        const fetchOccurrences = async () => {
             try {
-                const oResponse = await OcurrenceService.findOcurrences(1, 500, false);
-                const aOResponse = await OcurrenceService.findOcurrences(1, 500, true);
+                const oResponse = await Occurrenceservice.findOccurrences(1, 500, false);
+                const aOResponse = await Occurrenceservice.findOccurrences(1, 500, true);
 
                 const combined = oResponse.data.concat(aOResponse.data);
-                const sortedOcurrences = combined.sort((a: any, b: any) => a.id - b.id)
+                const sortedOccurrences = combined.sort((a: any, b: any) => a.id - b.id)
 
-                setOcurrences(sortedOcurrences);
+                setOccurrences(sortedOccurrences);
 
                 const monthsSet = new Set<string>();
-                sortedOcurrences.forEach((ocurrence: Ocurrence) => {
+                sortedOccurrences.forEach((ocurrence: Ocurrence) => {
                     const date = new Date(ocurrence.createdAt);
                     const month = date.toLocaleDateString('default', { month: '2-digit', year: 'numeric' }).replace('/', '/');
                     monthsSet.add(month);
@@ -67,7 +67,7 @@ export default function OcurrencesStatistics() {
 
                 const recentMonth = monthsArray.pop();
                 if (recentMonth) {
-                    const recentMonthOccurrences = sortedOcurrences.filter((occurrence: Ocurrence) => {
+                    const recentMonthOccurrences = sortedOccurrences.filter((occurrence: Ocurrence) => {
                         const date = new Date(occurrence.createdAt);
                         const month = date.toLocaleDateString('default', { month: '2-digit', year: 'numeric' }).replace('/', '/');
                         return month === recentMonth;
@@ -93,7 +93,7 @@ export default function OcurrencesStatistics() {
 
                     const previousMonth = monthsArray.pop();
                     if (previousMonth) {
-                        const previousMonthOccurrences = sortedOcurrences.filter((occurrence: Ocurrence) => {
+                        const previousMonthOccurrences = sortedOccurrences.filter((occurrence: Ocurrence) => {
                             const date = new Date(occurrence.createdAt);
                             const month = date.toLocaleDateString('default', { month: '2-digit', year: 'numeric' }).replace('/', '/');
                             return month === previousMonth;
@@ -110,7 +110,7 @@ export default function OcurrencesStatistics() {
         if (user && !isAdmin(user.role)) {
             router.push("/app/occurrences")
         } else {
-            fetchOcurrences()
+            fetchOccurrences()
         }
     }, [router, user])
 
@@ -124,15 +124,15 @@ export default function OcurrencesStatistics() {
                 const recentMonth = nMonths.pop()
                 if (recentMonth) {
                     const recentMonthUsers = uResponse.data.map((user: User) => {
-                        const ocurrences = user.ocurrences.filter((ocurrence: Ocurrence) => {
+                        const occurrences = user.occurrences.filter((ocurrence: Ocurrence) => {
                             const date = new Date(ocurrence.createdAt);
                             const month = date.toLocaleDateString('default', { month: '2-digit', year: 'numeric' }).replace('/', '/');
                             return month === recentMonth;
                         });
-                        return { user, ocurrencesCount: ocurrences.length };
+                        return { user, occurrencesCount: occurrences.length };
                     })
-                        .filter(({ ocurrencesCount }) => ocurrencesCount > 0)
-                        .sort((a, b) => b.ocurrencesCount - a.ocurrencesCount)
+                        .filter(({ occurrencesCount }) => occurrencesCount > 0)
+                        .sort((a, b) => b.occurrencesCount - a.occurrencesCount)
                         .map(({ user }) => user);
 
                     setViewUsers(recentMonthUsers);
@@ -151,15 +151,15 @@ export default function OcurrencesStatistics() {
                 const recentMonth = nMonths.pop()
                 if (recentMonth) {
                     const recentMonthStudents = sResponse.map((student: Student) => {
-                        const ocurrences = student.ocurrences.filter((ocurrence: Ocurrence) => {
+                        const occurrences = student.occurrences.filter((ocurrence: Ocurrence) => {
                             const date = new Date(ocurrence.createdAt);
                             const month = date.toLocaleDateString('default', { month: '2-digit', year: 'numeric' }).replace('/', '/');
                             return month === recentMonth;
                         });
-                        return { student, ocurrencesCount: ocurrences.length };
+                        return { student, occurrencesCount: occurrences.length };
                     })
-                        .filter(({ ocurrencesCount }) => ocurrencesCount > 0)
-                        .sort((a, b) => b.ocurrencesCount - a.ocurrencesCount)
+                        .filter(({ occurrencesCount }) => occurrencesCount > 0)
+                        .sort((a, b) => b.occurrencesCount - a.occurrencesCount)
                         .map(({ student }) => student);
 
                     setViewStudents(recentMonthStudents);
@@ -240,7 +240,7 @@ export default function OcurrencesStatistics() {
                         getOptionLabel={(option) => option}
                         onChange={(event, value: string | null, reason) => {
                             if (value) {
-                                const selectedMonthOccurrences = ocurrences.filter((occurrence: Ocurrence) => {
+                                const selectedMonthOccurrences = occurrences.filter((occurrence: Ocurrence) => {
                                     const date = new Date(occurrence.createdAt);
                                     const month = date.toLocaleDateString('default', { month: '2-digit', year: 'numeric' }).replace('/', '/');
                                     return month === value;
@@ -257,22 +257,22 @@ export default function OcurrencesStatistics() {
 
                                 const previousMonth = previousMonthDate.toLocaleDateString('default', { month: '2-digit', year: 'numeric' }).replace('/', '/');
 
-                                const previousMonthOccurrences = ocurrences.filter((occurrence: Ocurrence) => {
+                                const previousMonthOccurrences = occurrences.filter((occurrence: Ocurrence) => {
                                     const date = new Date(occurrence.createdAt);
                                     const month = date.toLocaleDateString('default', { month: '2-digit', year: 'numeric' }).replace('/', '/');
                                     return month === previousMonth;
                                 });
 
                                 const selectedMonthUsers = users.map((user: User) => {
-                                    const ocurrences = user.ocurrences.filter((ocurrence: Ocurrence) => {
+                                    const occurrences = user.occurrences.filter((ocurrence: Ocurrence) => {
                                         const date = new Date(ocurrence.createdAt);
                                         const month = date.toLocaleDateString('default', { month: '2-digit', year: 'numeric' }).replace('/', '/');
                                         return month === value;
                                     });
-                                    return { user, ocurrencesCount: ocurrences.length };
+                                    return { user, occurrencesCount: occurrences.length };
                                 })
-                                    .filter(({ ocurrencesCount }) => ocurrencesCount > 0)
-                                    .sort((a, b) => b.ocurrencesCount - a.ocurrencesCount)
+                                    .filter(({ occurrencesCount }) => occurrencesCount > 0)
+                                    .sort((a, b) => b.occurrencesCount - a.occurrencesCount)
                                     .map(({ user }) => user);
 
                                 const classCount: { [key: string]: number } = {};
@@ -289,15 +289,15 @@ export default function OcurrencesStatistics() {
                                     .map(([className, count]) => ({ className, count }));
 
                                 const selectedMonthStudents = students.map((student: Student) => {
-                                    const ocurrences = student.ocurrences.filter((ocurrence: Ocurrence) => {
+                                    const occurrences = student.occurrences.filter((ocurrence: Ocurrence) => {
                                         const date = new Date(ocurrence.createdAt);
                                         const month = date.toLocaleDateString('default', { month: '2-digit', year: 'numeric' }).replace('/', '/');
                                         return month === value;
                                     });
-                                    return { student, ocurrencesCount: ocurrences.length };
+                                    return { student, occurrencesCount: occurrences.length };
                                 })
-                                    .filter(({ ocurrencesCount }) => ocurrencesCount > 0)
-                                    .sort((a, b) => b.ocurrencesCount - a.ocurrencesCount)
+                                    .filter(({ occurrencesCount }) => occurrencesCount > 0)
+                                    .sort((a, b) => b.occurrencesCount - a.occurrencesCount)
                                     .map(({ student }) => student);
 
                                 setViewClasses(sortedClasses);
