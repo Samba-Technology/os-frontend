@@ -1,5 +1,5 @@
 "use client"
-import OccurrencePaper from "../components/occurrence/occurrencePaper";
+import OccurrencePaper from "../components/occurrence/OccurrencePaper";
 
 export default function ArchiveOccurrences() {
     return (

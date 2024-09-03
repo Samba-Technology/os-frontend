@@ -12,7 +12,6 @@ import { toast } from "react-toastify";
 import { User } from "@/models/user.model";
 import { UsersService } from "@/services/api/users.service";
 import CloseIcon from '@mui/icons-material/Close';
-import TagIcon from '@mui/icons-material/Tag';
 import { Tag } from "@mui/icons-material";
 
 interface Props {
@@ -104,7 +103,7 @@ export default function OccurrenceDialog({ isOpen, onClose, isView, occurrence, 
                 await Occurrenceservice.create(data.description, data.level, data.students, data.tutors)
                 toast.success('Ocorrência criada com sucesso!')
             } else if (dispatch) {
-                data.dispatch && await Occurrenceservice.dispatch(occurrence.id, data.dispatch)
+                data.dispatch && await Occurrenceservice.dispatch(occurrence.id, data.dispatch, !!occurrence.dispatch)
                 toast.success('Despacho adicionado com sucesso.')
             } else if (edit) {
                 await Occurrenceservice.edit(occurrence.id, data.description, data.level, data.students, data.tutors)
@@ -256,9 +255,9 @@ export default function OccurrenceDialog({ isOpen, onClose, isView, occurrence, 
                 {isView ? <TextField disabled={!dispatch} fullWidth multiline rows="4" label="Despacho" {...register('dispatch')} inputProps={{ style: { textAlign: "justify", textJustify: "inter-word", paddingRight: 10 } }} /> : null}
             </DialogContent>
             <DialogActions className="flex items-center">
-                {!isView && <Button variant="contained" type="submit" disabled={loading}>{loading ? <CircularProgress size={20} /> : "Criar"}</Button>}
-                {dispatch && <Button variant="contained" type="submit" disabled={loading}>{loading ? <CircularProgress size={20} /> : "Editar Despacho"}</Button>}
-                {user && isView && edit && occurrence.userId == user.id && <Button variant="contained" type="submit" disabled={loading}>{loading ? <CircularProgress size={20} /> : "Editar Ocorrência"}</Button>}
+                {!isView && <Button variant="contained" type="submit" disabled={loading}>Criar</Button>}
+                {dispatch && <Button variant="contained" type="submit" disabled={loading}>Editar Despacho</Button>}
+                {user && isView && edit && occurrence.userId == user.id && <Button variant="contained" type="submit" disabled={loading}>Editar Ocorrência</Button>}
             </DialogActions>
         </Dialog >
     )

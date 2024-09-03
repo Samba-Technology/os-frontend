@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import Toastify from "@/components/toastify/toastify";
+import Toastify from "@/components/toastify/Toastify";
 import { AuthProvider } from "@/contexts/authContext";
 import { ThemeContextProvider } from "@/contexts/theme/themeContext";
 import { CssBaseline } from "@mui/material";

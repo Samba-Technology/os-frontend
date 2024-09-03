@@ -1,5 +1,5 @@
 "use client"
-import UsersDialog from "@/components/users/usersDialog";
+import UsersDialog from "@/components/users/UsersDialog";
 import AuthContext from "@/contexts/authContext";
 import { isAdmin } from "@/helpers/authorization";
 import { User } from "@/models/user.model";
@@ -12,7 +12,7 @@ import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import { UsersService } from "@/services/api/users.service";
 import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
 import { toast } from "react-toastify";
-import ConfirmDialog from "@/components/utils/confirmDialog";
+import ConfirmDialog from "@/components/utils/ConfirmDialog";
 
 export default function Users() {
     const [open, setOpen] = useState(false)

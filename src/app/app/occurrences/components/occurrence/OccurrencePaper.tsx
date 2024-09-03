@@ -24,8 +24,8 @@ import occurrencePDF from "@/reports/occurrences/occurrence";
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { io } from "socket.io-client";
-import OccurrenceDialog from "./occurrenceDialog";
-import StudentsDialog from "../students/studentsDialog";
+import OccurrenceDialog from "./OccurrenceDialog";
+import StudentsDialog from "../students/StudentsDialog";
 
 interface OccurrencePaperProps {
     title: string,
@@ -190,6 +190,13 @@ export default function OccurrencePaper({ title, isArchive }: OccurrencePaperPro
                                 <GridActionsCellItem icon={<PictureAsPdfIcon />} onClick={() => occurrencePDF(params.row)} label="Visualização em PDF" />
                             </Tooltip>
                         ]
+
+                        if (user && isAdmin(user.role)) {
+                            actions = [
+                                ...actions,
+                                <GridActionsCellItem key={params.id} icon={<CommentIcon />} onClick={() => dispatchOccurrence(params.row)} label="Editar despacho" showInMenu />,
+                            ]
+                        }
                     }
                 }
 

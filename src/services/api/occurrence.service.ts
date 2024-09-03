@@ -36,9 +36,10 @@ export class Occurrenceservice {
         return api.put(`/occurrences/${id}`).then(response => response.data)
     }
 
-    public static dispatch(id: number, dispatch: string) {
+    public static dispatch(id: number, dispatch: string, isEdit: boolean) {
         return api.post(`/occurrences/${id}`, {
-            dispatch: dispatch
+            dispatch: dispatch,
+            isEdit: isEdit
         })
     }
 

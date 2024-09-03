@@ -1,5 +1,5 @@
 "use client"
-import Header from "@/components/header/header"
+import Header from "@/components/header/Header"
 import AuthContext from "@/contexts/authContext"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
