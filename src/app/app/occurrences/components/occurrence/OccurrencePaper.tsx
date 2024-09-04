@@ -1,5 +1,5 @@
 "use client"
-import { Autocomplete, Box, IconButton, Paper, TextField, Tooltip, Typography } from "@mui/material";
+import { Autocomplete, Box, CircularProgress, IconButton, Paper, TextField, Tooltip, Typography } from "@mui/material";
 import { DataGrid, GridActionsCellItem, GridColDef } from "@mui/x-data-grid";
 import { useContext, useEffect, useState } from "react";
 import CommentIcon from '@mui/icons-material/Comment';
@@ -336,10 +336,13 @@ export default function OccurrencePaper({ title, isArchive }: OccurrencePaperPro
     const handleClose = () => {
         setOpen(false)
         setOpenStudents(false)
-        setView(false)
-        setOccurrence({})
-        setDispatch(false)
-        setEdit(false)
+
+        setTimeout(() => {
+            setOccurrence({});
+            setView(false);
+            setDispatch(false);
+            setEdit(false);
+        }, 200);
     }
 
     return (
@@ -416,8 +419,12 @@ export default function OccurrencePaper({ title, isArchive }: OccurrencePaperPro
                     }
                 }}
             /> : <Paper elevation={3} className="flex flex-col w-full items-center p-5 gap-4">
-                <h1 className="text-2xl">Está tudo tranquilo por aqui!</h1>
-                <p>Excelente, parece que nenhuma ocorrência foi encontrada.</p>
+                {loading ? <CircularProgress /> :
+                    <>
+                        <h1 className="text-2xl">Está tudo tranquilo por aqui!</h1>
+                        <p>Excelente, parece que nenhuma ocorrência foi encontrada.</p>
+                    </>
+                }
             </Paper>}
             <OccurrenceDialog isOpen={open} onClose={handleClose} isView={view} occurrence={occurrence} dispatch={dispatch} edit={edit} />
             <StudentsDialog isOpen={openStudents} onClose={handleClose} />

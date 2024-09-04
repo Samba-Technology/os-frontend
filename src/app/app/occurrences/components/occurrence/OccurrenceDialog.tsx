@@ -252,12 +252,23 @@ export default function OccurrenceDialog({ isOpen, onClose, isView, occurrence, 
                     />
                     <FormHelperText error={!!errors.level}>{errors.level?.message}</FormHelperText>
                 </FormControl>
-                {isView ? <TextField disabled={!dispatch} fullWidth multiline rows="4" label="Despacho" {...register('dispatch')} inputProps={{ style: { textAlign: "justify", textJustify: "inter-word", paddingRight: 10 } }} /> : null}
+                {isView &&
+                    <TextField disabled={!dispatch} fullWidth multiline rows="4" label="Despacho" {...register('dispatch')} inputProps={{ style: { textAlign: "justify", textJustify: "inter-word", paddingRight: 10 } }} />
+                }
             </DialogContent>
-            <DialogActions className="flex items-center">
+            <DialogActions className={`flex w-full items-center !px-4 ${isView && "!justify-between"}`}>
+                {isView && <p className="text-xs md:text-sm">Ultima atualização em {new Date(occurrence.updatedAt)
+                    .toLocaleString('pt-BR', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    })
+                    .replace(',', '')}.</p>}
                 {!isView && <Button variant="contained" type="submit" disabled={loading}>Criar</Button>}
-                {dispatch && <Button variant="contained" type="submit" disabled={loading}>Editar Despacho</Button>}
-                {user && isView && edit && occurrence.userId == user.id && <Button variant="contained" type="submit" disabled={loading}>Editar Ocorrência</Button>}
+                {dispatch && <Button variant="contained" type="submit" disabled={loading}>Editar</Button>}
+                {user && isView && edit && occurrence.userId == user.id && <Button variant="contained" type="submit" disabled={loading}>Editar</Button>}
             </DialogActions>
         </Dialog >
     )
