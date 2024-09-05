@@ -1,5 +1,5 @@
 "use client"
-import UsersDialog from "@/components/users/UsersDialog";
+import UsersDialog from "./components/UsersDialog";
 import AuthContext from "@/contexts/authContext";
 import { isAdmin } from "@/helpers/authorization";
 import { User } from "@/models/user.model";
