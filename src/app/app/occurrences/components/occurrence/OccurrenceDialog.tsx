@@ -53,7 +53,7 @@ export default function OccurrenceDialog({ isOpen, onClose, isView, occurrence, 
         const fetchStudents = async () => {
             try {
                 const response = await StudentsService.findStudents()
-                setStudents(response)
+                setStudents(response.data)
             } catch (e) {
                 console.error(e);
             }

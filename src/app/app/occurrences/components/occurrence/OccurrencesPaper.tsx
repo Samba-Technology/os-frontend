@@ -13,7 +13,6 @@ import WorkHistoryIcon from '@mui/icons-material/WorkHistory';
 import { Occurrenceservice } from "@/services/api/occurrence.service";
 import WorkIcon from '@mui/icons-material/Work';
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
-import GroupAddIcon from '@mui/icons-material/GroupAdd';
 import AvTimerIcon from '@mui/icons-material/AvTimer';
 import { toast } from "react-toastify";
 import { StudentsService } from "@/services/api/students.service";
@@ -25,7 +24,6 @@ import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { io } from "socket.io-client";
 import OccurrenceDialog from "./OccurrenceDialog";
-import StudentsDialog from "../students/StudentsDialog";
 
 interface OccurrencePaperProps {
     title: string,
@@ -227,8 +225,8 @@ export default function OccurrencePaper({ title, isArchive }: OccurrencePaperPro
         const fetchStudents = async () => {
             try {
                 const response = await StudentsService.findStudents()
-                setStudents(response)
-                setClasses(Array.from(new Set(response.map(student => student.class))));
+                setStudents(response.data)
+                setClasses(Array.from(new Set(response.data.map((student: Student) => student.class))));
             } catch (e) {
                 console.error(e);
             }
@@ -359,11 +357,6 @@ export default function OccurrencePaper({ title, isArchive }: OccurrencePaperPro
                                 <NoteAddIcon />
                             </Tooltip>
                         </IconButton>
-                        <IconButton onClick={() => setOpenStudents(true)} size="large">
-                            <Tooltip title="Adicionar aluno">
-                                <GroupAddIcon />
-                            </Tooltip>
-                        </IconButton>
                     </div>}
                 </div>
                 {(occurrences.length > 0 || queryClass || queryStudent || queryUser) && (<div className="flex w-full flex-col gap-2 md:flex-row">
@@ -427,7 +420,6 @@ export default function OccurrencePaper({ title, isArchive }: OccurrencePaperPro
                 }
             </Paper>}
             <OccurrenceDialog isOpen={open} onClose={handleClose} isView={view} occurrence={occurrence} dispatch={dispatch} edit={edit} />
-            <StudentsDialog isOpen={openStudents} onClose={handleClose} />
         </Paper>
     )
 }

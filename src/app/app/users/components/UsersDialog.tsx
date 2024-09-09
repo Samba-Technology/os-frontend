@@ -45,8 +45,10 @@ export default function UsersDialog({ isOpen, onClose, isEdit, user }: Props) {
         if (isEdit) {
             setValue("name", user.name)
             setValue("email", user.email)
+        } else {
+            reset()
         }
-    }, [isEdit, setValue, user.email, user.name])
+    }, [isEdit, setValue, user.email, user.name, reset])
 
     const onSubmit = async (data: Data) => {
         try {
@@ -89,11 +91,11 @@ export default function UsersDialog({ isOpen, onClose, isEdit, user }: Props) {
                 <DialogContentText>Forneça os dados do usuário.</DialogContentText>
                 <TextField label="Nome Completo" error={!!errors.name} helperText={errors.name?.message} {...register("name")} />
                 <TextField label="Email" error={!!errors.email} helperText={errors.email?.message} {...register("email")} />
-                <TextField label={isEdit ? 'Nova senha' : 'Senha'} type="password"  error={!!errors.password} helperText={errors.password?.message} {...register("password")} />
-                <TextField label="Confirmar Senha" type="password"  error={!!errors.passwordConfirm} helperText={errors.passwordConfirm?.message} {...register("passwordConfirm")} />
+                <TextField label={isEdit ? 'Nova senha' : 'Senha'} type="password" error={!!errors.password} helperText={errors.password?.message} {...register("password")} />
+                <TextField label="Confirmar Senha" type="password" error={!!errors.passwordConfirm} helperText={errors.passwordConfirm?.message} {...register("passwordConfirm")} />
             </DialogContent>
             <DialogActions className="flex gap-1">
-                <Button variant="contained" type="submit" disabled={loading}>{loading ? <CircularProgress size={20} /> : isEdit ? "Editar" : "Criar"}</Button>
+                <Button variant="contained" type="submit" disabled={loading}>{isEdit ? "Editar" : "Criar"}</Button>
             </DialogActions>
         </Dialog>
     )

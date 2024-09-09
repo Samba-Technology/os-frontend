@@ -145,12 +145,12 @@ export default function OccurrencesStatistics() {
         const fetchStudents = async () => {
             try {
                 const sResponse = await StudentsService.findStudents()
-                setStudents(sResponse)
+                setStudents(sResponse.data)
 
                 const nMonths = months.slice()
                 const recentMonth = nMonths.pop()
                 if (recentMonth) {
-                    const recentMonthStudents = sResponse.map((student: Student) => {
+                    const recentMonthStudents = sResponse.data.map((student: Student) => {
                         const occurrences = student.ocurrences.filter((occurrence: Ocurrence) => {
                             const date = new Date(occurrence.createdAt);
                             const month = date.toLocaleDateString('default', { month: '2-digit', year: 'numeric' }).replace('/', '/');
@@ -158,9 +158,9 @@ export default function OccurrencesStatistics() {
                         });
                         return { student, occurrencesCount: occurrences.length };
                     })
-                        .filter(({ occurrencesCount }) => occurrencesCount > 0)
-                        .sort((a, b) => b.occurrencesCount - a.occurrencesCount)
-                        .map(({ student }) => student);
+                        .filter(({ occurrencesCount }: any) => occurrencesCount > 0)
+                        .sort((a: any, b: any) => b.occurrencesCount - a.occurrencesCount)
+                        .map(({ student }: any) => student);
 
                     setViewStudents(recentMonthStudents);
                 }

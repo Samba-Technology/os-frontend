@@ -11,6 +11,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import AnalyticsIcon from '@mui/icons-material/Analytics';
 import { ThemeToggleButton } from "../mui/ThemeTogleButton";
 import Image from "next/image";
+import GroupsIcon from '@mui/icons-material/Groups';
 
 export default function Header() {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -46,6 +47,11 @@ export default function Header() {
                     <>
                         <Box component="div" className="hidden gap-6 items-center lg:flex">
                             <Box component="div" className="flex items-center gap-5">
+                                <Box className="cursor-pointer" onClick={() => router.push('/app/students')}>
+                                    <Tooltip title="Estudantes">
+                                        <GroupsIcon />
+                                    </Tooltip>
+                                </Box>
                                 <Box className="cursor-pointer" onClick={() => router.push('/app/occurrences/archive')}>
                                     <Tooltip title="Ocorrências arquivadas">
                                         <ArchiveIcon />

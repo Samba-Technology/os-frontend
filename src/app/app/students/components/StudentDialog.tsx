@@ -2,8 +2,8 @@
 import yup from "@/helpers/validation";
 import { StudentsService } from "@/services/api/students.service";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, InputLabel, MenuItem, Select, TextField, Tooltip } from "@mui/material";
-import { useState } from "react";
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, InputLabel, MenuItem, Select, TextField, Tooltip } from "@mui/material";
+import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import CloseIcon from '@mui/icons-material/Close';
@@ -11,6 +11,8 @@ import CloseIcon from '@mui/icons-material/Close';
 interface Props {
     isOpen: boolean;
     onClose: () => void;
+    isEdit: boolean;
+    student?: any;
 }
 
 type Data = {
@@ -27,10 +29,10 @@ const schema = yup.object({
     ra: yup.string().required().matches(/^\d{9}[A-z0-9]$/, 'RA inválido')
 })
 
-export default function StudentsDialog({ isOpen, onClose }: Props) {
+export default function StudentsDialog({ isOpen, onClose, isEdit, student }: Props) {
     const [loading, setLoading] = useState(false)
 
-    const { control, handleSubmit, register, formState: { errors }, reset } = useForm<Data>({
+    const { control, handleSubmit, register, formState: { errors }, reset, setValue } = useForm<Data>({
         resolver: yupResolver(schema),
         defaultValues: {
             name: "",
@@ -40,11 +42,29 @@ export default function StudentsDialog({ isOpen, onClose }: Props) {
         }
     })
 
+    useEffect(() => {
+        if (isEdit) {
+            setValue("ra", student.ra)
+            setValue("name", student.name)
+            setValue("series", student.class.split('')[0])
+            setValue("class", student.class.split('')[1])
+        } else {
+            reset()
+        }
+    }, [isEdit, setValue, student.ra, student.name, student.class, reset])
+
     const onSubmit = async (data: Data) => {
         try {
             setLoading(true)
-            await StudentsService.create(data.ra, data.name, data.series, data.class)
-            toast.success('Estudante criado com sucesso!')
+
+            if (isEdit) {
+                await StudentsService.edit(data.ra, data.name, data.series, data.class)
+                toast.success('Estudante editado com sucesso!')
+            } else {
+                await StudentsService.create(data.ra, data.name, data.series, data.class)
+                toast.success('Estudante criado com sucesso!')
+            }
+
             onClose()
             reset()
         } catch (e: any) {
@@ -61,7 +81,7 @@ export default function StudentsDialog({ isOpen, onClose }: Props) {
     return (
         <Dialog open={isOpen} onClose={onClose} component="form" onSubmit={handleSubmit(onSubmit)} fullWidth>
             <DialogTitle className="flex justify-between items-center">
-                <p>Registro de Estudante</p>
+                <p>{!isEdit && "Registro de"} Estudante</p>
                 <div className="cursor-pointer" onClick={() => {
                     onClose()
                     reset()
@@ -110,10 +130,10 @@ export default function StudentsDialog({ isOpen, onClose }: Props) {
                         />
                     </FormControl>
                 </Box>
-                <TextField label="RA" error={!!errors.ra} helperText={errors.ra?.message} {...register("ra")} />
+                <TextField disabled={isEdit} label="RA" error={!!errors.ra} helperText={errors.ra?.message} {...register("ra")} />
             </DialogContent>
             <DialogActions className="flex gap-1">
-                <Button variant="contained" type="submit" disabled={loading}>{loading ? <CircularProgress size={20} /> : "Criar"}</Button>
+                <Button variant="contained" type="submit" disabled={loading}>{isEdit ? "Editar" : "Criar"}</Button>
             </DialogActions>
         </Dialog>
     )

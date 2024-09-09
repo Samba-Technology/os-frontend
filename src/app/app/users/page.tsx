@@ -3,7 +3,7 @@ import UsersDialog from "./components/UsersDialog";
 import AuthContext from "@/contexts/authContext";
 import { isAdmin } from "@/helpers/authorization";
 import { User } from "@/models/user.model";
-import { Autocomplete, Box, IconButton, Paper, TextField, Tooltip, Typography } from "@mui/material";
+import { Autocomplete, Box, IconButton, Paper, TextField, Tooltip } from "@mui/material";
 import { DataGrid, GridActionsCellItem, GridColDef } from "@mui/x-data-grid";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
@@ -103,9 +103,12 @@ export default function Users() {
 
     const handleClose = () => {
         setOpen(false)
-        setUserView({})
-        setConfirmOpen(false)
-        setEdit(false);
+
+        setTimeout(() => {
+            setUserView({})
+            setConfirmOpen(false)
+            setEdit(false);
+        }, 200);
     }
 
     const handleConfirm = async () => {
@@ -141,7 +144,14 @@ export default function Users() {
     return (
         <div className="flex h-full w-full justify-center items-center">
             <Paper elevation={3} className="flex flex-col w-[90%] gap-2 p-6">
-                <Typography variant="h4">Usuários</Typography>
+                <Box className="flex items-center justify-between">
+                    <h1 className="text-2xl">Usuários</h1>
+                    <IconButton onClick={() => setOpen(true)} size="large">
+                        <Tooltip title="Criar usuário">
+                            <PersonAddAlt1Icon />
+                        </Tooltip>
+                    </IconButton>
+                </Box>
                 <Box component="div" className="flex flex-col gap-4 mt-2">
                     <Box component="div" className="flex gap-2 items-center">
                         <Autocomplete
@@ -155,11 +165,6 @@ export default function Users() {
                             }}
                             renderInput={(params) => <TextField {...params} label="Pesquisar Usuário" />}
                         />
-                        <IconButton onClick={() => setOpen(true)} size="large">
-                            <Tooltip title="Criar usuário">
-                                <PersonAddAlt1Icon />
-                            </Tooltip>
-                        </IconButton>
                     </Box>
                     <DataGrid
                         rows={users}
