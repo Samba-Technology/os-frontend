@@ -38,4 +38,10 @@ export class StudentsService {
       sclass: sclass,
     });
   }
+
+  public static createMany(students: any[], series: string, sclass: string) {
+    return api.post(`/students/class/${series + sclass}`, {
+      students: students
+    }) 
+  }
 }

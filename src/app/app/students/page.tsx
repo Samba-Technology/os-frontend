@@ -9,6 +9,8 @@ import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
 import { Student } from "@/models/student.model";
 import { StudentsService } from "@/services/api/students.service";
 import StudentsDialog from "./components/StudentDialog";
+import GroupAddIcon from '@mui/icons-material/GroupAdd';
+import StudentsUploadDialog from "./components/StudentsUploadDialog";
 
 export default function Students() {
     const [open, setOpen] = useState(false)
@@ -23,6 +25,7 @@ export default function Students() {
     const [studentView, setStudentView] = useState({})
     const [queryStudent, setQueryStudent] = useState<Student>()
     const [edit, setEdit] = useState(false);
+    const [uploadOpen, setUploadOpen] = useState(false);
 
     const { user } = useContext(AuthContext)
 
@@ -93,6 +96,7 @@ export default function Students() {
 
     const handleClose = () => {
         setOpen(false)
+        setUploadOpen(false)
         
         setTimeout(() => {
             setStudentView({})
@@ -105,11 +109,18 @@ export default function Students() {
             <Paper elevation={3} className="flex flex-col w-[90%] gap-2 p-6">
                 <Box className="flex items-center justify-between">
                     <h1 className="text-2xl">Estudantes</h1>
-                    <IconButton onClick={() => setOpen(true)} size="large">
-                        <Tooltip title="Criar estudante">
-                            <PersonAddAlt1Icon />
-                        </Tooltip>
-                    </IconButton>
+                    <div>
+                        <IconButton onClick={() => setOpen(true)} size="large">
+                            <Tooltip title="Criar estudante">
+                                <PersonAddAlt1Icon />
+                            </Tooltip>
+                        </IconButton>
+                        <IconButton onClick={() => setUploadOpen(true)} size="large">
+                            <Tooltip title="Criar vários estudantes">
+                                <GroupAddIcon />
+                            </Tooltip>
+                        </IconButton>
+                    </div>
                 </Box>
                 <Box component="div" className="flex flex-col gap-4 mt-2">
                     <Box component="div" className="flex gap-2 items-center">
@@ -144,6 +155,7 @@ export default function Students() {
                 </Box>
             </Paper>
             <StudentsDialog isOpen={open} onClose={handleClose} student={studentView} isEdit={edit} />
+            <StudentsUploadDialog isOpen={uploadOpen} onClose={handleClose} />
         </div>
     )
 
