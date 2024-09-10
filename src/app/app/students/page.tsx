@@ -1,7 +1,7 @@
 "use client"
 import AuthContext from "@/contexts/authContext";
 import { isAdmin } from "@/helpers/authorization";
-import { Autocomplete, Box, IconButton, Paper, TextField, Tooltip } from "@mui/material";
+import { Autocomplete, Box, CircularProgress, IconButton, Paper, Skeleton, TextField, Tooltip } from "@mui/material";
 import { DataGrid, GridActionsCellItem, GridColDef } from "@mui/x-data-grid";
 import { JSX, useContext, useEffect, useState } from "react";
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
@@ -136,22 +136,23 @@ export default function Students() {
                             renderInput={(params) => <TextField {...params} label="Pesquisar Estudante" />}
                         />
                     </Box>
-                    <DataGrid
-                        rows={students}
-                        loading={loading}
-                        columns={columns}
-                        paginationMode="server"
-                        pageSizeOptions={[5, 6, 7]}
-                        paginationModel={pagination}
-                        onPaginationModelChange={setPagination}
-                        rowCount={total}
-                        getRowId={(row) => row.ra}
-                        slotProps={{
-                            pagination: {
-                                labelRowsPerPage: "Linhas por página:",
-                            }
-                        }}
-                    />
+                    {students.length === 0 && loading && !queryStudent ? <Skeleton variant="rectangular" animation="wave" height={100} />
+                        : <DataGrid
+                            rows={students}
+                            loading={loading}
+                            columns={columns}
+                            paginationMode="server"
+                            pageSizeOptions={[5, 6, 7]}
+                            paginationModel={pagination}
+                            onPaginationModelChange={setPagination}
+                            rowCount={total}
+                            getRowId={(row) => row.ra}
+                            slotProps={{
+                                pagination: {
+                                    labelRowsPerPage: "Linhas por página:",
+                                }
+                            }}
+                        />}
                 </Box>
             </Paper>
             <StudentsDialog isOpen={open} onClose={handleClose} student={studentView} isEdit={edit} />

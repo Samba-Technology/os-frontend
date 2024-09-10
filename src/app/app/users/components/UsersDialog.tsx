@@ -25,8 +25,8 @@ type Data = {
 const schema = yup.object({
     name: yup.string().required(),
     email: yup.string().email().required().matches(/^[a-z0-9](\.?[a-z0-9]){2,}@(?:prof(?:essor)?\.)?educacao\.sp\.gov\.br$/, 'O email deve ser Institucional.'),
-    password: yup.string().min(8).required(),
-    passwordConfirm: yup.string().min(8).required('A confirmação de senha é necessária.').oneOf([yup.ref('password')], "As senhas não coincidem.")
+    password: yup.string().required().min(8),
+    passwordConfirm: yup.string().required().min(8).oneOf([yup.ref('password')], "As senhas não coincidem.")
 })
 
 export default function UsersDialog({ isOpen, onClose, isEdit, user }: Props) {

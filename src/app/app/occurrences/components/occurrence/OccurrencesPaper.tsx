@@ -1,5 +1,5 @@
 "use client"
-import { Autocomplete, Box, CircularProgress, IconButton, Paper, TextField, Tooltip, Typography } from "@mui/material";
+import { Autocomplete, Box, CircularProgress, IconButton, Paper, Skeleton, TextField, Tooltip, Typography } from "@mui/material";
 import { DataGrid, GridActionsCellItem, GridColDef } from "@mui/x-data-grid";
 import { useContext, useEffect, useState } from "react";
 import CommentIcon from '@mui/icons-material/Comment';
@@ -411,14 +411,11 @@ export default function OccurrencePaper({ title, isArchive }: OccurrencePaperPro
                         labelRowsPerPage: "Linhas por página:",
                     }
                 }}
-            /> : <Paper elevation={3} className="flex flex-col w-full items-center p-5 gap-4">
-                {loading ? <CircularProgress /> :
-                    <>
-                        <h1 className="text-2xl">Está tudo tranquilo por aqui!</h1>
-                        <p>Excelente, parece que nenhuma ocorrência foi encontrada.</p>
-                    </>
-                }
-            </Paper>}
+            /> : loading ? <Skeleton animation="wave" variant="rectangular" height={100} /> :
+                <Paper elevation={3} className="flex flex-col w-full items-center p-5 gap-4">
+                    <h1 className="text-2xl">Está tudo tranquilo por aqui!</h1>
+                    <p>Excelente, parece que nenhuma ocorrência foi encontrada.</p>
+                </Paper>}
             <OccurrenceDialog isOpen={open} onClose={handleClose} isView={view} occurrence={occurrence} dispatch={dispatch} edit={edit} />
         </Paper>
     )

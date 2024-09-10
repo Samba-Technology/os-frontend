@@ -2,7 +2,7 @@
 import yup from "@/helpers/validation";
 import { StudentsService } from "@/services/api/students.service";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, InputLabel, MenuItem, Select, TextField, Tooltip } from "@mui/material";
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, FormHelperText, InputLabel, MenuItem, Select, TextField, Tooltip } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
@@ -26,7 +26,7 @@ const schema = yup.object({
     name: yup.string().required(),
     series: yup.string().required(),
     class: yup.string().required(),
-    ra: yup.string().required().matches(/^\d{9}[A-z0-9]$/, 'RA inválido')
+    ra: yup.string().required().matches(/^[1-9]\d{8}[A-z0-9]$/, 'RA inválido')
 })
 
 export default function StudentsDialog({ isOpen, onClose, isEdit, student }: Props) {
@@ -112,6 +112,7 @@ export default function StudentsDialog({ isOpen, onClose, isEdit, student }: Pro
                                 </Select>
                             )}
                         />
+                        <FormHelperText error={!!errors.series}>{errors.series?.message}</FormHelperText>
                     </FormControl>
                     <FormControl className="w-1/2">
                         <InputLabel>Turma</InputLabel>
@@ -128,9 +129,10 @@ export default function StudentsDialog({ isOpen, onClose, isEdit, student }: Pro
                                 </Select>
                             )}
                         />
+                        <FormHelperText error={!!errors.class}>{errors.class?.message}</FormHelperText>
                     </FormControl>
                 </Box>
-                <TextField disabled={isEdit} label="RA" error={!!errors.ra} helperText={errors.ra?.message} {...register("ra")} />
+                <TextField disabled={isEdit} label="RA" error={!!errors.ra} helperText={errors.ra?.message} placeholder="Ex: 123456789X" {...register("ra")} />
             </DialogContent>
             <DialogActions className="flex gap-1">
                 <Button variant="contained" type="submit" disabled={loading}>{isEdit ? "Editar" : "Criar"}</Button>

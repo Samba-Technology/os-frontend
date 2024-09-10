@@ -3,7 +3,7 @@ import UsersDialog from "./components/UsersDialog";
 import AuthContext from "@/contexts/authContext";
 import { isAdmin } from "@/helpers/authorization";
 import { User } from "@/models/user.model";
-import { Autocomplete, Box, IconButton, Paper, TextField, Tooltip } from "@mui/material";
+import { Autocomplete, Box, IconButton, Paper, Skeleton, TextField, Tooltip } from "@mui/material";
 import { DataGrid, GridActionsCellItem, GridColDef } from "@mui/x-data-grid";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
@@ -166,7 +166,8 @@ export default function Users() {
                             renderInput={(params) => <TextField {...params} label="Pesquisar Usuário" />}
                         />
                     </Box>
-                    <DataGrid
+                    {users.length === 0 && loading && !queryUser ? <Skeleton variant="rectangular" animation="wave" height={100}/>
+                    : <DataGrid
                         rows={users}
                         loading={loading}
                         columns={columns}
@@ -180,7 +181,7 @@ export default function Users() {
                                 labelRowsPerPage: "Linhas por página:",
                             }
                         }}
-                    />
+                    />}
                 </Box>
             </Paper>
             <UsersDialog isOpen={open} onClose={handleClose} user={userView} isEdit={edit} />

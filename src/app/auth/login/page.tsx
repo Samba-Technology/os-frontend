@@ -15,7 +15,7 @@ type Data = {
 
 const schema = yup.object({
     email: yup.string().email().required(),
-    password: yup.string().min(8).required()
+    password: yup.string().required().min(8)
 })
 
 export default function Login() {

@@ -35,8 +35,8 @@ const schema = yup.object({
     description: yup.string().required(),
     level: yup.string().required(),
     students: yup.array().min(1).required(),
-    tutors: yup.array().min(1).test('tutors-vs-students', 'O número de tutores deve ser menor ou igual ao número de alunos', function (tutors) {
-        const { students } = this.parent;
+    tutors: yup.array().min(1).test('tutors-vs-students', 'O número de tutores deve ser menor ou igual ao número de alunos', (tutors: any, context: any) => {
+        const { students } = context.parent as { students: any[] };
         return tutors && tutors.length <= students.length;
     }).required(),
     dispatch: yup.string().nullable()
@@ -103,8 +103,12 @@ export default function OccurrenceDialog({ isOpen, onClose, isView, occurrence, 
                 await Occurrenceservice.create(data.description, data.level, data.students, data.tutors)
                 toast.success('Ocorrência criada com sucesso!')
             } else if (dispatch) {
-                data.dispatch && await Occurrenceservice.dispatch(occurrence.id, data.dispatch, !!occurrence.dispatch)
-                toast.success('Despacho adicionado com sucesso.')
+                if (data.dispatch) {
+                    data.dispatch && await Occurrenceservice.dispatch(occurrence.id, data.dispatch, !!occurrence.dispatch)
+                    toast.success('Despacho adicionado com sucesso.')
+                } else {
+                    toast.info("Preencha o despacho para editar essa ocorrência.")
+                }
             } else if (edit) {
                 await Occurrenceservice.edit(occurrence.id, data.description, data.level, data.students, data.tutors)
                 toast.success('Ocorrência editada com sucesso!')
