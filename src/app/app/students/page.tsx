@@ -97,7 +97,7 @@ export default function Students() {
     const handleClose = () => {
         setOpen(false)
         setUploadOpen(false)
-        
+
         setTimeout(() => {
             setStudentView({})
             setEdit(false);
@@ -115,11 +115,11 @@ export default function Students() {
                                 <PersonAddAlt1Icon />
                             </Tooltip>
                         </IconButton>
-                        <IconButton onClick={() => setUploadOpen(true)} size="large">
+                        {user && isAdmin(user.role) && <IconButton onClick={() => setUploadOpen(true)} size="large">
                             <Tooltip title="Criar vários estudantes">
                                 <GroupAddIcon />
                             </Tooltip>
-                        </IconButton>
+                        </IconButton>}
                     </div>
                 </Box>
                 <Box component="div" className="flex flex-col gap-4 mt-2">
@@ -128,7 +128,7 @@ export default function Students() {
                             fullWidth
                             disablePortal
                             options={searchStudents}
-                            getOptionLabel={(student) => student.name}
+                            getOptionLabel={(student) => student.name + " (" + student.class + ")"}
                             onChange={(event, user, reason) => {
                                 user && setQueryStudent(user);
                                 reason === "clear" && setQueryStudent(undefined)
