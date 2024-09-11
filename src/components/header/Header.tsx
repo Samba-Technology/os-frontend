@@ -104,6 +104,10 @@ export default function Header() {
                                 open={open}
                                 onClose={handleClose}
                             >
+                                <MenuItem className="flex gap-2" onClick={() => router.push('/app/students')}>
+                                    <GroupIcon />
+                                    Estudantes
+                                </MenuItem>
                                 <MenuItem className="flex gap-2" onClick={() => router.push('/app/occurrences/archive')}>
                                     <ArchiveIcon />
                                     Arquivadas
