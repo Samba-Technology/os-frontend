@@ -31,7 +31,7 @@ export default function Header() {
     return (
         <Box component="div" className="flex items-center w-full justify-between gap-10 px-6 py-2 lg:px-16">
             <Box component="div" className="flex justify-center gap-3">
-                <Tooltip className="cursor-pointer" title="Copyright © 2024 Samba Code">
+                <a target="_blank" href="https://sambacode.com.br" >
                     <Image
                         src="/logo.png"
                         width={60}
@@ -39,7 +39,7 @@ export default function Header() {
                         alt="Samba Code Logo"
                         style={{ width: 'auto', height: 'auto' }}
                     />
-                </Tooltip>
+                </a>
             </Box>
             <div className="flex gap-4">
                 <ThemeToggleButton />
