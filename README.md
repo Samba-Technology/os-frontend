@@ -16,11 +16,11 @@ npm install
 
 ## Configuração
 
-Antes de executar a aplicação, configure as variáveis de ambiente no arquivo `.env`, certifique-se de adicionar o link para a API corretamente.
+Antes de executar a aplicação, configure as variáveis criando um arquivo `.env` na raiz do projeto, certifique-se de adicionar o link para a API corretamente.
 
-### .env
+### .env.example
 ```env
-NEXT_PUBLIC_API_URL="http://localhost:3001"
+NEXT_PUBLIC_API_URL=
 ```
 
 ## Executando a aplicação
@@ -30,3 +30,5 @@ Para inicializar o servidor de desenvolvimento, ultilize:
 ```bash
 npm run dev
 ```
+
+[Samba Code](https://sambacode.com.br) © 2024
