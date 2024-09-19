@@ -1,4 +1,5 @@
 "use client"
+import Footer from "@/components/footer/Footer"
 import Header from "@/components/header/Header"
 import AuthContext from "@/contexts/authContext"
 import Image from "next/image"
@@ -19,9 +20,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         <div className='flex flex-col justify-between h-screen'>
             <Header />
             {children}
-            <div className='flex flex-col items-center justify-center pb-2 gap-1'>
-                <a target="_blank" href="https://sambacode.com.br" className="text-xs md:text-base">Copyright © 2024 Samba Code – Todos os direitos reservados.</a>
-            </div>
+            <Footer />
         </div>
     )
 }

@@ -4,6 +4,7 @@ import { useContext, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Header from '@/components/header/Header';
 import { Box } from '@mui/material';
+import Footer from '@/components/footer/Footer';
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
     const { signed } = useContext(AuthContext)
@@ -21,6 +22,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             <div className='flex-grow'>
                 {children}
             </div>
+            <Footer />
         </div>
     )
 }
