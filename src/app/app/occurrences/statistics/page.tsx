@@ -360,7 +360,7 @@ export default function OccurrencesStatistics() {
                                             cornerRadius: 5,
                                             startAngle: 0,
                                             endAngle: 360,
-                                            arcLabel: (item) => `${item.value != 0 ? item.value : ""}`,
+                                            arcLabel: (item) => `${item.value != 0 ? visualizationData && Math.round((item.value / visualizationData[0].value) * 100) + "%" : ""}`,
                                         },
                                     ]}
                                     sx={{
@@ -373,7 +373,7 @@ export default function OccurrencesStatistics() {
                                 />
                             </Paper>
                             <Paper elevation={2} className="flex w-1/2 items-center flex-col bg-neutral-50 drop-shadow-md rounded-md p-4 gap-3">
-                                <h1 className="text-xl">Porcentagem de Solução</h1>
+                                <h1 className="text-xl">Solução (%)</h1>
                                 <PieChart
                                     series={[
                                         {
@@ -386,7 +386,7 @@ export default function OccurrencesStatistics() {
                                             cornerRadius: 5,
                                             startAngle: 0,
                                             endAngle: 360,
-                                            arcLabel: (item) => `${item.value != 0 ? item.value : ""}`,
+                                            arcLabel: (item) => `${item.value != 0 ? visualizationData && Math.round((item.value / (visualizationData[0].value - visualizationData[2].value)) * 100) + "%" : ""}`,
                                         },
                                     ]}
                                     sx={{
