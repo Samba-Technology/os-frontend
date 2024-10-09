@@ -28,6 +28,39 @@ export default function Header() {
         setAnchorEl(null);
     };
 
+    const items = [
+        {
+            name: "Estudantes",
+            icon: <GroupsIcon />,
+            URL: "/app/students",
+            onlyAdmin: false
+        },
+        {
+            name: "Ocorrências arquivadas",
+            icon: <ArchiveIcon />,
+            URL: "/app/occurrences/archive",
+            onlyAdmin: false
+        },
+        {
+            name: "Ocorrências em aberto",
+            icon: <DescriptionIcon />,
+            URL: "/app/occurrences",
+            onlyAdmin: false
+        },
+        {
+            name: "Estatísticas",
+            icon: <AnalyticsIcon />,
+            URL: "/app/occurrences/statistics",
+            onlyAdmin: true
+        },
+        {
+            name: "Usuários",
+            icon: <GroupIcon />,
+            URL: "/app/users",
+            onlyAdmin: true
+        }
+    ]
+
     return (
         <Box component="div" className="flex items-center w-full justify-between gap-10 px-6 py-2 lg:px-16">
             <Box component="div" className="flex justify-center gap-3">
@@ -47,35 +80,17 @@ export default function Header() {
                     <>
                         <Box component="div" className="hidden gap-6 items-center lg:flex">
                             <Box component="div" className="flex items-center gap-5">
-                                <Box className="cursor-pointer" onClick={() => router.push('/app/students')}>
-                                    <Tooltip title="Estudantes">
-                                        <GroupsIcon />
-                                    </Tooltip>
-                                </Box>
-                                <Box className="cursor-pointer" onClick={() => router.push('/app/occurrences/archive')}>
-                                    <Tooltip title="Ocorrências arquivadas">
-                                        <ArchiveIcon />
-                                    </Tooltip>
-                                </Box>
-                                <Box className="cursor-pointer" onClick={() => router.push('/app/occurrences')}>
-                                    <Tooltip title="Ocorrências em aberto">
-                                        <DescriptionIcon />
-                                    </Tooltip>
-                                </Box>
-                                {!!user && isAdmin(user.role) ? (
-                                    <>
-                                        <div className="cursor-pointer" onClick={() => router.replace('/app/occurrences/statistics')}>
-                                            <Tooltip title="Estatísticas de ocorrências">
-                                                <AnalyticsIcon />
+                                {items.map((item, index) => {
+                                    if (!!user && item.onlyAdmin && !isAdmin(user.role)) return null
+
+                                    return (
+                                        <div key={index} className="cursor-pointer" onClick={() => router.replace(item.URL)}>
+                                            <Tooltip title={item.name}>
+                                                {item.icon}
                                             </Tooltip>
                                         </div>
-                                        <div className="cursor-pointer" onClick={() => router.replace('/app/users')}>
-                                            <Tooltip title="Gestão de usuários">
-                                                <GroupIcon />
-                                            </Tooltip>
-                                        </div>
-                                    </>
-                                ) : null}
+                                    )
+                                })}
                                 <IconButton onClick={() => {
                                     localStorage.removeItem("access-token");
                                     window.location.reload()
@@ -104,28 +119,16 @@ export default function Header() {
                                 open={open}
                                 onClose={handleClose}
                             >
-                                <MenuItem className="flex gap-2" onClick={() => router.push('/app/students')}>
-                                    <GroupIcon />
-                                    Estudantes
-                                </MenuItem>
-                                <MenuItem className="flex gap-2" onClick={() => router.push('/app/occurrences/archive')}>
-                                    <ArchiveIcon />
-                                    Arquivadas
-                                </MenuItem>
-                                <MenuItem className="flex gap-2" onClick={() => router.push('/app/occurrences')}>
-                                    <DescriptionIcon />
-                                    Ocorrências
-                                </MenuItem>
-                                {!!user && isAdmin(user.role) ? [
-                                    <MenuItem key="stats" className="flex gap-2" onClick={() => router.push('/app/occurrences/statistics')}>
-                                        <AnalyticsIcon />
-                                        Estatísticas
-                                    </MenuItem>,
-                                    <MenuItem key="users" className="flex gap-2" onClick={() => router.push('/app/users')}>
-                                        <GroupIcon />
-                                        Usuários
-                                    </MenuItem>
-                                ] : null}
+                                {items.map((item, index) => {
+                                    if (!!user && item.onlyAdmin && !isAdmin(user.role)) return null
+
+                                    return (
+                                        <MenuItem key={index} className="flex gap-2" onClick={() => router.push(item.URL)}>
+                                            {item.icon}
+                                            {item.name}
+                                        </MenuItem>
+                                    )
+                                })}
                                 <Divider />
                                 <MenuItem className="flex gap-2" onClick={() => {
                                     localStorage.removeItem("access-token");
