@@ -4,6 +4,11 @@ export type User = {
   id: number
   name: string;
   email: string;
-  role: string;
+  role: Roles;
   ocurrences: Ocurrence[]
+}
+
+export enum Roles {
+  ADMIN,
+  USER
 }

@@ -1,7 +1,7 @@
 "use client"
 import UsersDialog from "./components/UsersDialog";
 import AuthContext from "@/contexts/authContext";
-import { isAdmin } from "@/helpers/authorization";
+import { isAdmin } from "@/helpers/userValidation";
 import { User } from "@/models/user.model";
 import { Autocomplete, Box, IconButton, Paper, Skeleton, TextField, Tooltip } from "@mui/material";
 import { DataGrid, GridActionsCellItem, GridColDef } from "@mui/x-data-grid";

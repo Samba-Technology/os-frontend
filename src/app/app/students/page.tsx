@@ -1,6 +1,6 @@
 "use client"
 import AuthContext from "@/contexts/authContext";
-import { isAdmin } from "@/helpers/authorization";
+import { isAdmin } from "@/helpers/userValidation";
 import { Autocomplete, Box, CircularProgress, IconButton, Paper, Skeleton, TextField, Tooltip } from "@mui/material";
 import { DataGrid, GridActionsCellItem, GridColDef } from "@mui/x-data-grid";
 import { JSX, useContext, useEffect, useState } from "react";

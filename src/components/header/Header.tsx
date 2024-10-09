@@ -4,7 +4,7 @@ import GroupIcon from '@mui/icons-material/Group';
 import { useRouter } from "next/navigation";
 import { useContext, useState } from "react";
 import AuthContext from "@/contexts/authContext";
-import { isAdmin } from "@/helpers/authorization";
+import { isAdmin } from "@/helpers/userValidation";
 import ArchiveIcon from '@mui/icons-material/Archive';
 import LogoutIcon from '@mui/icons-material/Logout';
 import MenuIcon from '@mui/icons-material/Menu';

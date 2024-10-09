@@ -3,7 +3,6 @@ import AuthContext from '@/contexts/authContext';
 import { useContext, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Header from '@/components/header/Header';
-import { Box } from '@mui/material';
 import Footer from '@/components/footer/Footer';
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {

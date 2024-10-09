@@ -9,7 +9,7 @@ import { UsersService } from "@/services/api/users.service";
 import { Student } from "@/models/student.model";
 import { StudentsService } from "@/services/api/students.service";
 import AuthContext from "@/contexts/authContext";
-import { isAdmin } from "@/helpers/authorization";
+import { isAdmin } from "@/helpers/userValidation";
 import { useRouter } from "next/navigation";
 import LibraryAddIcon from '@mui/icons-material/LibraryAdd';
 import LibraryAddCheckIcon from '@mui/icons-material/LibraryAddCheck';

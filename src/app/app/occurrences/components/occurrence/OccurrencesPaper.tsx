@@ -5,7 +5,7 @@ import { useContext, useEffect, useState } from "react";
 import CommentIcon from '@mui/icons-material/Comment';
 import PageviewIcon from '@mui/icons-material/Pageview';
 import AuthContext from "@/contexts/authContext";
-import { isAdmin } from "@/helpers/authorization";
+import { isAdmin } from "@/helpers/userValidation";
 import { Ocurrence } from "@/models/occurrence.model";
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
